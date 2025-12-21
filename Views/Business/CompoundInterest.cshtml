@@ -1,0 +1,326 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">📈</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Compound Interest & Savings Calculator</h1>
+            <p class="text-xl opacity-90">
+                See how your savings grow over time with compound interest and monthly contributions.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container-custom max-w-6xl">
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8c-1.657 0-3-1.343-3-3S10.343 2 12 2s3 1.343 3 3-1.343 3-3 3zm0 4c3.866 0 7 3.134 7 7v1H5v-1c0-3.866 3.134-7 7-7z" />
+                </svg>
+                <div class="text-sm text-blue-900 dark:text-blue-100">
+                    <strong>Privacy first:</strong> All calculations run in your browser. No savings or investment data is sent to our servers.
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Savings Inputs</h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="ciCurrency" class="block text-sm font-medium mb-2">Currency</label>
+                        <select id="ciCurrency" class="form-input">
+                            <option value="USD" data-symbol="$">USD - US Dollar ($)</option>
+                            <option value="PKR" data-symbol="₨">PKR - Pakistani Rupee (₨)</option>
+                            <option value="EUR" data-symbol="€">EUR - Euro (€)</option>
+                            <option value="GBP" data-symbol="£">GBP - British Pound (£)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="initialAmount" class="form-label">Initial Amount</label>
+                        <div class="relative">
+                            <span id="ciSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input id="initialAmount" type="number" min="0" step="100"
+                                   class="form-input pl-8"
+                                   placeholder="100000" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="monthlyContribution" class="form-label">Monthly Contribution (optional)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input id="monthlyContribution" type="number" min="0" step="50"
+                                   class="form-input pl-8"
+                                   placeholder="5000" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="annualRate" class="form-label">Annual Interest Rate</label>
+                        <div class="relative">
+                            <input id="annualRate" type="number" min="0" max="100" step="0.1"
+                                   class="form-input pr-8"
+                                   placeholder="10" />
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="years" class="form-label">Duration (Years)</label>
+                            <input id="years" type="number" min="1" max="50" step="1"
+                                   class="form-input"
+                                   placeholder="10" />
+                        </div>
+                        <div>
+                            <label for="compoundFrequency" class="form-label">Compounding</label>
+                            <select id="compoundFrequency" class="form-input">
+                                <option value="12">Monthly</option>
+                                <option value="4">Quarterly</option>
+                                <option value="1">Yearly</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary w-full" onclick="calculateCompoundInterest()">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M11 3.055A9.001 9.001 0 1021 12a9.003 9.003 0 00-10-8.945z" />
+                        </svg>
+                        Calculate Growth
+                    </button>
+
+                    <button type="button" class="btn btn-outline w-full" onclick="resetCompoundForm()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Summary</h2>
+
+                <div id="ciEmptyState" class="text-center py-10">
+                    <div class="text-6xl mb-4 opacity-20">📊</div>
+                    <p class="text-[var(--text-default)]">
+                        Enter your savings details to see projected growth.
+                    </p>
+                </div>
+
+                <div id="ciResults" class="hidden space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                            <div class="text-sm text-green-700 dark:text-green-300 mb-1">Final Balance</div>
+                            <div id="ciFinalBalance" class="text-2xl font-bold text-green-800 dark:text-green-200">$0</div>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div class="text-sm text-blue-700 dark:text-blue-300 mb-1">Total Contributions</div>
+                            <div id="ciTotalContrib" class="text-2xl font-bold text-blue-800 dark:text-blue-200">$0</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
+                            <div class="text-sm text-purple-700 dark:text-purple-300 mb-1">Interest Earned</div>
+                            <div id="ciInterestEarned" class="text-2xl font-bold text-purple-800 dark:text-purple-200">$0</div>
+                        </div>
+                        <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
+                            <div class="text-sm text-orange-700 dark:text-orange-300 mb-1">Effective Annual Return</div>
+                            <div id="ciEffectiveReturn" class="text-2xl font-bold text-orange-800 dark:text-orange-200">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-sm text-[var(--text-default)]">
+                        <div class="flex justify-between">
+                            <span>Years invested</span>
+                            <span id="ciYearsLabel" class="font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Monthly contribution</span>
+                            <span id="ciMonthlyLabel" class="font-semibold">$0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Total months</span>
+                            <span id="ciMonthsLabel" class="font-semibold">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ciChartCard" class="card mt-8 hidden">
+            <h3 class="text-xl font-bold mb-4">Growth Over Time</h3>
+            <div class="relative" style="height: 280px;">
+                <canvas id="ciChart"></canvas>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        let ciChart = null;
+        let ciCurrencySymbol = '$';
+
+        document.getElementById('ciCurrency').addEventListener('change', function () {
+            const selected = this.options[this.selectedIndex];
+            ciCurrencySymbol = selected.getAttribute('data-symbol') || '$';
+            document.getElementById('ciSymbol').textContent = ciCurrencySymbol;
+            if (document.getElementById('initialAmount').value && document.getElementById('annualRate').value && document.getElementById('years').value) {
+                calculateCompoundInterest();
+            }
+        });
+
+        function formatMoney(symbol, value) {
+            return symbol + value.toFixed(2);
+        }
+
+        function calculateCompoundInterest() {
+            const initial = parseFloat(document.getElementById('initialAmount').value) || 0;
+            const monthlyContrib = parseFloat(document.getElementById('monthlyContribution').value) || 0;
+            const annualRate = parseFloat(document.getElementById('annualRate').value);
+            const years = parseInt(document.getElementById('years').value);
+            const freq = parseInt(document.getElementById('compoundFrequency').value);
+
+            if (annualRate < 0 || !years || years <= 0) {
+                alert('Please enter a valid interest rate and duration.');
+                return;
+            }
+
+            const periodsPerYear = freq;
+            const totalYears = years;
+            const totalMonths = totalYears * 12;
+            const r = (annualRate / 100) / periodsPerYear;
+
+            let balance = initial;
+            let totalContrib = initial;
+            const labels = [];
+            const values = [];
+
+            const stepMonths = Math.max(1, Math.floor(totalMonths / 24));
+
+            for (let month = 1; month <= totalMonths; month++) {
+                balance += monthlyContrib;
+                totalContrib += monthlyContrib;
+
+                const isCompoundStep = month % Math.round(12 / periodsPerYear) === 0;
+                if (isCompoundStep) {
+                    balance *= (1 + r);
+                }
+
+                if (month % stepMonths === 0 || month === totalMonths) {
+                    labels.push(`Year ${(month / 12).toFixed(1)}`);
+                    values.push(balance);
+                }
+            }
+
+            const interestEarned = balance - totalContrib;
+            const effectiveAnnualReturn = totalYears > 0 && totalContrib > 0
+                ? (Math.pow(balance / totalContrib, 1 / totalYears) - 1) * 100
+                : annualRate;
+
+            document.getElementById('ciFinalBalance').textContent = formatMoney(ciCurrencySymbol, balance);
+            document.getElementById('ciTotalContrib').textContent = formatMoney(ciCurrencySymbol, totalContrib);
+            document.getElementById('ciInterestEarned').textContent = formatMoney(ciCurrencySymbol, interestEarned);
+            document.getElementById('ciEffectiveReturn').textContent = effectiveAnnualReturn.toFixed(2) + '%';
+
+            document.getElementById('ciYearsLabel').textContent = totalYears.toString();
+            document.getElementById('ciMonthlyLabel').textContent = formatMoney(ciCurrencySymbol, monthlyContrib);
+            document.getElementById('ciMonthsLabel').textContent = totalMonths.toString();
+
+            document.getElementById('ciEmptyState').classList.add('hidden');
+            document.getElementById('ciResults').classList.remove('hidden');
+            document.getElementById('ciChartCard').classList.remove('hidden');
+
+            const ctx = document.getElementById('ciChart').getContext('2d');
+            if (ciChart) {
+                ciChart.destroy();
+            }
+
+            const isDark = document.documentElement.classList.contains('dark');
+
+            ciChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Projected Balance',
+                        data: values,
+                        borderColor: '#4A90E2',
+                        backgroundColor: 'rgba(74, 144, 226, 0.15)',
+                        tension: 0.25,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: isDark ? '#E5E7EB' : '#374151'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const v = context.parsed.y || 0;
+                                    return ' ' + formatMoney(ciCurrencySymbol, v);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: isDark ? '#9CA3AF' : '#6B7280'
+                            },
+                            grid: {
+                                color: isDark ? '#374151' : '#E5E7EB'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: isDark ? '#9CA3AF' : '#6B7280'
+                            },
+                            grid: {
+                                color: isDark ? '#374151' : '#E5E7EB'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function resetCompoundForm() {
+            document.getElementById('initialAmount').value = '';
+            document.getElementById('monthlyContribution').value = '';
+            document.getElementById('annualRate').value = '';
+            document.getElementById('years').value = '';
+            document.getElementById('ciResults').classList.add('hidden');
+            document.getElementById('ciEmptyState').classList.remove('hidden');
+            document.getElementById('ciChartCard').classList.add('hidden');
+            if (ciChart) {
+                ciChart.destroy();
+                ciChart = null;
+            }
+        }
+    </script>
+}

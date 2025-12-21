@@ -69,12 +69,40 @@ public class BusinessController : Controller
 
     public IActionResult LoanCalculator()
     {
+        var url = Url.Action("LoanCalculator", "Business", null, Request.Scheme) ?? string.Empty;
+
         var model = new BasePageViewModel
         {
-            PageTitle = "Business Loan Calculator - NovaTools Hub",
-            MetaDescription = "Calculate business loan payments, EMI schedules, and interest breakdowns. Plan your business financing with confidence.",
-            CanonicalUrl = "/business/loancalculator"
+            PageTitle = "Business Loan & EMI Calculator | NovaTools Hub",
+            MetaDescription = "Calculate business loan EMIs, payment schedules, and total interest with a detailed amortization table. Supports multiple currencies and payment frequencies.",
+            CanonicalUrl = url
         };
+
+        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+            "Business Loan Calculator",
+            "Calculate business loan EMIs, payment schedules, and total interest with a detailed amortization table.",
+            url
+        );
+
+        return View(model);
+    }
+
+    public IActionResult CompoundInterest()
+    {
+        var url = Url.Action("CompoundInterest", "Business", null, Request.Scheme) ?? string.Empty;
+
+        var model = new BasePageViewModel
+        {
+            PageTitle = "Compound Interest & Savings Calculator | NovaTools Hub",
+            MetaDescription = "Estimate how your savings grow over time with compound interest. Visualize contributions, interest earned, and total future value.",
+            CanonicalUrl = url
+        };
+
+        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+            "Compound Interest & Savings Calculator",
+            "Estimate how your savings grow over time with compound interest and optional monthly contributions.",
+            url
+        );
 
         return View(model);
     }
