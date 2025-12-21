@@ -1,0 +1,489 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Online Notepad",
+    "applicationCategory": "UtilityApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-sticky-note text-primary"></i> Online Notepad
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Quick notes with automatic saving
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Notes List Sidebar -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-4 sticky top-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                        <i class="fas fa-list"></i> My Notes
+                    </h2>
+                    <button onclick="createNewNote()" class="text-primary hover:text-blue-600" title="New Note">
+                        <i class="fas fa-plus-circle text-xl"></i>
+                    </button>
+                </div>
+                
+                <div id="notesList" class="space-y-2 max-h-96 overflow-y-auto">
+                    <!-- Notes list will be populated here -->
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                    <p><i class="fas fa-info-circle"></i> Notes saved to your workspace</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Note Editor -->
+        <div class="lg:col-span-3">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <!-- Toolbar -->
+                <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="noteTitle" placeholder="Note Title" class="text-xl font-semibold px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" style="min-width: 300px">
+                        <span id="saveIndicator" class="text-sm text-gray-500 dark:text-gray-400 hidden">
+                            <i class="fas fa-check-circle text-secondary"></i> Saved
+                        </span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="downloadNote()" class="text-gray-600 dark:text-gray-300 hover:text-primary" title="Download">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button onclick="deleteCurrentNote()" class="text-gray-600 dark:text-gray-300 hover:text-red-600" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Text Editor -->
+                <textarea id="noteContent" rows="20" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary font-mono text-base" placeholder="Start typing your note..."></textarea>
+                
+                <!-- Footer Info -->
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
+                    <div>
+                        <span id="wordCount">0 words</span> • <span id="charCount">0 characters</span>
+                    </div>
+                    <div id="lastSaved" class="text-xs">
+                        <!-- Last saved time will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                    Quick Actions
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <button onclick="clearContent()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded-lg transition-all">
+                        <i class="fas fa-eraser mr-2"></i> Clear
+                    </button>
+                    <button onclick="copyToClipboard()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded-lg transition-all">
+                        <i class="fas fa-copy mr-2"></i> Copy
+                    </button>
+                    <button onclick="upperCase()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded-lg transition-all">
+                        <i class="fas fa-font mr-2"></i> UPPER
+                    </button>
+                    <button onclick="lowerCase()" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded-lg transition-all">
+                        <i class="fas fa-font mr-2"></i> lower
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_SocialSharing")
+</div>
+
+    <div id="notificationContainer" class="fixed top-4 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+@section Scripts {
+    <script src="~/js/productivity.workspace.js" asp-append-version="true"></script>
+    <script>
+        const API_BASE = '/api/productivity';
+        let workspaceId = null;
+        let notes = [];
+        let currentNoteId = null;
+        let saveTimeout = null;
+        let isSaving = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeNotes();
+
+            document.getElementById('noteTitle').addEventListener('input', autoSave);
+            document.getElementById('noteContent').addEventListener('input', () => {
+                autoSave();
+                updateCounts();
+            });
+
+            window.addEventListener('beforeunload', () => {
+                saveCurrentNote(true);
+            });
+        });
+
+        async function initializeNotes() {
+            try {
+                workspaceId = await ensureWorkspaceId();
+                await loadNotes();
+
+                if (notes.length === 0) {
+                    await createNewNote(false);
+                } else {
+                    await loadNote(notes[0].id);
+                }
+            } catch (error) {
+                console.error('Failed to initialize notes', error);
+                showNotification(error.message || 'Unable to load notes.', 'error');
+            }
+        }
+
+        async function ensureWorkspaceId() {
+            if (workspaceId) {
+                return workspaceId;
+            }
+
+            if (!window.ProductivityWorkspace) {
+                throw new Error('Workspace helper unavailable.');
+            }
+
+            workspaceId = await window.ProductivityWorkspace.getId();
+            return workspaceId;
+        }
+
+        async function loadNotes() {
+            const id = await ensureWorkspaceId();
+            const data = await apiRequest(`${API_BASE}/workspaces/${id}/notes`);
+            notes = data.map(normalizeNote);
+            updateNotesList();
+        }
+
+        async function createNewNote(showToast = true) {
+            try {
+                const id = await ensureWorkspaceId();
+                const payload = {
+                    workspaceId: id,
+                    title: 'Untitled Note',
+                    content: ''
+                };
+
+                const created = await apiRequest(`${API_BASE}/workspaces/${id}/notes`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                const normalized = normalizeNote(created);
+                notes.unshift(normalized);
+                updateNotesList();
+                await loadNote(normalized.id);
+
+                if (showToast) {
+                    showNotification('New note created.', 'success');
+                }
+            } catch (error) {
+                console.error('Failed to create note', error);
+                showNotification(error.message || 'Failed to create note.', 'error');
+            }
+        }
+
+        async function loadNote(noteId) {
+            const targetId = noteId?.toString();
+            await saveCurrentNote(true);
+
+            const note = notes.find(n => n.id === targetId);
+            if (!note) {
+                return;
+            }
+
+            currentNoteId = targetId;
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content;
+            updateCounts();
+            highlightActiveNote(targetId);
+            updateLastSaved(note.updatedAt);
+        }
+
+        function highlightActiveNote(noteId) {
+            document.querySelectorAll('#notesList .note-item').forEach(item => {
+                item.classList.remove('bg-primary/10', 'border-primary');
+                item.classList.add('bg-gray-50', 'dark:bg-gray-700');
+            });
+
+            if (!noteId) return;
+            const activeItem = document.querySelector(`[data-note-id="${noteId}"]`);
+            if (activeItem) {
+                activeItem.classList.remove('bg-gray-50', 'dark:bg-gray-700');
+                activeItem.classList.add('bg-primary/10', 'border-primary');
+            }
+        }
+
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => saveCurrentNote(true), 800);
+        }
+
+        async function saveCurrentNote(silent = false) {
+            if (currentNoteId === null) {
+                return;
+            }
+
+            if (isSaving) {
+                return;
+            }
+
+            const titleInput = document.getElementById('noteTitle');
+            const contentInput = document.getElementById('noteContent');
+
+            const payload = {
+                workspaceId: await ensureWorkspaceId(),
+                title: titleInput.value || 'Untitled Note',
+                content: contentInput.value || ''
+            };
+
+            try {
+                isSaving = true;
+                const updated = await apiRequest(`${API_BASE}/notes/${currentNoteId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                const normalized = normalizeNote(updated);
+                const index = notes.findIndex(n => n.id === currentNoteId);
+                if (index >= 0) {
+                    notes[index] = normalized;
+                } else {
+                    notes.unshift(normalized);
+                }
+                updateNotesList();
+                updateLastSaved(normalized.updatedAt);
+
+                if (!silent) {
+                    showNotification('Note saved.', 'success');
+                }
+
+                showSaveIndicator();
+            } catch (error) {
+                console.error('Failed to save note', error);
+                if (!silent) {
+                    showNotification(error.message || 'Failed to save note.', 'error');
+                }
+            } finally {
+                isSaving = false;
+            }
+        }
+
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.classList.remove('hidden');
+            setTimeout(() => indicator.classList.add('hidden'), 2000);
+        }
+
+        async function deleteCurrentNote() {
+            if (currentNoteId === null) return;
+            if (!confirm('Delete this note?')) return;
+
+            try {
+                const id = await ensureWorkspaceId();
+                await apiRequest(`${API_BASE}/notes/${currentNoteId}?workspaceId=${encodeURIComponent(id)}`, {
+                    method: 'DELETE'
+                });
+
+                notes = notes.filter(n => n.id !== currentNoteId);
+                updateNotesList();
+
+                if (notes.length === 0) {
+                    currentNoteId = null;
+                    document.getElementById('noteTitle').value = '';
+                    document.getElementById('noteContent').value = '';
+                    updateCounts();
+                    await createNewNote(false);
+                } else {
+                    await loadNote(notes[0].id);
+                }
+
+                showNotification('Note deleted.', 'success');
+            } catch (error) {
+                console.error('Failed to delete note', error);
+                showNotification(error.message || 'Failed to delete note.', 'error');
+            }
+        }
+
+        function updateNotesList() {
+            const list = document.getElementById('notesList');
+            if (!list) return;
+
+            list.innerHTML = notes.map(note => {
+                const preview = note.content ? note.content.slice(0, 50) : 'Empty note';
+                const date = note.updatedAt ? new Date(note.updatedAt).toLocaleDateString() : '';
+                return `
+                    <div class="note-item p-3 rounded-lg border border-transparent cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-all" 
+                        data-note-id="${note.id}" 
+                        onclick="loadNote('${note.id}')">
+                        <h3 class="font-semibold text-sm text-gray-800 dark:text-white truncate">${escapeHtml(note.title)}</h3>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 truncate mt-1">${escapeHtml(preview)}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">${date}</p>
+                    </div>
+                `;
+            }).join('');
+
+            highlightActiveNote(currentNoteId);
+        }
+
+        function downloadNote() {
+            const title = document.getElementById('noteTitle').value || 'note';
+            const content = document.getElementById('noteContent').value;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function updateCounts() {
+            const content = document.getElementById('noteContent').value;
+            const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+            const chars = content.length;
+
+            document.getElementById('wordCount').textContent = `${words} word${words !== 1 ? 's' : ''}`;
+            document.getElementById('charCount').textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
+        }
+
+        function clearContent() {
+            if (confirm('Clear all content?')) {
+                document.getElementById('noteContent').value = '';
+                autoSave();
+                updateCounts();
+            }
+        }
+
+        function copyToClipboard() {
+            const content = document.getElementById('noteContent').value;
+            navigator.clipboard.writeText(content).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+            }).catch(() => {
+                showNotification('Failed to copy note.', 'error');
+            });
+        }
+
+        function upperCase() {
+            const textarea = document.getElementById('noteContent');
+            textarea.value = textarea.value.toUpperCase();
+            autoSave();
+        }
+
+        function lowerCase() {
+            const textarea = document.getElementById('noteContent');
+            textarea.value = textarea.value.toLowerCase();
+            autoSave();
+        }
+
+        function updateLastSaved(timestamp) {
+            const target = document.getElementById('lastSaved');
+            if (!timestamp) {
+                target.textContent = '';
+                return;
+            }
+            target.textContent = `Last saved: ${new Date(timestamp).toLocaleTimeString()}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text ?? '';
+            return div.innerHTML;
+        }
+
+        async function apiRequest(url, options = {}) {
+            const method = options.method || 'GET';
+            const fetchOptions = {
+                method,
+                headers: {
+                    'Accept': 'application/json',
+                    ...(method === 'GET' ? {} : { 'Content-Type': 'application/json' }),
+                    ...(options.headers || {})
+                }
+            };
+
+            if (options.body && method !== 'GET' && method !== 'HEAD') {
+                fetchOptions.body = options.body;
+            }
+
+            const response = await fetch(url, fetchOptions);
+            if (response.status === 204) {
+                return null;
+            }
+
+            if (!response.ok) {
+                const message = await parseError(response);
+                throw new Error(message);
+            }
+
+            return await response.json();
+        }
+
+        async function parseError(response) {
+            try {
+                const data = await response.json();
+                return data.error || data.message || 'Request failed.';
+            } catch {
+                return 'Request failed.';
+            }
+        }
+
+        function normalizeNote(dto) {
+            const rawId = dto.id ?? dto.Id ?? '';
+            return {
+                id: rawId.toString(),
+                title: dto.title ?? dto.Title ?? 'Untitled Note',
+                content: dto.content ?? dto.Content ?? '',
+                createdAt: dto.createdAt ?? dto.CreatedAt,
+                updatedAt: dto.updatedAt ?? dto.UpdatedAt
+            };
+        }
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            if (!container) {
+                alert(message);
+                return;
+            }
+
+            const alert = document.createElement('div');
+            alert.className = `mb-3 px-4 py-2 rounded-lg text-sm shadow ${
+                type === 'success' ? 'bg-green-100 text-green-800' :
+                type === 'error' ? 'bg-red-100 text-red-800' :
+                'bg-blue-100 text-blue-800'
+            }`;
+            alert.textContent = message;
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        }
+    </script>
+}

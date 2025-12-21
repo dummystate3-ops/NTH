@@ -1,0 +1,399 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["PageTitle"] = "JSON Formatter | NovaTools Hub";
+    ViewData["MetaDescription"] = "Enterprise-grade JSON formatter to format, validate, minify, and compare payloads.";
+}
+
+<!-- External Styles for Split.js -->
+<style>
+    .gutter {
+        background-color: var(--color-border);
+        background-repeat: no-repeat;
+        background-position: 50%;
+        cursor: col-resize;
+        transition: background-color 0.2s;
+    }
+
+    .gutter:hover {
+        background-color: var(--color-primary);
+    }
+
+    .monaco-editor-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+</style>
+
+<!-- Page Container -->
+<div class="min-h-screen bg-[var(--color-bg)]">
+
+    <!-- Header Section -->
+    <div class="container-custom py-8 lg:py-12">
+        <div class="max-w-4xl mx-auto text-center space-y-4">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                    </path>
+                </svg>
+                Data Tools
+            </div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                JSON <span class="text-gradient">Formatter</span> & Validator
+            </h1>
+            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                Format, beautify, minify, and validate JSON data with our enterprise-grade editor. Compare differences
+                side-by-side.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tool Workspace -->
+    <div class="container-custom pb-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Floating Workspace Card -->
+            <div
+                class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-xl shadow-gray-200/20 dark:shadow-black/30 overflow-hidden">
+
+                <!-- Toolbar -->
+                <div
+                    class="bg-[var(--color-surface)] border-b border-[var(--color-border)] p-3 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="flex gap-1">
+                            <button id="btnFormat" class="btn btn-sm btn-primary" title="Format JSON (Ctrl+Shift+F)">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 6h16M4 12h16m-7 6h7"></path>
+                                </svg>
+                                Format
+                            </button>
+                            <button id="btnMinify" class="btn btn-sm btn-outline" title="Minify JSON">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                Minify
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <div class="flex bg-[var(--color-bg)] p-1 rounded-lg border border-[var(--color-border)]">
+                            <button id="modeEditor"
+                                class="px-3 py-1.5 text-xs font-medium rounded-md bg-[var(--color-surface)] shadow-sm"
+                                onclick="switchMode('editor')">Editor</button>
+                            <button id="modeDiff"
+                                class="px-3 py-1.5 text-xs font-medium rounded-md hover:bg-[var(--color-surface)] transition-all"
+                                onclick="switchMode('diff')">Diff</button>
+                        </div>
+                        <div class="h-6 w-px bg-[var(--color-border)]"></div>
+                        <button id="btnSample" class="btn btn-sm btn-ghost">Sample</button>
+                        <button id="btnClear"
+                            class="btn btn-sm btn-ghost text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">Clear</button>
+                        <button id="btnCopy" class="btn btn-sm btn-success">Copy</button>
+                    </div>
+                </div>
+
+                <!-- Main Editor Area -->
+                <div id="editor-workspace" class="relative overflow-hidden" style="height: 450px;">
+                    <!-- Split View for Normal Editor -->
+                    <div id="split-container" class="w-full h-full flex">
+                        <!-- Input Pane -->
+                        <div id="pane-input" class="h-full relative flex flex-col">
+                            <div
+                                class="bg-[var(--color-bg)]/50 px-4 py-2 text-xs font-semibold tracking-wide text-[var(--color-text-medium)] border-b border-[var(--color-border)] flex justify-between items-center select-none uppercase">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    Input
+                                </span>
+                                <span id="input-status"
+                                    class="normal-case font-mono text-[var(--color-primary)]">Ready</span>
+                            </div>
+                            <div id="input-editor" class="flex-1"></div>
+                        </div>
+
+                        <!-- Output Pane -->
+                        <div id="pane-output"
+                            class="h-full relative flex flex-col border-l border-[var(--color-border)]">
+                            <div
+                                class="bg-[var(--color-bg)]/50 px-4 py-2 text-xs font-semibold tracking-wide text-[var(--color-text-medium)] border-b border-[var(--color-border)] flex justify-between items-center select-none uppercase">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    Output
+                                </span>
+                                <span id="output-stats" class="normal-case font-mono">0 nodes</span>
+                            </div>
+                            <div id="output-editor" class="flex-1"></div>
+                        </div>
+                    </div>
+
+                    <!-- Diff Editor Container (Hidden by default) -->
+                    <div id="diff-container" class="w-full h-full hidden">
+                        <div id="diff-editor" class="w-full h-full"></div>
+                    </div>
+                </div>
+
+                <!-- Status Bar -->
+                <div
+                    class="bg-[var(--color-bg)]/50 border-t border-[var(--color-border)] px-4 py-1.5 text-xs flex justify-between text-[var(--color-text-medium)]">
+                    <div id="status-left" class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                        Ready
+                    </div>
+                    <div id="status-right" class="font-mono">Ln 1, Col 1</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="container-custom py-12 border-t border-[var(--color-border)]">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8 text-center">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div
+                    class="text-center space-y-3 p-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg">
+                        1</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Paste Your JSON</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">Paste your JSON data into the input editor on the
+                        left. The editor supports syntax highlighting and auto-validation.</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg">
+                        2</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Format or Minify</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">Click "Format" to beautify your JSON with proper
+                        indentation, or "Minify" to compress it for efficient storage.</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg">
+                        3</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Copy & Compare</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">Copy the formatted result to your clipboard. Use
+                        "Diff" mode to compare two JSON documents side-by-side.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Load Split.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+
+    <!-- Load Monaco Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+
+    <script>
+        // Monaco Config
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+
+        let inputEditor, outputEditor, diffEditor;
+        let currentMode = 'editor';
+        let splitInstance;
+
+        require(['vs/editor/editor.main'], function () {
+            initEditors();
+            initSplitLayout();
+            setupThemeListener();
+            loadSample();
+        });
+
+        function initEditors() {
+            const theme = document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs';
+
+            inputEditor = monaco.editor.create(document.getElementById('input-editor'), {
+                value: '',
+                language: 'json',
+                theme: theme,
+                automaticLayout: true,
+                minimap: { enabled: false },
+                formatOnPaste: true,
+                scrollBeyondLastLine: false,
+                fontSize: 14,
+                padding: { top: 10 }
+            });
+
+            outputEditor = monaco.editor.create(document.getElementById('output-editor'), {
+                value: '',
+                language: 'json',
+                theme: theme,
+                automaticLayout: true,
+                readOnly: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                fontSize: 14,
+                padding: { top: 10 }
+            });
+
+            diffEditor = monaco.editor.createDiffEditor(document.getElementById('diff-editor'), {
+                theme: theme,
+                automaticLayout: true,
+                originalEditable: true,
+                readOnly: false
+            });
+
+            inputEditor.onDidChangeModelContent(() => {
+                updateStats();
+                debounce(autoFormat, 1000)();
+            });
+
+            inputEditor.onDidChangeCursorPosition((e) => {
+                document.getElementById('status-right').textContent = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
+            });
+
+            bindToolbar();
+        }
+
+        function initSplitLayout() {
+            splitInstance = Split(['#pane-input', '#pane-output'], {
+                sizes: [50, 50],
+                minSize: 100,
+                gutterSize: 6,
+                cursor: 'col-resize'
+            });
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const splitContainer = document.getElementById('split-container');
+            const diffContainer = document.getElementById('diff-container');
+            const modeEditorBtn = document.getElementById('modeEditor');
+            const modeDiffBtn = document.getElementById('modeDiff');
+
+            if (mode === 'diff') {
+                splitContainer.classList.add('hidden');
+                diffContainer.classList.remove('hidden');
+                modeEditorBtn.classList.remove('bg-[var(--color-surface)]', 'shadow-sm');
+                modeDiffBtn.classList.add('bg-[var(--color-surface)]', 'shadow-sm');
+
+                const originalModel = monaco.editor.createModel(inputEditor.getValue(), 'json');
+                const modifiedModel = monaco.editor.createModel(outputEditor.getValue() || inputEditor.getValue(), 'json');
+                diffEditor.setModel({
+                    original: originalModel,
+                    modified: modifiedModel
+                });
+            } else {
+                splitContainer.classList.remove('hidden');
+                diffContainer.classList.add('hidden');
+                modeEditorBtn.classList.add('bg-[var(--color-surface)]', 'shadow-sm');
+                modeDiffBtn.classList.remove('bg-[var(--color-surface)]', 'shadow-sm');
+            }
+        }
+
+        function bindToolbar() {
+            document.getElementById('btnFormat').onclick = () => formatJson(2);
+            document.getElementById('btnMinify').onclick = () => formatJson(0);
+            document.getElementById('btnSample').onclick = loadSample;
+            document.getElementById('btnClear').onclick = () => {
+                inputEditor.setValue('');
+                outputEditor.setValue('');
+                updateStats();
+                updateStatusBar('Ready', 'gray');
+            };
+            document.getElementById('btnCopy').onclick = () => {
+                const content = outputEditor.getValue();
+                navigator.clipboard.writeText(content).then(() => showToast('Copied to clipboard!'));
+            };
+        }
+
+        function formatJson(indent) {
+            try {
+                const raw = inputEditor.getValue();
+                if (!raw.trim()) return;
+                const obj = JSON.parse(raw);
+                const formatted = JSON.stringify(obj, null, indent);
+                outputEditor.setValue(formatted);
+                updateStatusBar('Valid JSON', 'emerald');
+            } catch (e) {
+                updateStatusBar('Invalid JSON: ' + e.message, 'red');
+            }
+        }
+
+        function autoFormat() {
+            try {
+                const raw = inputEditor.getValue();
+                if (!raw.trim()) return;
+                JSON.parse(raw);
+                updateStatusBar('Valid JSON', 'emerald');
+            } catch (e) {
+                updateStatusBar('Invalid JSON', 'red');
+            }
+        }
+
+        function updateStatusBar(message, color) {
+            const statusEl = document.getElementById('status-left');
+            const colors = {
+                'emerald': 'bg-emerald-500',
+                'red': 'bg-red-500',
+                'gray': 'bg-gray-400'
+            };
+            statusEl.innerHTML = `<span class="w-2 h-2 rounded-full ${colors[color] || colors.gray}"></span> ${message}`;
+        }
+
+        function loadSample() {
+            const sample = {
+                "project": "NovaTools Hub",
+                "status": "Enterprise Grade",
+                "features": ["Monaco Editor", "Split View", "Dark Mode"],
+                "metrics": {
+                    "latency": 20,
+                    "users": 1000
+                }
+            };
+            inputEditor.setValue(JSON.stringify(sample, null, 2));
+            formatJson(2);
+        }
+
+        function updateStats() {
+            try {
+                const obj = JSON.parse(inputEditor.getValue());
+                const keys = Object.keys(obj).length;
+                document.getElementById('output-stats').textContent = `${keys} top-level keys`;
+            } catch {
+                document.getElementById('output-stats').textContent = `Invalid`;
+            }
+        }
+
+        function setupThemeListener() {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        const isDark = document.documentElement.classList.contains('dark');
+                        const newTheme = isDark ? 'vs-dark' : 'vs';
+                        monaco.editor.setTheme(newTheme);
+                    }
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true });
+        }
+
+        // Utils
+        let debounceTimer;
+        function debounce(func, timeout = 300) {
+            return (...args) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+
+        function showToast(msg) {
+            if (window.toast && window.toast.success) {
+                window.toast.success(msg);
+            } else if (window.showToast) {
+                window.showToast(msg, 'success');
+            } else {
+                alert(msg);
+            }
+        }
+    </script>
+}

@@ -1,0 +1,379 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section Head {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "FinancialService",
+        "name": "Business Loan Calculator",
+        "serviceType": "Loan Calculation",
+        "description": "Calculate business loan payments, EMI schedules, and interest breakdowns with amortization"
+    }
+    </script>
+}
+
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">🏦</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Business Loan Calculator</h1>
+            <p class="text-xl opacity-90">Calculate loan payments, EMI schedules, and total interest with detailed amortization</p>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container-custom max-w-6xl">
+        
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <div class="text-sm text-blue-900 dark:text-blue-100">
+                    <strong>Your privacy matters:</strong> All calculations are performed instantly in your browser. No financial data is stored on our servers.
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Loan Details</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="currency" class="block text-sm font-medium mb-2">Currency</label>
+                        <select id="currency" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800">
+                            <option value="USD" data-symbol="$">USD - US Dollar ($)</option>
+                            <option value="PKR" data-symbol="₨">PKR - Pakistani Rupee (₨)</option>
+                            <option value="INR" data-symbol="₹">INR - Indian Rupee (₹)</option>
+                            <option value="SAR" data-symbol="﷼">SAR - Saudi Riyal (﷼)</option>
+                            <option value="AED" data-symbol="د.إ">AED - UAE Dirham (د.إ)</option>
+                            <option value="EUR" data-symbol="€">EUR - Euro (€)</option>
+                            <option value="GBP" data-symbol="£">GBP - British Pound (£)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="loanAmount" class="block text-sm font-medium mb-2">Loan Amount</label>
+                        <div class="relative">
+                            <span id="loanSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" id="loanAmount" step="1000" min="0" 
+                                   class="w-full pl-8 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                                   placeholder="50000">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="interestRate" class="block text-sm font-medium mb-2">Annual Interest Rate</label>
+                        <div class="relative">
+                            <input type="number" id="interestRate" step="0.1" min="0" max="100" 
+                                   class="w-full pr-8 px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                                   placeholder="7.5">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="loanTerm" class="block text-sm font-medium mb-2">Loan Term (Years)</label>
+                        <input type="number" id="loanTerm" min="1" max="30" 
+                               class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                               placeholder="5">
+                    </div>
+
+                    <div>
+                        <label for="paymentFrequency" class="block text-sm font-medium mb-2">Payment Frequency</label>
+                        <select id="paymentFrequency" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800">
+                            <option value="12">Monthly</option>
+                            <option value="4">Quarterly</option>
+                            <option value="1">Annually</option>
+                        </select>
+                    </div>
+
+                    <button onclick="calculateLoan()" class="btn btn-primary w-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Calculate Loan
+                    </button>
+
+                    <button onclick="clearAll()" class="btn btn-outline w-full">Clear All</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Payment Summary</h2>
+                
+                <div id="resultsContainer" class="hidden">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div class="text-sm text-blue-600 dark:text-blue-400 mb-1">Payment Amount</div>
+                            <div id="paymentAmount" class="text-2xl font-bold text-blue-700 dark:text-blue-300">$0</div>
+                            <div id="paymentFreq" class="text-xs text-blue-600 dark:text-blue-400 mt-1"></div>
+                        </div>
+                        <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+                            <div class="text-sm text-red-600 dark:text-red-400 mb-1">Total Interest</div>
+                            <div id="totalInterest" class="text-2xl font-bold text-red-700 dark:text-red-300">$0</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Total Loan Amount</span>
+                            <span id="principalAmount" class="font-semibold">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Total Repayment</span>
+                            <span id="totalRepayment" class="font-semibold text-red-600 dark:text-red-400">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Number of Payments</span>
+                            <span id="numPayments" class="font-semibold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Interest as % of Loan</span>
+                            <span id="interestPercent" class="font-semibold">0%</span>
+                        </div>
+                    </div>
+
+                    <button onclick="exportSchedule()" class="btn btn-outline w-full">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Export Schedule (CSV)
+                    </button>
+                </div>
+
+                <div id="emptyState" class="text-center py-12">
+                    <div class="text-6xl mb-4 opacity-20">💰</div>
+                    <p class="text-[var(--color-text-medium)]">Enter loan details to calculate payments</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="chartContainer" class="hidden card mt-8">
+            <h3 class="text-xl font-bold mb-4">Principal vs Interest Breakdown</h3>
+            <div class="relative" style="height: 300px;">
+                <canvas id="loanChart"></canvas>
+            </div>
+        </div>
+
+        <div id="scheduleContainer" class="hidden card mt-8">
+            <h3 class="text-xl font-bold mb-4">Amortization Schedule</h3>
+            <div class="overflow-x-auto max-h-96">
+                <table class="w-full text-sm">
+                    <thead class="sticky top-0 bg-[var(--color-surface)]">
+                        <tr class="border-b border-[var(--color-border)]">
+                            <th class="text-left p-2">#</th>
+                            <th class="text-right p-2">Payment</th>
+                            <th class="text-right p-2">Principal</th>
+                            <th class="text-right p-2">Interest</th>
+                            <th class="text-right p-2">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mt-8 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
+            <h3 class="text-lg font-bold mb-3">🏦 Looking for Business Financing?</h3>
+            <p class="text-sm text-[var(--color-text-medium)] mb-4">
+                Explore trusted lending partners offering competitive rates for business loans, equipment financing, and lines of credit.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Compare Lenders →</a>
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">SBA Loans →</a>
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Equipment Financing →</a>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let loanChart = null;
+        let schedule = [];
+        let currencySymbol = '$';
+
+        document.getElementById('currency').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            currencySymbol = selectedOption.getAttribute('data-symbol');
+            document.getElementById('loanSymbol').textContent = currencySymbol;
+            if (document.getElementById('loanAmount').value && document.getElementById('interestRate').value) {
+                calculateLoan();
+            }
+        });
+
+        function calculateLoan() {
+            const principal = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('interestRate').value);
+            const years = parseInt(document.getElementById('loanTerm').value);
+            const frequency = parseInt(document.getElementById('paymentFrequency').value);
+
+            if (!principal || principal <= 0 || !annualRate || annualRate < 0 || !years || years <= 0) {
+                alert('Please enter valid loan details');
+                return;
+            }
+
+            const numPayments = years * frequency;
+            const periodicRate = (annualRate / 100) / frequency;
+            
+            // EMI calculation: P * r * (1 + r)^n / ((1 + r)^n - 1)
+            const payment = principal * (periodicRate * Math.pow(1 + periodicRate, numPayments)) / 
+                           (Math.pow(1 + periodicRate, numPayments) - 1);
+            
+            const totalRepayment = payment * numPayments;
+            const totalInterest = totalRepayment - principal;
+
+            // Generate amortization schedule
+            schedule = [];
+            let balance = principal;
+            
+            for (let i = 1; i <= numPayments; i++) {
+                const interestPayment = balance * periodicRate;
+                const principalPayment = payment - interestPayment;
+                balance -= principalPayment;
+
+                schedule.push({
+                    payment: i,
+                    paymentAmount: payment,
+                    principal: principalPayment,
+                    interest: interestPayment,
+                    balance: Math.max(0, balance)
+                });
+            }
+
+            // Display results
+            document.getElementById('paymentAmount').textContent = `${currencySymbol}${payment.toFixed(2)}`;
+            const freqText = frequency === 12 ? 'per month' : frequency === 4 ? 'per quarter' : 'per year';
+            document.getElementById('paymentFreq').textContent = freqText;
+            document.getElementById('totalInterest').textContent = `${currencySymbol}${totalInterest.toFixed(2)}`;
+            document.getElementById('principalAmount').textContent = `${currencySymbol}${principal.toFixed(2)}`;
+            document.getElementById('totalRepayment').textContent = `${currencySymbol}${totalRepayment.toFixed(2)}`;
+            document.getElementById('numPayments').textContent = numPayments;
+            document.getElementById('interestPercent').textContent = `${((totalInterest / principal) * 100).toFixed(1)}%`;
+
+            renderSchedule();
+            drawChart(principal, totalInterest);
+
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('chartContainer').classList.remove('hidden');
+            document.getElementById('scheduleContainer').classList.remove('hidden');
+        }
+
+        function renderSchedule() {
+            const tbody = document.getElementById('scheduleBody');
+            tbody.innerHTML = schedule.map(s => `
+                <tr class="border-b border-[var(--color-border)] hover:bg-[var(--color-bg)]">
+                    <td class="p-2">${s.payment}</td>
+                    <td class="p-2 text-right">${currencySymbol}${s.paymentAmount.toFixed(2)}</td>
+                    <td class="p-2 text-right text-blue-600 dark:text-blue-400">${currencySymbol}${s.principal.toFixed(2)}</td>
+                    <td class="p-2 text-right text-red-600 dark:text-red-400">${currencySymbol}${s.interest.toFixed(2)}</td>
+                    <td class="p-2 text-right font-semibold">${currencySymbol}${s.balance.toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function drawChart(principal, interest) {
+            const ctx = document.getElementById('loanChart').getContext('2d');
+            
+            if (loanChart) loanChart.destroy();
+
+            const isDark = document.documentElement.classList.contains('dark');
+
+            loanChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Principal', 'Interest'],
+                    datasets: [{
+                        data: [principal, interest],
+                        backgroundColor: ['#4A90E2', '#E74C3C'],
+                        borderWidth: 2,
+                        borderColor: isDark ? '#1F2937' : '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { 
+                                color: isDark ? '#E5E7EB' : '#374151',
+                                font: { size: 14 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed;
+                                    const total = principal + interest;
+                                    const percent = ((value / total) * 100).toFixed(1);
+                                    return context.label + ': $' + value.toFixed(2) + ' (' + percent + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('interestRate').value = '';
+            document.getElementById('loanTerm').value = '';
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('chartContainer').classList.add('hidden');
+            document.getElementById('scheduleContainer').classList.add('hidden');
+            schedule = [];
+        }
+
+        function exportSchedule() {
+            if (schedule.length === 0) return;
+
+            const csv = [
+                ['Payment #', 'Payment Amount', 'Principal', 'Interest', 'Remaining Balance'],
+                ...schedule.map(s => [
+                    s.payment,
+                    s.paymentAmount.toFixed(2),
+                    s.principal.toFixed(2),
+                    s.interest.toFixed(2),
+                    s.balance.toFixed(2)
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'loan-amortization-schedule.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Auto-calculate on input
+        ['loanAmount', 'interestRate', 'loanTerm', 'paymentFrequency'].forEach(id => {
+            document.getElementById(id).addEventListener('change', () => {
+                const amount = document.getElementById('loanAmount').value;
+                const rate = document.getElementById('interestRate').value;
+                const term = document.getElementById('loanTerm').value;
+                if (amount && rate && term) calculateLoan();
+            });
+        });
+    </script>
+}

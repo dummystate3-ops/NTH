@@ -1,0 +1,25 @@
+@using System.Linq
+@model IEnumerable<string>?
+
+<div class="validation-summary hidden" role="alert" data-validation-summary>
+    <div class="flex items-start gap-4">
+        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+            <span aria-hidden="true">⚠️</span>
+        </div>
+        <div class="flex-1 space-y-2">
+            <div class="flex items-start justify-between gap-4">
+                <p class="font-semibold text-red-800">Let’s fix a couple of things</p>
+                <button type="button" class="text-red-500 hover:text-red-700" aria-label="Dismiss validation errors" data-validation-dismiss>✕</button>
+            </div>
+            <ul class="list-disc pl-5 space-y-1 text-sm text-red-700" data-validation-summary-list>
+                @if (Model != null)
+                {
+                    foreach (var error in Model.Where(e => !string.IsNullOrWhiteSpace(e)))
+                    {
+                        <li>@error</li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</div>

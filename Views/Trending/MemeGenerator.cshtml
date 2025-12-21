@@ -1,0 +1,638 @@
+@using System.Linq
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section JsonLd {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "CreativeWork",
+        "name": "Meme Generator",
+        "description": "Create custom memes with text overlays. Add top and bottom text to images and share your memes."
+    }
+    </script>
+}
+
+<!-- Page Header -->
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-6xl mb-4">😂</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Meme Generator</h1>
+            <p class="text-xl opacity-90">Create hilarious memes in seconds</p>
+        </div>
+    </div>
+</section>
+
+<!-- Tool Section -->
+<section class="section-padding">
+    <div class="container-custom max-w-5xl">
+        <form id="memeForm">
+            @Html.AntiForgeryToken()
+        </form>
+
+        @await Html.PartialAsync("_ValidationSummary", Enumerable.Empty<string>())
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Left Panel - Controls -->
+            <div class="space-y-6">
+                
+                <!-- Image Selection -->
+                <div class="tool-card">
+                    <h2 class="text-2xl font-bold mb-4 text-[var(--color-text-dark)]">1. Choose Image</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Upload Your Image</label>
+                            <input type="file" id="image-upload" accept="image/*" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                        </div>
+
+                        <div class="text-center text-[var(--color-text-medium)]">or</div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Select Template</label>
+                            <div class="grid grid-cols-3 gap-3" id="template-grid">
+                                <!-- Templates will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Inputs -->
+                <div class="tool-card">
+                    <h2 class="text-2xl font-bold mb-4 text-[var(--color-text-dark)]">2. Add Text</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Top Text</label>
+                            <input type="text" id="top-text" maxlength="120" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]" placeholder="Enter top text">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Bottom Text</label>
+                            <input type="text" id="bottom-text" maxlength="120" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]" placeholder="Enter bottom text">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Font Size</label>
+                                <input type="range" id="font-size" min="20" max="80" value="40" class="w-full">
+                                <div class="text-sm text-[var(--color-text-medium)] text-center" id="font-size-value">40px</div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Text Color</label>
+                                <select id="text-color" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                                    <option value="#FFFFFF" selected>White</option>
+                                    <option value="#000000">Black</option>
+                                    <option value="#FFD60A">Yellow</option>
+                                    <option value="#FF4D4D">Red</option>
+                                    <option value="#00E0FF">Cyan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Font Family</label>
+                                <select id="font-family" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                                    <option value="impact" selected>Impact (Classic)</option>
+                                    <option value="arial">Arial</option>
+                                    <option value="montserrat">Montserrat</option>
+                                    <option value="opensans">Open Sans</option>
+                                    <option value="roboto">Roboto</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Outline Width</label>
+                                <input type="range" id="stroke-width" min="0" max="4" value="2" class="w-full">
+                                <div class="text-sm text-[var(--color-text-medium)] text-center" id="stroke-width-value">2px outline</div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="generate-meme" class="btn-primary w-full">🎨 Generate Meme</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Preview -->
+            <div class="space-y-6">
+                
+                <!-- Preview -->
+                <div class="tool-card">
+                    <h2 class="text-2xl font-bold mb-4 text-[var(--color-text-dark)]">Preview</h2>
+                    
+                    <div class="relative bg-gray-100 rounded-lg overflow-hidden" style="min-height: 400px;">
+                        <canvas id="meme-canvas" class="w-full h-auto"></canvas>
+                        <div id="no-image" class="absolute inset-0 flex items-center justify-center text-[var(--color-text-medium)]">
+                            <div class="text-center">
+                                <div class="text-6xl mb-4">🖼️</div>
+                                <p>Upload an image or select a template</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="tool-card" id="meme-actions" style="display: none;">
+                    <h3 class="text-xl font-bold mb-4 text-[var(--color-text-dark)]">3. Save & Share</h3>
+                    
+                    <div class="space-y-3">
+                        <div id="meme-status" class="hidden border-l-4 rounded-lg px-4 py-3 text-sm"></div>
+                        <button type="button" id="download-meme" class="btn-primary w-full">💾 Download Meme</button>
+                        <button type="button" id="share-meme" class="btn-secondary w-full">🔗 Share Link</button>
+                        <button type="button" id="reset-meme" class="btn-accent w-full">🔄 Start Over</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Templates Info -->
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg mt-8">
+            <p class="text-blue-800">
+                <strong>💡 Tip:</strong> Upload your own images or start from a colorful template. The final render happens on our server for crisp outlines, but your files are deleted after download.
+            </p>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <partial name="_SocialShare" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const canvas = document.getElementById('meme-canvas');
+            const ctx = canvas.getContext('2d');
+            const noImageOverlay = document.getElementById('no-image');
+            const templateGrid = document.getElementById('template-grid');
+            const imageInput = document.getElementById('image-upload');
+            const topInput = document.getElementById('top-text');
+            const bottomInput = document.getElementById('bottom-text');
+            const fontSizeSlider = document.getElementById('font-size');
+            const fontSizeValue = document.getElementById('font-size-value');
+            const colorSelect = document.getElementById('text-color');
+            const fontFamilySelect = document.getElementById('font-family');
+            const strokeWidthSlider = document.getElementById('stroke-width');
+            const strokeWidthValue = document.getElementById('stroke-width-value');
+            const generateButton = document.getElementById('generate-meme');
+            const downloadButton = document.getElementById('download-meme');
+            const shareButton = document.getElementById('share-meme');
+            const resetButton = document.getElementById('reset-meme');
+            const actionsPanel = document.getElementById('meme-actions');
+            const statusBox = document.getElementById('meme-status');
+            const validationSummary = document.querySelector('[data-validation-summary]');
+            const validationList = document.querySelector('[data-validation-summary-list]');
+            const tokenField = document.querySelector('#memeForm input[name="__RequestVerificationToken"]');
+            const antiforgeryToken = tokenField ? tokenField.value : null;
+
+            const fontMap = {
+                impact: 'Impact, "Anton", sans-serif',
+                arial: 'Arial, "Helvetica Neue", sans-serif',
+                montserrat: '"Montserrat", sans-serif',
+                opensans: '"Open Sans", sans-serif',
+                roboto: '"Roboto", sans-serif'
+            };
+
+            const templates = [
+                { name: 'Sunset Vibes', colors: ['#f83600', '#f9d423'] },
+                { name: 'Ocean Breeze', colors: ['#36d1dc', '#5b86e5'] },
+                { name: 'Neon Pop', colors: ['#12c2e9', '#c471ed', '#f64f59'] },
+                { name: 'Midnight Grid', colors: ['#0f2027', '#203a43', '#2c5364'], overlay: true },
+                { name: 'Cotton Candy', colors: ['#ff9a9e', '#fad0c4'] },
+                { name: 'Fresh Lime', colors: ['#56ab2f', '#a8e063'] }
+            ];
+
+            const state = {
+                baseImageFile: null,
+                baseImageDataUrl: null,
+                currentImage: null,
+                downloadKey: null,
+                generatedDataUrl: null,
+                isProcessing: false
+            };
+
+            function renderTemplateButtons() {
+                if (!templateGrid) return;
+                templates.forEach(template => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'p-4 rounded-lg text-white font-semibold text-sm shadow-sm hover:opacity-85 transition';
+                    const gradient = template.colors.length > 1
+                        ? `linear-gradient(135deg, ${template.colors.join(',')})`
+                        : template.colors[0];
+                    btn.style.background = gradient;
+                    btn.textContent = template.name;
+                    btn.addEventListener('click', () => applyTemplate(template));
+                    templateGrid.appendChild(btn);
+                });
+            }
+
+            function applyTemplate(template) {
+                const offscreen = document.createElement('canvas');
+                offscreen.width = 900;
+                offscreen.height = 900;
+                const offCtx = offscreen.getContext('2d');
+                const gradient = offCtx.createLinearGradient(0, 0, offscreen.width, offscreen.height);
+                template.colors.forEach((color, index) => {
+                    const stop = template.colors.length === 1 ? 0 : index / (template.colors.length - 1);
+                    gradient.addColorStop(stop, color);
+                });
+                offCtx.fillStyle = gradient;
+                offCtx.fillRect(0, 0, offscreen.width, offscreen.height);
+
+                if (template.overlay) {
+                    offCtx.strokeStyle = 'rgba(255,255,255,0.15)';
+                    offCtx.lineWidth = 1;
+                    for (let x = 0; x < offscreen.width; x += 60) {
+                        offCtx.beginPath();
+                        offCtx.moveTo(x, 0);
+                        offCtx.lineTo(x, offscreen.height);
+                        offCtx.stroke();
+                    }
+                    for (let y = 0; y < offscreen.height; y += 60) {
+                        offCtx.beginPath();
+                        offCtx.moveTo(0, y);
+                        offCtx.lineTo(offscreen.width, y);
+                        offCtx.stroke();
+                    }
+                }
+
+                state.baseImageDataUrl = offscreen.toDataURL('image/png');
+                state.baseImageFile = null;
+                loadBaseImage(state.baseImageDataUrl).then(renderPreview);
+                setStatus(`Template "${template.name}" ready. Add your text!`, 'info');
+            }
+
+            function loadBaseImage(dataUrl) {
+                return new Promise(resolve => {
+                    const img = new Image();
+                    img.onload = () => {
+                        state.currentImage = img;
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        noImageOverlay.style.display = 'none';
+                        resolve();
+                    };
+                    img.src = dataUrl;
+                });
+            }
+
+            function renderPreview() {
+                if (!state.currentImage) {
+                    return;
+                }
+
+                ctx.drawImage(state.currentImage, 0, 0, canvas.width, canvas.height);
+
+                const fontSize = parseInt(fontSizeSlider.value, 10) || 40;
+                const fontFamily = fontMap[fontFamilySelect.value] || fontMap.impact;
+                const color = colorSelect.value || '#FFFFFF';
+                const strokeWidth = parseInt(strokeWidthSlider.value, 10) || 2;
+
+                drawCanvasText((topInput.value || '').toUpperCase(), fontSize, fontFamily, color, strokeWidth, 'top');
+                drawCanvasText((bottomInput.value || '').toUpperCase(), fontSize, fontFamily, color, strokeWidth, 'bottom');
+            }
+
+            function drawCanvasText(text, fontSize, fontFamily, color, strokeWidth, position) {
+                const sanitized = (text || '').trim();
+                if (!sanitized) return;
+
+                ctx.font = `bold ${fontSize}px ${fontFamily}`;
+                ctx.textAlign = 'center';
+                ctx.lineJoin = 'round';
+                ctx.fillStyle = color;
+                ctx.lineWidth = Math.max(2, strokeWidth * 2);
+                ctx.strokeStyle = pickStrokeColor(color);
+
+                const lines = wrapCanvasText(sanitized, canvas.width - 40);
+                const lineHeight = fontSize * 1.2;
+                const totalHeight = lines.length * lineHeight;
+                let startY = position === 'top'
+                    ? 20
+                    : Math.max(20, canvas.height - totalHeight - 20);
+
+                lines.forEach(line => {
+                    ctx.strokeText(line, canvas.width / 2, startY);
+                    ctx.fillText(line, canvas.width / 2, startY);
+                    startY += lineHeight;
+                });
+            }
+
+            function wrapCanvasText(text, maxWidth) {
+                const words = text.split(/\s+/).filter(Boolean);
+                const lines = [];
+                let currentLine = '';
+
+                words.forEach(word => {
+                    const testLine = currentLine ? `${currentLine} ${word}` : word;
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && currentLine) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = testLine;
+                    }
+                });
+
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+
+                return lines;
+            }
+
+            function pickStrokeColor(hex) {
+                const clean = hex.replace('#', '');
+                if (clean.length !== 6) return '#000000';
+                const r = parseInt(clean.substring(0, 2), 16);
+                const g = parseInt(clean.substring(2, 4), 16);
+                const b = parseInt(clean.substring(4, 6), 16);
+                const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                return luminance > 0.6 ? '#000000' : '#FFFFFF';
+            }
+
+            function clearErrors() {
+                if (!validationSummary || !validationList) return;
+                validationList.innerHTML = '';
+                validationSummary.classList.add('hidden');
+            }
+
+            function showErrors(errors) {
+                if (!validationSummary || !validationList) return;
+                validationList.innerHTML = '';
+                (errors || []).filter(Boolean).forEach(message => {
+                    const li = document.createElement('li');
+                    li.textContent = message;
+                    validationList.appendChild(li);
+                });
+                validationSummary.classList.remove('hidden');
+                hideStatus();
+            }
+
+            function setStatus(message, type) {
+                if (!statusBox) return;
+                const palette = {
+                    success: 'border-green-500 bg-green-50 text-green-800',
+                    error: 'border-red-500 bg-red-50 text-red-800',
+                    info: 'border-blue-500 bg-blue-50 text-blue-800'
+                };
+                statusBox.className = `border-l-4 rounded-lg px-4 py-3 text-sm ${palette[type] || palette.info}`;
+                statusBox.textContent = message;
+                statusBox.classList.remove('hidden');
+            }
+
+            function hideStatus() {
+                if (statusBox) {
+                    statusBox.classList.add('hidden');
+                    statusBox.textContent = '';
+                }
+            }
+
+            function setProcessing(isProcessing) {
+                state.isProcessing = isProcessing;
+                if (!generateButton) return;
+                generateButton.disabled = isProcessing;
+                generateButton.textContent = isProcessing ? '⏳ Generating...' : '🎨 Generate Meme';
+            }
+
+            async function getBaseImageFile() {
+                if (state.baseImageFile) {
+                    return state.baseImageFile;
+                }
+
+                if (state.baseImageDataUrl) {
+                    const blob = await fetch(state.baseImageDataUrl).then(res => res.blob());
+                    return new File([blob], 'template.png', { type: blob.type || 'image/png' });
+                }
+
+                return null;
+            }
+
+            async function submitMeme() {
+                clearErrors();
+                hideStatus();
+
+                if (!state.currentImage) {
+                    showErrors(['Upload an image or choose a template first.']);
+                    return;
+                }
+
+                const topTextValue = (topInput.value || '').trim();
+                const bottomTextValue = (bottomInput.value || '').trim();
+
+                if (!topTextValue && !bottomTextValue) {
+                    showErrors(['Enter top or bottom text to continue.']);
+                    return;
+                }
+
+                const file = await getBaseImageFile();
+                if (!file) {
+                    showErrors(['Unable to read the selected image. Please re-upload it.']);
+                    return;
+                }
+
+                setProcessing(true);
+
+                try {
+                    const formData = new FormData();
+                    formData.append('BaseImage', file, file.name || 'upload.png');
+                    formData.append('TopText', topTextValue);
+                    formData.append('BottomText', bottomTextValue);
+                    formData.append('FontSize', fontSizeSlider.value);
+                    formData.append('FontColor', colorSelect.value);
+                    formData.append('FontFamily', fontFamilySelect.value);
+                    formData.append('StrokeWidth', strokeWidthSlider.value);
+                    if (antiforgeryToken) {
+                        formData.append('__RequestVerificationToken', antiforgeryToken);
+                    }
+
+                    const response = await fetch('/Trending/GenerateMeme', {
+                        method: 'POST',
+                        body: formData,
+                        headers: antiforgeryToken ? { 'RequestVerificationToken': antiforgeryToken } : {}
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Server error');
+                    }
+
+                    const result = await response.json();
+                    if (result.success) {
+                        const dataUrl = `data:${result.contentType || 'image/png'};base64,${result.imageData}`;
+                        state.generatedDataUrl = dataUrl;
+                        state.downloadKey = result.downloadKey;
+                        await loadBaseImage(dataUrl);
+                        renderPreview();
+                        actionsPanel.style.display = 'block';
+                        setStatus('Meme generated! Download or share it below.', 'success');
+                    } else {
+                        showErrors([result.error || 'Unable to create your meme.']);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    showErrors(['Something went wrong while generating your meme. Please try again.']);
+                } finally {
+                    setProcessing(false);
+                }
+            }
+
+            function triggerDownload(dataUrl) {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `nova-meme-${Date.now()}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            function fallbackShare(dataUrl) {
+                const win = window.open();
+                if (win) {
+                    win.document.write(`<img src="${dataUrl}" style="max-width:100%" alt="Meme preview" /><p>Right-click to save and share!</p>`);
+                }
+            }
+
+            function resetTool() {
+                state.baseImageFile = null;
+                state.baseImageDataUrl = null;
+                state.currentImage = null;
+                state.downloadKey = null;
+                state.generatedDataUrl = null;
+                if (imageInput) imageInput.value = '';
+                if (topInput) topInput.value = '';
+                if (bottomInput) bottomInput.value = '';
+                fontSizeSlider.value = '40';
+                fontSizeValue.textContent = '40px';
+                strokeWidthSlider.value = '2';
+                strokeWidthValue.textContent = '2px outline';
+                colorSelect.value = '#FFFFFF';
+                fontFamilySelect.value = 'impact';
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                noImageOverlay.style.display = 'flex';
+                actionsPanel.style.display = 'none';
+                hideStatus();
+                clearErrors();
+            }
+
+            function handleFileUpload(event) {
+                clearErrors();
+                const file = event.target.files && event.target.files[0];
+                if (!file) return;
+                if (file.size > 5 * 1024 * 1024) {
+                    showErrors(['Images must be 5 MB or smaller.']);
+                    event.target.value = '';
+                    return;
+                }
+
+                state.baseImageFile = file;
+                state.baseImageDataUrl = null;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const result = e.target ? e.target.result : null;
+                    state.baseImageDataUrl = typeof result === 'string' ? result : null;
+                    if (typeof state.baseImageDataUrl === 'string') {
+                        loadBaseImage(state.baseImageDataUrl).then(renderPreview);
+                        setStatus('Image uploaded. Add your caption and generate!', 'info');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function registerEvents() {
+                if (imageInput) {
+                    imageInput.addEventListener('change', handleFileUpload);
+                }
+
+                [topInput, bottomInput].forEach(input => {
+                    if (input) {
+                        input.addEventListener('input', () => requestAnimationFrame(renderPreview));
+                    }
+                });
+
+                if (fontSizeSlider) {
+                    fontSizeSlider.addEventListener('input', event => {
+                        fontSizeValue.textContent = `${event.target.value}px`;
+                        renderPreview();
+                    });
+                }
+
+                if (strokeWidthSlider) {
+                    strokeWidthSlider.addEventListener('input', event => {
+                        strokeWidthValue.textContent = `${event.target.value}px outline`;
+                        renderPreview();
+                    });
+                }
+
+                if (colorSelect) {
+                    colorSelect.addEventListener('input', renderPreview);
+                }
+
+                if (fontFamilySelect) {
+                    fontFamilySelect.addEventListener('input', renderPreview);
+                }
+
+                if (generateButton) {
+                    generateButton.addEventListener('click', submitMeme);
+                }
+
+                if (downloadButton) {
+                    downloadButton.addEventListener('click', event => {
+                    event.preventDefault();
+                    if (state.downloadKey) {
+                        window.open(`/Trending/Meme/Download?key=${encodeURIComponent(state.downloadKey)}`);
+                        return;
+                    }
+                    if (state.generatedDataUrl) {
+                        triggerDownload(state.generatedDataUrl);
+                        return;
+                    }
+                    showErrors(['Generate a meme before downloading.']);
+                });
+                }
+
+                if (shareButton) {
+                    shareButton.addEventListener('click', async () => {
+                    if (!state.generatedDataUrl) {
+                        showErrors(['Generate a meme before sharing.']);
+                        return;
+                    }
+
+                    try {
+                        const blob = await fetch(state.generatedDataUrl).then(res => res.blob());
+                        const file = new File([blob], 'nova-meme.png', { type: blob.type || 'image/png' });
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                files: [file],
+                                title: 'NovaTools Hub Meme Generator',
+                                text: 'I just created this meme!'
+                            });
+                        } else {
+                            fallbackShare(state.generatedDataUrl);
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        fallbackShare(state.generatedDataUrl);
+                        }
+                    });
+                }
+
+                if (resetButton) {
+                    resetButton.addEventListener('click', resetTool);
+                }
+            }
+
+            renderTemplateButtons();
+            registerEvents();
+        })();
+    </script>
+}

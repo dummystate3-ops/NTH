@@ -1,0 +1,78 @@
+@*
+    Google Analytics 4 (GA4) Integration
+    
+    SETUP INSTRUCTIONS:
+    1. Create Google Analytics 4 property at https://analytics.google.com
+    2. Get your Measurement ID (format: G-XXXXXXXXXX)
+    3. Add to appsettings.json:
+       "GoogleAnalytics": {
+         "MeasurementId": "G-XXXXXXXXXX"
+       }
+    4. This partial checks cookie consent before loading
+*@
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    var measurementId = Configuration["GoogleAnalytics:MeasurementId"];
+    var isProduction = Configuration["Environment"] != "Development";
+}
+
+@if (!string.IsNullOrEmpty(measurementId) && isProduction)
+{
+    <script id="ga-consent-check">
+        (function() {
+            // Check cookie consent before initializing Google Analytics
+            const consent = JSON.parse(localStorage.getItem('cookieConsent') || '{}');
+            
+            if (consent.analytics === true) {
+                // User has consented to analytics
+                initializeGoogleAnalytics();
+            }
+            
+            // Function to initialize Google Analytics
+            function initializeGoogleAnalytics() {
+                // Load gtag.js script
+                var script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://www.googletagmanager.com/gtag/js?id=@measurementId';
+                document.head.appendChild(script);
+                
+                // Initialize dataLayer and gtag
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
+                
+                gtag('js', new Date());
+                gtag('config', '@measurementId', {
+                    'anonymize_ip': true, // GDPR compliance
+                    'cookie_flags': 'SameSite=None;Secure'
+                });
+                
+                console.log('Google Analytics initialized');
+            }
+            
+            // Make function globally accessible for cookie consent banner
+            window.initializeAnalytics = initializeGoogleAnalytics;
+        })();
+    </script>
+}
+else if (string.IsNullOrEmpty(measurementId))
+{
+    <!-- Google Analytics Measurement ID not configured -->
+    <script>
+        console.warn('Google Analytics Measurement ID not configured. Add "GoogleAnalytics:MeasurementId" to appsettings.json');
+    </script>
+}
+else
+{
+    <!-- Google Analytics disabled in Development environment -->
+    <script>
+        console.info('Google Analytics disabled in Development environment');
+        // Mock gtag for development testing
+        window.gtag = function() {
+            console.log('gtag (mock):', arguments);
+        };
+    </script>
+}

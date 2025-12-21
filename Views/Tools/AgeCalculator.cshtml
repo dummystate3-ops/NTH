@@ -1,0 +1,170 @@
+@{
+    ViewData["PageTitle"] = "Age Calculator | NovaTools Hub";
+    ViewData["MetaDescription"] = "Calculate your exact age in years, months, days, and more";
+}
+
+<div class="container-custom section-padding">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="text-gradient">Age Calculator</span>
+            </h1>
+            <p class="text-xl text-[var(--color-text-medium)]">
+                Calculate your exact age in years, months, days, and more
+            </p>
+        </div>
+
+        <!-- Calculator Card -->
+        <div class="card">
+            <form id="ageForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Birth Date -->
+                    <div>
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" id="birthDate" class="form-input" required>
+                    </div>
+
+                    <!-- Target Date -->
+                    <div>
+                        <label class="form-label">Calculate Age On</label>
+                        <input type="date" id="targetDate" class="form-input">
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">Leave empty for today's date</p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button type="submit" class="btn btn-primary">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Calculate Age
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results -->
+            <div id="results" class="mt-8 hidden">
+                <div class="p-6 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] rounded-lg text-white text-center">
+                    <p class="text-sm mb-2">Your Age</p>
+                    <p class="text-5xl font-bold mb-2">
+                        <span id="ageYears"></span> years
+                    </p>
+                    <p class="text-xl" id="ageMonthsDays"></p>
+                </div>
+
+                <!-- Detailed Breakdown -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                    <div class="p-4 bg-[var(--color-bg)] rounded-lg text-center">
+                        <p class="text-3xl font-bold text-[var(--color-primary)]" id="totalMonths"></p>
+                        <p class="text-sm text-[var(--color-text-medium)]">Total Months</p>
+                    </div>
+                    <div class="p-4 bg-[var(--color-bg)] rounded-lg text-center">
+                        <p class="text-3xl font-bold text-[var(--color-primary)]" id="totalWeeks"></p>
+                        <p class="text-sm text-[var(--color-text-medium)]">Total Weeks</p>
+                    </div>
+                    <div class="p-4 bg-[var(--color-bg)] rounded-lg text-center">
+                        <p class="text-3xl font-bold text-[var(--color-primary)]" id="totalDays"></p>
+                        <p class="text-sm text-[var(--color-text-medium)]">Total Days</p>
+                    </div>
+                </div>
+
+                <!-- Next Birthday -->
+                <div class="mt-6 p-4 bg-[var(--color-bg)] rounded-lg">
+                    <p class="font-semibold mb-2">🎂 Next Birthday</p>
+                    <p class="text-[var(--color-text-medium)]" id="nextBirthday"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Examples -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Common Uses</h3>
+            <div class="space-y-3">
+                <div class="p-3 bg-[var(--color-bg)] rounded">
+                    <p class="font-semibold">Calculate Current Age</p>
+                    <p class="text-sm text-[var(--color-text-medium)]">Enter your birth date and leave the target date empty</p>
+                </div>
+                <div class="p-3 bg-[var(--color-bg)] rounded">
+                    <p class="font-semibold">Age on a Specific Date</p>
+                    <p class="text-sm text-[var(--color-text-medium)]">Enter both dates to find out how old you were or will be</p>
+                </div>
+                <div class="p-3 bg-[var(--color-bg)] rounded">
+                    <p class="font-semibold">Days Until Birthday</p>
+                    <p class="text-sm text-[var(--color-text-medium)]">Get a countdown to your next birthday</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <div class="mt-8">
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+<!-- JSON-LD Schema -->
+<script type="application/ld+json">
+@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
+    "Age Calculator",
+    "Calculate your exact age in years, months, days, weeks, and get countdown to your next birthday",
+    Url.Action("AgeCalculator", "Tools", null, Context.Request.Scheme) ?? "",
+    "Utility"
+))
+</script>
+
+@section Scripts {
+<script>
+    // Set default birth date to 30 years ago
+    const defaultDate = new Date();
+    defaultDate.setFullYear(defaultDate.getFullYear() - 30);
+    document.getElementById('birthDate').value = defaultDate.toISOString().split('T')[0];
+
+    document.getElementById('ageForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const birthDate = document.getElementById('birthDate').value;
+        const targetDate = document.getElementById('targetDate').value;
+
+        if (!birthDate) {
+            alert('Please enter your birth date');
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tools/CalculateAge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    birthDate: birthDate,
+                    targetDate: targetDate || null
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                const age = data.age;
+                document.getElementById('ageYears').textContent = age.years;
+                document.getElementById('ageMonthsDays').textContent = 
+                    `${age.months} months and ${age.days} days`;
+                document.getElementById('totalMonths').textContent = age.totalMonths.toLocaleString();
+                document.getElementById('totalWeeks').textContent = age.totalWeeks.toLocaleString();
+                document.getElementById('totalDays').textContent = age.totalDays.toLocaleString();
+                document.getElementById('nextBirthday').textContent = age.nextBirthday;
+                document.getElementById('results').classList.remove('hidden');
+                
+                // Scroll to results
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                alert(data.error || 'Calculation failed');
+            }
+        } catch (error) {
+            console.error('Age calculation error:', error);
+            alert('Failed to calculate age. Please try again.');
+        }
+    });
+</script>
+}

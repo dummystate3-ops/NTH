@@ -1,0 +1,907 @@
+@{
+    ViewData["PageTitle"] = "All Tools | NovaTools Hub";
+    ViewData["MetaDescription"] = "Browse all calculators and converters available on NovaTools Hub";
+}
+
+<div class="bg-[var(--color-bg)] min-h-screen">
+    <div class="container-custom section-padding">
+        <!-- Header -->
+        <div class="text-center mb-20 space-y-6 fade-in">
+            <span
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-sm font-semibold text-blue-600 tracking-wide uppercase shadow-sm">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                Enterprise Grade Productivity
+            </span>
+
+            <h1
+                class="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--color-text-dark)] leading-tight">
+                All Tools & <br /><span class="text-gradient">Calculators</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl text-[var(--color-text-medium)] max-w-3xl mx-auto font-light leading-relaxed">
+                A comprehensive suite of professional developer tools, precise calculators, and instant converters
+                designed for modern workflow efficiency.
+            </p>
+
+            <!-- Stats Bar -->
+            <div
+                class="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12 bg-white rounded-2xl p-6 shadow-sm border border-[var(--color-border)]">
+                <div class="text-center p-4 border-r border-[var(--color-border)] last:border-0 border-opacity-50">
+                    <div class="text-4xl font-bold text-[var(--color-primary)] mb-1">48+</div>
+                    <div class="text-xs font-semibold text-[var(--color-text-medium)] uppercase tracking-wider">Active
+                        Tools</div>
+                </div>
+                <div class="text-center p-4 border-r border-[var(--color-border)] last:border-0 border-opacity-50">
+                    <div class="text-4xl font-bold text-[var(--color-secondary)] mb-1">0ms</div>
+                    <div class="text-xs font-semibold text-[var(--color-text-medium)] uppercase tracking-wider">Latency
+                    </div>
+                </div>
+                <div class="text-center p-4 border-r border-[var(--color-border)] last:border-0 border-opacity-50">
+                    <div class="text-4xl font-bold text-[var(--color-accent)] mb-1">100%</div>
+                    <div class="text-xs font-semibold text-[var(--color-text-medium)] uppercase tracking-wider">Secure
+                        (Local)</div>
+                </div>
+                <div class="text-center p-4">
+                    <div class="text-4xl font-bold text-gray-800 mb-1">Free</div>
+                    <div class="text-xs font-semibold text-[var(--color-text-medium)] uppercase tracking-wider">No
+                        Sign-up</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Developer Tools Section -->
+        <div id="developer" class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
+                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">💻
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--color-text-dark)]">Developer Tools</h2>
+                    <p class="text-[var(--color-text-medium)] mt-1">Professional utilities for code manipulation and
+                        validation</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- JSON Formatter -->
+                <a href="@Url.Action("JsonFormatter", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <svg class="w-32 h-32 text-[var(--color-text-dark)]" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                        </svg>
+                    </div>
+                    <div class="flex items-center gap-4 mb-6 relative z-10">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📄
+                        </div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            JSON Formatter</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Format,
+                        validate, and minify JSON with instant diff reports.</p>
+                    <div class="flex flex-wrap gap-2 relative z-10">
+                        <span
+                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-blue-50 text-blue-700 border border-blue-100">Validation</span>
+                    </div>
+                </a>
+
+                <!-- Regex Tester -->
+                <a href="@Url.Action("RegexTester", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🔍
+                        </div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Regex Tester</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Test and debug
+                        regular expressions with real-time matching.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100">Debug</span>
+                    </div>
+                </a>
+
+                <!-- Lorem Ipsum -->
+                <a href="@Url.Action("LoremIpsum", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📝
+                        </div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Lorem Ipsum</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
+                        placeholder text for designs with customizable styles.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-50 text-gray-600 border border-gray-100">Design</span>
+                    </div>
+                </a>
+
+                <!-- Color Palette -->
+                <a href="@Url.Action("ColorPaletteGenerator", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🎨
+                        </div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Color Palette</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Build
+                        harmonious color schemes with harmony modes.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-pink-50 text-pink-700 border border-pink-100">Colors</span>
+                    </div>
+                </a>
+
+                <!-- Favicon Generator -->
+                <a href="@Url.Action("FaviconGenerator", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🖼️
+                        </div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Favicon Gen</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create
+                        multi-platform icons from text or images.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 border border-orange-100">Assets</span>
+                    </div>
+                </a>
+
+                <!-- QR Code -->
+                <a href="@Url.Action("QrCodeGenerator", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📱
+                        </div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            QR Code Gen</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
+                        customizable QR codes for any purpose.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-50 text-slate-700 border border-slate-100">Sharing</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Converters Section -->
+        <div class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
+                <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">🔄
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--color-text-dark)]">Converters & Calculators
+                    </h2>
+                    <p class="text-[var(--color-text-medium)] mt-1">Essential tools for daily calculations and
+                        conversions</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Unit Converter -->
+                <a href="@Url.Action("UnitConverter", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📏</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Unit Converter</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Convert between
+                        length, weight, volume, and more.</p>
+                </a>
+
+                <!-- Currency Converter -->
+                <a href="@Url.Action("CurrencyConverter", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            💱</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Currency</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Real-time
+                        exchange rates for 150+ world currencies.</p>
+                </a>
+
+                <!-- BMI Calculator -->
+                <a href="@Url.Action("BmiCalculator", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-rose-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            ⚖️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            BMI Calculator</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate Body
+                        Mass Index for health insights.</p>
+                </a>
+
+                <!-- Age Calculator -->
+                <a href="@Url.Action("AgeCalculator", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-fuchsia-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🎂</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Age Calculator</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate exact
+                        age in years, months, and days.</p>
+                </a>
+
+                <!-- Date Calculator -->
+                <a href="@Url.Action("DateCalculator", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📅</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Date Calc</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate
+                        duration between dates or future dates.</p>
+                </a>
+
+                <!-- Password Generator -->
+                <a href="@Url.Action("PasswordGenerator", "Tools")"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-zinc-600 to-zinc-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🔒</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Password Gen</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
+                        strong, secure passwords instantly.</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Math Section -->
+        <div id="math" class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
+                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">📐
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--color-text-dark)]">Math & Education</h2>
+                    <p class="text-[var(--color-text-medium)] mt-1">Advanced mathematical tools</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a asp-controller="Math" asp-action="EquationSolver"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📐</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Equation Solver</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Solve linear,
+                        quadratic, and cubic equations.</p>
+                </a>
+
+                <a asp-controller="Math" asp-action="ProblemSolver"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🧩</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Problem Solver</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">General math
+                        problem solver.</p>
+                </a>
+
+                <a asp-controller="Math" asp-action="GraphPlotter"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📈</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Graph Plotter</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Plot and
+                        analyze 2D mathematical functions.</p>
+                </a>
+
+                <a asp-controller="Math" asp-action="ExpressionEvaluator"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-violet-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🧮</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Evaluator</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Evaluate
+                        complex mathematical expressions.</p>
+                </a>
+
+                <a asp-controller="Math" asp-action="PermutationCombination"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-red-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🎲</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Permutation</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate
+                        permutations and combinations.</p>
+                </a>
+
+                <a asp-controller="Math" asp-action="Cryptography"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🗝️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Cryptography</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Basic
+                        cryptographic ciphers tool.</p>
+                </a>
+
+                <a asp-controller="Math" asp-action="IndicatorCodes"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-700 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🔢</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Indicator Codes</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Binary,
+                        decimal, and hex conversions.</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Productivity Section -->
+        <div id="productivity" class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
+                <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">⚡</div>
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--color-text-dark)]">Productivity</h2>
+                    <p class="text-[var(--color-text-medium)] mt-1">Tools to organize your life and work</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a asp-controller="ImageTools" asp-action="AdvancedResizer"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🖼️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Image Resizer</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Resize, crop,
+                        and batch process images.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="TodoList"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            ✅</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            To-Do List</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Simple yet
+                        effective task management.</p>
+                </a>
+                <a asp-controller="Productivity" asp-action="KanbanBoard"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📋</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Kanban Board</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Visual project
+                        management with boards.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="Notes"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📒</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Notes</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Quick notepad
+                        with auto-save.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="PomodoroTimer"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🍅</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Pomodoro</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Focus timer
+                        technique.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="TimeTracker"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            ⏱️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Time Tracker</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Track time for
+                        tasks and projects.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="Stopwatch"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-500 to-gray-700 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            ⏱️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Stopwatch</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Precise timing
+                        with laps.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="WorldTime"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🌍</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            World Time</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Current time
+                        across global cities.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="TimeZoneConverter"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🌐</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Time Zone Conv</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Convert calls
+                        across time zones.</p>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="TextToSpeech"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-purple-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🗣️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Text-to-Speech</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Convert text to
+                        spoken audio.</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Business Section -->
+        <div id="business" class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
+                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">💰
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--color-text-dark)]">Business & Finance</h2>
+                    <p class="text-[var(--color-text-medium)] mt-1">Financial calculators and planning tools</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a asp-controller="Business" asp-action="ProfitMargin"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            💰</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Profit Margin</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate
+                        margins and pricing.</p>
+                </a>
+
+                <a asp-controller="Business" asp-action="RoiAnalysis"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📈</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            ROI Analysis</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Analyze return
+                        on investment.</p>
+                </a>
+
+                <a asp-controller="Business" asp-action="LoanCalculator"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            💵</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Loan Calc</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate loan
+                        payments and amortization.</p>
+                </a>
+
+                <a asp-controller="Business" asp-action="UnbilledHours"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            ⏳</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Unbilled Hours</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Track value of
+                        unbilled work.</p>
+                </a>
+
+                <a asp-controller="Business" asp-action="SavingsComparison"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🛒</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Savings Comp</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Compare
+                        products for best value.</p>
+                </a>
+
+                <a asp-controller="Business" asp-action="AutomationPlanner"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🤖</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Auto Planner</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Estimate ROI
+                        from automation.</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Academic Section -->
+        <div id="academic" class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
+                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">🎓
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--color-text-dark)]">Academic Tools</h2>
+                    <p class="text-[var(--color-text-medium)] mt-1">For students and teachers</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a asp-controller="Academic" asp-action="QuizBuilder"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-fuchsia-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            ❓</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Quiz Builder</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create
+                        interactive quizzes.</p>
+                </a>
+
+                <a asp-controller="Academic" asp-action="Flashcards"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📇</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Flashcards</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Study with
+                        digital flashcards.</p>
+                </a>
+
+                <a asp-controller="Academic" asp-action="GrammarHelper"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-teal-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            ✍️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Grammar Helper</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Improve writing
+                        with AI.</p>
+                </a>
+
+                <a asp-controller="Academic" asp-action="FormulaReference"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📚</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Formulas</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Math, physics,
+                        chemistry guide.</p>
+                </a>
+
+                <a asp-controller="Academic" asp-action="Whiteboard"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-500 to-zinc-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🖊️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Whiteboard</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Interactive
+                        drawing board.</p>
+                </a>
+
+                <a asp-controller="Academic" asp-action="MindMap"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-purple-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🧠</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Mind Map</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Visualize and
+                        organize ideas.</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Trending Section -->
+        <div id="trending" class="mb-24 scroll-mt-24">
+            <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
+                <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">🚀
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-[var(--color-text-dark)]">Trending & AI</h2>
+                    <p class="text-[var(--color-text-medium)] mt-1">Smart AI tools and new releases</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a asp-controller="Trending" asp-action="AIWritingAssistant"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🤖</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            AI Writer</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Draft content
+                        with AI.</p>
+                </a>
+
+                <a asp-controller="Trending" asp-action="RecipeGenerator"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🍳</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Recipe Gen</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create recipes
+                        from ingredients.</p>
+                </a>
+
+                <a asp-controller="Trending" asp-action="PollBuilder"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📊</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Poll Builder</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Instant polls
+                        and surveys.</p>
+                </a>
+
+                <a asp-controller="Trending" asp-action="RateComparison"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-pink-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📉</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Rate Comp</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Compare
+                        currencies and units.</p>
+                </a>
+
+                <a asp-controller="Trending" asp-action="EncryptionTool"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-500 to-gray-700 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🔐</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Encryption</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Secure
+                        browser-based encryption.</p>
+                </a>
+
+                <a asp-controller="Trending" asp-action="MemeGenerator"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🤣</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Meme Gen</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create funny
+                        memes.</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Coming Soon Section -->
+        <div
+            class="mt-24 p-12 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-12 opacity-5">
+                <svg class="w-64 h-64 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
+                </svg>
+            </div>
+
+            <div class="relative z-10">
+                <div class="flex items-center gap-6 mb-8">
+                    <div
+                        class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-4xl shadow-inner border border-white/20">
+                        🚀
+                    </div>
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">On The Horizon</h2>
+                        <p class="text-white/70 text-lg mt-2">New enterprise tools currently in development.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div
+                        class="flex items-center gap-3 p-4 rounded-xl bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors">
+                        <span class="text-2xl">💰</span>
+                        <span class="font-medium">Tax & Loan Calc</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 p-4 rounded-xl bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-medium">Analytics Dashboard</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 p-4 rounded-xl bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors">
+                        <span class="text-2xl">🤖</span>
+                        <span class="font-medium">AI Summarizer</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 p-4 rounded-xl bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors">
+                        <span class="text-2xl">🌐</span>
+                        <span class="font-medium">SEO Audit Tool</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

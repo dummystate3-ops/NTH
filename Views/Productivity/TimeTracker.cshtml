@@ -1,0 +1,428 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Time Tracker",
+    "applicationCategory": "BusinessApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-clock text-primary"></i> Time Tracker
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Track time spent on tasks and projects
+        </p>
+    </div>
+
+    <!-- Active Timer -->
+    <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-lg p-6 mb-6">
+        <div class="text-center mb-4">
+            <div id="timerDisplay" class="text-5xl font-bold text-gray-800 dark:text-white mb-4 font-mono">
+                00:00:00
+            </div>
+            
+            <div id="activeTaskDisplay" class="text-lg text-gray-600 dark:text-gray-300 mb-4 hidden">
+                <i class="fas fa-tasks text-primary"></i> <span id="activeTaskName">No active task</span>
+            </div>
+        </div>
+        
+        <!-- Quick Start -->
+        <div class="flex gap-3 mb-4">
+            <input type="text" id="quickTaskName" placeholder="Task name..." class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            <select id="quickProjectSelect" class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                <option value="">No Project</option>
+            </select>
+        </div>
+        
+        <div class="flex justify-center gap-4">
+            <button id="startBtn" onclick="startTimer()" class="bg-secondary hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 transform hover:scale-105">
+                <i class="fas fa-play mr-2"></i> Start
+            </button>
+            <button id="stopBtn" onclick="stopTimer()" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 hidden">
+                <i class="fas fa-stop mr-2"></i> Stop & Save
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Projects Panel -->
+        <div class="lg:col-span-1">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    <i class="fas fa-folder text-primary"></i> Projects
+                </h2>
+                
+                <div class="mb-4">
+                    <div class="flex gap-2">
+                        <input type="text" id="newProjectName" placeholder="New project..." class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                        <button onclick="addProject()" class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="projectsList" class="space-y-2 max-h-64 overflow-y-auto">
+                    <!-- Projects will be listed here -->
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    Today's Summary
+                </h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Total Time</span>
+                        <span id="todayTotal" class="font-bold text-primary">0h 0m</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 dark:text-gray-300">Tasks</span>
+                        <span id="todayTasks" class="font-bold text-gray-800 dark:text-white">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Entries -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
+                        <i class="fas fa-history text-primary"></i> Time Entries
+                    </h2>
+                    <div class="flex gap-2">
+                        <select id="filterProject" onchange="filterEntries()" class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
+                            <option value="">All Projects</option>
+                        </select>
+                        <button onclick="exportData()" class="text-sm text-primary hover:text-blue-600 font-medium">
+                            <i class="fas fa-download mr-1"></i> Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="entriesList" class="space-y-3 max-h-96 overflow-y-auto">
+                    <!-- Entries will be listed here -->
+                </div>
+                
+                <div id="noEntries" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-inbox text-4xl mb-3"></i>
+                    <p>No time entries yet. Start tracking!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_SocialSharing")
+</div>
+
+<script>
+    /**
+     * Time Tracker - localStorage structure:
+     * - projects: [{ id, name, color, createdAt }]
+     * - entries: [{ id, taskName, projectId, startTime, endTime, duration }]
+     */
+    let projects = [];
+    let entries = [];
+    let currentEntry = null;
+    let timerInterval = null;
+
+    // Load data from localStorage
+    function loadData() {
+        try {
+            const savedProjects = localStorage.getItem('timeTrackerProjects');
+            const savedEntries = localStorage.getItem('timeTrackerEntries');
+            
+            if (savedProjects) projects = JSON.parse(savedProjects);
+            if (savedEntries) entries = JSON.parse(savedEntries);
+            
+            updateProjectsList();
+            updateEntriesList();
+            updateSummary();
+        } catch (e) {
+            console.error('Failed to load data:', e);
+        }
+    }
+
+    // Save data to localStorage
+    function saveData() {
+        try {
+            localStorage.setItem('timeTrackerProjects', JSON.stringify(projects));
+            localStorage.setItem('timeTrackerEntries', JSON.stringify(entries));
+        } catch (e) {
+            console.error('Failed to save data:', e);
+        }
+    }
+
+    // Add new project
+    function addProject() {
+        const name = document.getElementById('newProjectName').value.trim();
+        if (!name) return;
+        
+        const colors = ['#4A90E2', '#50E3C2', '#9B59B6', '#E74C3C', '#F39C12', '#27AE60'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        projects.push({
+            id: Date.now(),
+            name: name,
+            color: color,
+            createdAt: new Date().toISOString()
+        });
+        
+        document.getElementById('newProjectName').value = '';
+        saveData();
+        updateProjectsList();
+    }
+
+    // Delete project
+    function deleteProject(id) {
+        if (!confirm('Delete this project and all its entries?')) return;
+        
+        projects = projects.filter(p => p.id !== id);
+        entries = entries.filter(e => e.projectId !== id);
+        saveData();
+        updateProjectsList();
+        updateEntriesList();
+    }
+
+    // Update projects list
+    function updateProjectsList() {
+        const list = document.getElementById('projectsList');
+        const quickSelect = document.getElementById('quickProjectSelect');
+        const filterSelect = document.getElementById('filterProject');
+        
+        if (projects.length === 0) {
+            list.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No projects yet</p>';
+        } else {
+            list.innerHTML = projects.map(project => {
+                const projectEntries = entries.filter(e => e.projectId === project.id);
+                const totalTime = projectEntries.reduce((sum, e) => sum + e.duration, 0);
+                const hours = Math.floor(totalTime / 3600000);
+                const minutes = Math.floor((totalTime % 3600000) / 60000);
+                
+                return `
+                    <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="flex items-center gap-2 flex-1">
+                            <div class="w-3 h-3 rounded-full" style="background-color: ${project.color}"></div>
+                            <span class="text-sm font-medium text-gray-800 dark:text-white">${escapeHtml(project.name)}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">${hours}h ${minutes}m</span>
+                            <button onclick="deleteProject(${project.id})" class="text-red-600 hover:text-red-700 text-xs">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update selects
+        const options = projects.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+        quickSelect.innerHTML = '<option value="">No Project</option>' + options;
+        filterSelect.innerHTML = '<option value="">All Projects</option>' + options;
+    }
+
+    // Start timer
+    function startTimer() {
+        const taskName = document.getElementById('quickTaskName').value.trim();
+        if (!taskName) {
+            alert('Please enter a task name.');
+            return;
+        }
+        
+        const projectId = document.getElementById('quickProjectSelect').value || null;
+        
+        currentEntry = {
+            id: Date.now(),
+            taskName: taskName,
+            projectId: projectId ? parseInt(projectId) : null,
+            startTime: new Date().toISOString(),
+            endTime: null,
+            duration: 0
+        };
+        
+        document.getElementById('activeTaskName').textContent = taskName;
+        document.getElementById('activeTaskDisplay').classList.remove('hidden');
+        document.getElementById('startBtn').classList.add('hidden');
+        document.getElementById('stopBtn').classList.remove('hidden');
+        document.getElementById('quickTaskName').disabled = true;
+        document.getElementById('quickProjectSelect').disabled = true;
+        
+        timerInterval = setInterval(updateTimerDisplay, 1000);
+        updateTimerDisplay();
+    }
+
+    // Update timer display
+    function updateTimerDisplay() {
+        if (!currentEntry) return;
+        
+        const elapsed = Date.now() - new Date(currentEntry.startTime).getTime();
+        const hours = Math.floor(elapsed / 3600000);
+        const minutes = Math.floor((elapsed % 3600000) / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+        
+        document.getElementById('timerDisplay').textContent = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    // Stop timer
+    function stopTimer() {
+        if (!currentEntry) return;
+        
+        clearInterval(timerInterval);
+        
+        currentEntry.endTime = new Date().toISOString();
+        currentEntry.duration = new Date(currentEntry.endTime).getTime() - new Date(currentEntry.startTime).getTime();
+        
+        entries.unshift(currentEntry);
+        saveData();
+        
+        // Reset UI
+        document.getElementById('timerDisplay').textContent = '00:00:00';
+        document.getElementById('activeTaskDisplay').classList.add('hidden');
+        document.getElementById('startBtn').classList.remove('hidden');
+        document.getElementById('stopBtn').classList.add('hidden');
+        document.getElementById('quickTaskName').value = '';
+        document.getElementById('quickTaskName').disabled = false;
+        document.getElementById('quickProjectSelect').value = '';
+        document.getElementById('quickProjectSelect').disabled = false;
+        
+        currentEntry = null;
+        updateEntriesList();
+        updateSummary();
+    }
+
+    // Update entries list
+    function updateEntriesList() {
+        const list = document.getElementById('entriesList');
+        const noEntries = document.getElementById('noEntries');
+        const filter = document.getElementById('filterProject').value;
+        
+        let filteredEntries = entries;
+        if (filter) {
+            filteredEntries = entries.filter(e => e.projectId == filter);
+        }
+        
+        if (filteredEntries.length === 0) {
+            list.classList.add('hidden');
+            noEntries.classList.remove('hidden');
+            return;
+        }
+        
+        list.classList.remove('hidden');
+        noEntries.classList.add('hidden');
+        
+        list.innerHTML = filteredEntries.map(entry => {
+            const project = projects.find(p => p.id === entry.projectId);
+            const hours = Math.floor(entry.duration / 3600000);
+            const minutes = Math.floor((entry.duration % 3600000) / 60000);
+            const date = new Date(entry.startTime).toLocaleDateString();
+            const time = new Date(entry.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            return `
+                <div class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            ${project ? `<div class="w-2 h-2 rounded-full" style="background-color: ${project.color}"></div>` : ''}
+                            <h3 class="font-semibold text-gray-800 dark:text-white">${escapeHtml(entry.taskName)}</h3>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            ${project ? escapeHtml(project.name) + ' • ' : ''}${date} at ${time}
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-mono font-bold text-primary">${hours}h ${minutes}m</span>
+                        <button onclick="deleteEntry(${entry.id})" class="text-red-600 hover:text-red-700">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Delete entry
+    function deleteEntry(id) {
+        if (!confirm('Delete this entry?')) return;
+        entries = entries.filter(e => e.id !== id);
+        saveData();
+        updateEntriesList();
+        updateSummary();
+    }
+
+    // Filter entries
+    function filterEntries() {
+        updateEntriesList();
+    }
+
+    // Update summary
+    function updateSummary() {
+        const today = new Date().toDateString();
+        const todayEntries = entries.filter(e => new Date(e.startTime).toDateString() === today);
+        const totalTime = todayEntries.reduce((sum, e) => sum + e.duration, 0);
+        const hours = Math.floor(totalTime / 3600000);
+        const minutes = Math.floor((totalTime % 3600000) / 60000);
+        
+        document.getElementById('todayTotal').textContent = `${hours}h ${minutes}m`;
+        document.getElementById('todayTasks').textContent = todayEntries.length;
+    }
+
+    // Export data as CSV
+    function exportData() {
+        let csv = 'Task,Project,Date,Start Time,Duration (minutes)\n';
+        entries.forEach(entry => {
+            const project = projects.find(p => p.id === entry.projectId);
+            const date = new Date(entry.startTime).toLocaleDateString();
+            const time = new Date(entry.startTime).toLocaleTimeString();
+            const minutes = Math.round(entry.duration / 60000);
+            csv += `"${entry.taskName}","${project ? project.name : 'No Project'}","${date}","${time}",${minutes}\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `time-tracker-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        loadData();
+        
+        // Enter key to start timer
+        document.getElementById('quickTaskName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !currentEntry) {
+                startTimer();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,45 @@
+@*
+    Footer/Anchor Ad Placement
+    Integration: Google AdSense / Ezoic
+    Position: Footer or sticky anchor (728x90 or responsive)
+    
+    SETUP INSTRUCTIONS:
+    1. Replace 'ca-pub-XXXXXXXXXXXXXXXX' with your AdSense publisher ID
+    2. Replace 'XXXXXXXXXX' with your ad slot ID
+    3. For Ezoic, replace the entire div with Ezoic placeholder ID
+*@
+
+@{
+    var adEnabled = ViewBag.EnableAds ?? true;
+    var stickyAd = ViewBag.StickyAd ?? false;
+}
+
+@if (adEnabled)
+{
+    <div class="ad-container @(stickyAd ? "sticky bottom-0 left-0 right-0 z-40" : "") bg-white border-t border-[var(--color-border)] py-4">
+        <div class="container-custom">
+            <div class="text-xs text-center text-[var(--color-text-light)] mb-1">Advertisement</div>
+            
+            @* Google AdSense - Footer Ad *@
+            <div class="flex justify-center">
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:728px;height:90px"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"></ins>
+            </div>
+            
+            @* Fallback for development/testing *@
+            <div class="ad-placeholder mx-auto" style="background: #f0f0f0; border: 2px dashed #ccc; padding: 1.5rem; text-align: center; width: 728px; height: 90px; display: flex; align-items: center; justify-content: center;">
+                <div>
+                    <p class="text-[var(--color-text-medium)] mb-1">📢 Advertisement Space</p>
+                    <p class="text-xs text-[var(--color-text-light)]">728x90 Leaderboard Ad Unit</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize AdSense
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+}

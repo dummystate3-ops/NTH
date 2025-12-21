@@ -1,0 +1,1074 @@
+﻿@{
+    ViewData["Title"] = "Background Remover - AI Image Background Removal | NovaToolsHub";
+    ViewData["Description"] = "Free AI-powered background removal tool. Remove backgrounds from images instantly using machine learning. No signup required.";
+}
+
+@section Head {
+    <style>
+        .upload-zone {
+            border: 3px dashed var(--color-border);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--color-surface);
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--color-primary);
+            background: rgba(var(--color-primary-rgb), 0.05);
+        }
+
+        /* Tabs */
+        .tab-btn.active {
+            border-bottom-color: var(--color-primary);
+            color: var(--color-primary);
+            background: var(--color-bg);
+        }
+
+        /* Canvas & Container */
+        .editor-container {
+            position: relative;
+            background: #e5e7eb;
+            /* Neutral gray for canvas bg */
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            /* Indicate draggable */
+        }
+
+        .transparent-bg {
+            background-image:
+                linear-gradient(45deg, #ddd 25%, transparent 25%),
+                linear-gradient(-45deg, #ddd 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ddd 75%),
+                linear-gradient(-45deg, transparent 75%, #ddd 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 500px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Color Picker Circles */
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid var(--color-border);
+            transition: transform 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .color-swatch.active {
+            border-color: var(--color-primary);
+            transform: scale(1.1);
+        }
+
+        /* Before/After Slider */
+        .compare-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            cursor: ew-resize;
+            line-height: 0;
+            /* Fix ghost spacing */
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .compare-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .compare-container img {
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .compare-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            /* Initial split */
+            height: 100%;
+            overflow: hidden;
+            border-right: 2px solid white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .compare-overlay img {
+            width: auto;
+            /* Allow image to be full width of container */
+            height: 100%;
+            max-width: none;
+            /* Prevent constraint inside overlay */
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Fixed: Match initial overlay width */
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            pointer-events: none;
+            /* Let clicks pass to container */
+        }
+
+        /* Processing Overlay */
+        .processing-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .processing-overlay.hidden {
+            display: none !important;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--color-border);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .btn-primary {
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 10px -3px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-cta {
+            transition: box-shadow 0.15s ease, filter 0.15s ease;
+        }
+
+        .btn-cta:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-link {
+            transition: color 0.15s ease;
+        }
+
+        .mode-btn {
+            padding: 0.4rem 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: #4b5563;
+            background: transparent;
+            transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .mode-btn.active {
+            color: #111827;
+            background: #ffffff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+        .mode-btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .edge-strength {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            min-width: 200px;
+        }
+
+        .edge-strength.disabled {
+            opacity: 0.5;
+        }
+
+        .btn-download,
+        .btn-download:hover,
+        .btn-download:visited,
+        .btn-download:active {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+}
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+                </path>
+            </svg>
+            AI-Powered Tool
+        </div>
+        <h1 class="text-3xl md:text-5xl font-bold text-gray-800 mb-3">
+            <span class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Background Remover
+            </span>
+        </h1>
+        <p class="text-gray-600 text-lg">Remove backgrounds instantly and edit with magic tools.</p>
+    </div>
+
+    @{
+        var isGeneralLoaded = ViewBag.IsGeneralModelLoaded is bool generalLoaded && generalLoaded;
+        var isPortraitLoaded = ViewBag.IsPortraitModelLoaded is bool portraitLoaded && portraitLoaded;
+        var defaultMode = isGeneralLoaded ? "General" : "Portrait";
+    }
+
+    @if (!isGeneralLoaded && !isPortraitLoaded)
+    {
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-yellow-800 flex items-start gap-3"
+            role="alert">
+            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                </path>
+            </svg>
+            <div>
+                <strong>AI Model Not Installed</strong>
+                <p class="text-sm mt-1">The background removal model is not configured. Please contact the administrator.
+                </p>
+                <a href="https://github.com/danielgatis/rembg/releases" target="_blank" rel="noopener noreferrer"
+                    class="text-sm underline font-semibold mt-1 inline-block">Learn More</a>
+            </div>
+        </div>
+    }
+
+    <!-- Upload Section -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div id="uploadZone" class="upload-zone cursor-pointer mb-8" role="button" tabindex="0"
+            aria-label="Upload image for background removal">
+            <input type="file" id="fileInput" name="file" accept="image/*" class="hidden" />
+            <div class="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-700 mb-2">Drop your image here</h3>
+            <p class="text-gray-500 mb-4">or click to browse from device</p>
+            <p class="text-sm text-gray-400">Supports JPG, PNG, WebP (Max 10MB)</p>
+        </div>
+    </form>
+
+    <!-- Preview Section (After upload, before processing) -->
+    <div id="previewSection" class="hidden mb-8">
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-xl p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+                Preview
+            </h3>
+            <div class="flex flex-col lg:flex-row gap-6">
+                <div class="flex-1">
+                    <div class="bg-gray-100 rounded-xl p-4 flex items-center justify-center min-h-[300px]">
+                        <img id="previewImage" src="" alt="Original image preview"
+                            class="max-w-full max-h-[400px] rounded-lg shadow-md object-contain" />
+                    </div>
+                    <p class="text-center text-gray-500 text-sm mt-2">Original Image</p>
+                </div>
+                <div class="flex flex-col items-center justify-center gap-4 lg:px-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <span class="font-medium">Mode</span>
+                        <div class="inline-flex bg-gray-100 rounded-lg p-1" role="group" aria-label="Background removal mode">
+                            <button type="button"
+                                class="mode-btn @(defaultMode == "General" ? "active" : "")"
+                                data-mode="General"
+                                aria-pressed="@(defaultMode == "General" ? "true" : "false")"
+                                @(isGeneralLoaded ? "" : "disabled")
+                                title="@(isGeneralLoaded ? "General-purpose model" : "General model not installed")">
+                                General
+                            </button>
+                            <button type="button"
+                                class="mode-btn @(defaultMode == "Portrait" ? "active" : "")"
+                                data-mode="Portrait"
+                                aria-pressed="@(defaultMode == "Portrait" ? "true" : "false")"
+                                @(isPortraitLoaded ? "" : "disabled")
+                                title="@(isPortraitLoaded ? "Optimized for people" : "Portrait model not installed")">
+                                Portrait
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="bgMode" value="@defaultMode" />
+                    <div id="portraitEdgeWrap" class="edge-strength text-sm text-gray-600">
+                        <label for="portraitEdgeStrength" class="font-medium text-gray-700">Portrait Edge Strength</label>
+                        <input type="range" id="portraitEdgeStrength" min="0" max="100" value="50"
+                            class="w-full accent-purple-600" />
+                        <span class="text-xs text-gray-500">Lower keeps more detail, higher removes shadows.</span>
+                    </div>
+                    <button id="btnRemoveBackground"
+                        class="btn-cta bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg flex items-center gap-3 text-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                            </path>
+                        </svg>
+                        Remove Background
+                    </button>
+                    <button id="btnChangeImage"
+                        class="btn-link text-gray-500 hover:text-purple-600 font-medium">
+                        Choose Different Image
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Banner (Accessible) -->
+    <div id="errorBanner"
+        class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-red-800 flex items-start gap-3"
+        role="alert" aria-live="assertive">
+        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+            <strong>Error</strong>
+            <p id="errorMessage" class="text-sm mt-1"></p>
+        </div>
+        <button onclick="hideError()" class="ml-auto text-red-600 hover:text-red-800" aria-label="Dismiss error">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Workspace (Hidden Initially) -->
+    <div id="workspace"
+        class="hidden bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-xl overflow-hidden">
+
+        <!-- Tabs -->
+        <div class="flex border-b border-[var(--color-border)]">
+            <button onclick="switchTab('remove')" id="tab-remove"
+                class="tab-btn active flex-1 py-4 font-semibold text-gray-600 hover:text-purple-600 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                </svg>
+                Remove Background
+            </button>
+            <button onclick="switchTab('edit')" id="tab-edit"
+                class="tab-btn flex-1 py-4 font-semibold text-gray-600 hover:text-purple-600 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                    </path>
+                </svg>
+                Magic Editor
+            </button>
+        </div>
+
+        <div class="p-6">
+            <!-- Remove Tab Content -->
+            <div id="content-remove">
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <!-- Before / After -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-gray-700">Compare</h3>
+                            <span class="text-xs text-gray-500">Drag slider to compare</span>
+                        </div>
+                        <div class="compare-container shadow-md" id="compareContainer">
+                            <!-- Background (Processed) -->
+                            <img id="compareProcessed" class="compare-img transparent-bg" src="" alt="Processed" draggable="false">
+                            <!-- Foreground (Original) inside clipping div -->
+                            <div class="compare-overlay" id="compareOverlay">
+                                <img id="compareOriginal" src="" alt="Original" draggable="false">
+                            </div>
+                            <!-- Handle -->
+                            <div class="slider-handle" id="sliderHandle">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Result Preview & Actions -->
+                    <div class="space-y-4 flex flex-col justify-center">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <h3 class="font-bold text-gray-700 mb-2">Results</h3>
+                            <ul class="space-y-2 text-sm text-gray-600 mb-4">
+                                <li class="flex items-center gap-2">Background removed successfully</li>
+                                <li class="flex items-center gap-2">Full resolution maintained</li>
+                                <li class="flex items-center gap-2">Transparent PNG format</li>
+                            </ul>
+                            <div class="flex gap-3">
+                                <a id="btnDownloadPng" href="#"
+                                    class="btn-primary btn-download flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg text-center shadow-md flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    Download PNG
+                                </a>
+                                <button onclick="resetTool()"
+                                    class="btn-secondary px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium">
+                                    New
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                            <p class="text-sm text-blue-800"><strong>Tip:</strong> Switch to the <strong>Magic
+                                    Editor</strong> tab to add custom backgrounds or colors!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Magic Editor Tab Content -->
+            <div id="content-edit" class="hidden">
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Editor Canvas -->
+                    <div class="lg:col-span-2">
+                        <div class="editor-container transparent-bg" id="canvasContainer">
+                            <canvas id="editorCanvas"></canvas>
+                        </div>
+                        <div class="mt-2 flex justify-between text-sm text-gray-500">
+                            <span>Mouse Wheel: Zoom</span>
+                            <span>Click & Drag: Pan</span>
+                        </div>
+                    </div>
+
+                    <!-- Editor Controls -->
+                    <div class="space-y-6">
+                        <!-- Backgrounds -->
+                        <div>
+                            <h3 class="font-bold text-gray-700 mb-3">Background</h3>
+                            <div class="grid grid-cols-5 gap-2 mb-4">
+                                <div onclick="setEditorBg(null, event)"
+                                    class="color-swatch active bg-white flex items-center justify-center text-gray-400"
+                                    title="Transparent"><svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                        </path>
+                                    </svg></div>
+                                <div onclick="setEditorBg('#ffffff', event)"
+                                    class="color-swatch bg-white border-gray-300 shadow-sm" title="White"></div>
+                                <div onclick="setEditorBg('#000000', event)" class="color-swatch bg-black shadow-sm"
+                                    title="Black"></div>
+                                <div onclick="setEditorBg('#ef4444', event)" class="color-swatch bg-red-500 shadow-sm">
+                                </div>
+                                <div onclick="setEditorBg('#3b82f6', event)" class="color-swatch bg-blue-500 shadow-sm">
+                                </div>
+                                <div onclick="setEditorBg('#22c55e', event)"
+                                    class="color-swatch bg-green-500 shadow-sm"></div>
+                                <div onclick="setEditorBg('#eab308', event)"
+                                    class="color-swatch bg-yellow-500 shadow-sm"></div>
+                                <div onclick="setEditorBg('#a855f7', event)"
+                                    class="color-swatch bg-purple-500 shadow-sm"></div>
+                                <div onclick="document.getElementById('bgColorInput').click()"
+                                    class="color-swatch bg-gradient-to-br from-pink-500 to-orange-400 flex items-center justify-center text-white"
+                                    title="Custom"><svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg></div>
+                            </div>
+                            <input type="color" id="bgColorInput" class="hidden"
+                                onchange="setEditorBg(this.value, event)">
+
+                            <div class="border-t border-gray-200 pt-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Background
+                                    Image</label>
+                                <input type="file" id="bgImageInput" accept="image/*"
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition-colors">
+                            </div>
+                        </div>
+
+                        <!-- Scaling -->
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <h3 class="font-bold text-gray-700">Subject Scale</h3>
+                                <button onclick="resetPosition()"
+                                    class="text-xs text-purple-600 hover:text-purple-800 font-medium">Reset
+                                    Position</button>
+                            </div>
+                            <input type="range" id="subjectScale" min="0.1" max="2.0" step="0.1" value="1.0"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+                        </div>
+
+                        <!-- Action -->
+                        <div class="pt-4 border-t border-gray-200">
+                            <button onclick="downloadEditorImage()" id="btnEditorDownload"
+                                class="btn-primary w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 service-btn">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Download Result
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Overlay -->
+    <div id="processingOverlay" class="processing-overlay hidden">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center">
+            <div class="spinner mb-4"></div>
+            <p class="text-xl font-bold text-gray-800">Magic in progress...</p>
+            <p class="text-gray-500 text-sm">Detecting subject &amp; removing background</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        "use strict";
+
+        // --- State ---
+        let originalImg = new Image();
+        let processedImg = new Image();
+        let currentBgInfo = { type: 'transparent', value: null }; // type: 'transparent'|'color'|'image'
+        let subjectScale = 1.0;
+        let isProcessing = false;
+        let currentFile = null; // Store file for manual processing
+
+        // Editor State (Pan/Zoom)
+        let subjectX = 0, subjectY = 0;
+        let isDraggingSubject = false;
+        let lastMouseX = 0, lastMouseY = 0;
+        let renderRequested = false;
+
+        // --- Elements ---
+        const els = {
+            uploadZone: document.getElementById('uploadZone'),
+            fileInput: document.getElementById('fileInput'),
+            previewSection: document.getElementById('previewSection'),
+            previewImage: document.getElementById('previewImage'),
+            btnRemoveBackground: document.getElementById('btnRemoveBackground'),
+            btnChangeImage: document.getElementById('btnChangeImage'),
+            workspace: document.getElementById('workspace'),
+            processingOverlay: document.getElementById('processingOverlay'),
+            errorBanner: document.getElementById('errorBanner'),
+            errorMessage: document.getElementById('errorMessage'),
+
+            // Compare
+            compareOriginal: document.getElementById('compareOriginal'),
+            compareProcessed: document.getElementById('compareProcessed'),
+            compareOverlay: document.getElementById('compareOverlay'),
+            sliderHandle: document.getElementById('sliderHandle'),
+            compareContainer: document.getElementById('compareContainer'),
+
+            // Editor
+            canvas: document.getElementById('editorCanvas'),
+            canvasContainer: document.getElementById('canvasContainer'),
+            bgImageInput: document.getElementById('bgImageInput'),
+            subjectScaleInput: document.getElementById('subjectScale'),
+            btnEditorDownload: document.getElementById('btnEditorDownload'),
+
+            // Buttons
+            btnDownloadPng: document.getElementById('btnDownloadPng'),
+            modeButtons: document.querySelectorAll('.mode-btn'),
+            bgMode: document.getElementById('bgMode'),
+            portraitEdgeStrength: document.getElementById('portraitEdgeStrength'),
+            portraitEdgeWrap: document.getElementById('portraitEdgeWrap')
+        };
+
+        // --- Error Handling (Accessible) ---
+        function showError(message) {
+            els.errorMessage.textContent = message;
+            els.errorBanner.classList.remove('hidden');
+            els.errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        function hideError() {
+            els.errorBanner.classList.add('hidden');
+        }
+
+        // --- Initialization ---
+        function init() {
+            // Upload Events
+            els.uploadZone.addEventListener('click', () => els.fileInput.click());
+            // Phase 3: Keyboard accessibility (Enter/Space to trigger upload)
+            els.uploadZone.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    els.fileInput.click();
+                }
+            });
+            els.uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); els.uploadZone.classList.add('dragover'); });
+            els.uploadZone.addEventListener('dragleave', () => els.uploadZone.classList.remove('dragover'));
+            els.uploadZone.addEventListener('drop', handleDrop);
+            els.fileInput.addEventListener('change', handleFileSelect);
+
+            // Preview section button handlers
+            els.btnRemoveBackground.addEventListener('click', processFile);
+            els.btnChangeImage.addEventListener('click', () => {
+                currentFile = null;
+                els.previewSection.classList.add('hidden');
+                els.uploadZone.classList.remove('hidden');
+                els.fileInput.value = '';
+            });
+
+            // Mode toggle
+            const updateEdgeStrengthState = () => {
+                if (!els.portraitEdgeStrength || !els.portraitEdgeWrap || !els.bgMode) return;
+                const isPortrait = els.bgMode.value === 'Portrait';
+                els.portraitEdgeStrength.disabled = !isPortrait;
+                els.portraitEdgeWrap.classList.toggle('disabled', !isPortrait);
+            };
+
+            els.modeButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    if (btn.disabled) return;
+                    els.modeButtons.forEach((b) => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-pressed', 'false');
+                    });
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
+                    if (els.bgMode) {
+                        els.bgMode.value = btn.dataset.mode || 'General';
+                    }
+                    updateEdgeStrengthState();
+                });
+            });
+            updateEdgeStrengthState();
+
+            // Compare Slider Events
+            let isDraggingSlider = false;
+            els.compareContainer.addEventListener('mousedown', (e) => {
+                isDraggingSlider = true;
+                updateSlider(e); // Update immediately on click
+            });
+            window.addEventListener('mouseup', () => {
+                isDraggingSlider = false;
+                isDraggingSubject = false; // Also clear subject drag
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingSlider) return;
+                updateSlider(e);
+            });
+            els.compareContainer.addEventListener('click', updateSlider);
+            // Touch for slider
+            els.compareContainer.addEventListener('touchstart', (e) => {
+                isDraggingSlider = true;
+                const touch = e.touches[0];
+                const rect = els.compareContainer.getBoundingClientRect();
+                const x = Math.max(0, Math.min(touch.clientX - rect.left, rect.width));
+                updateSliderPosition(x, rect.width);
+            });
+            window.addEventListener('touchend', () => {
+                isDraggingSlider = false;
+                isDraggingSubject = false;
+            });
+            els.compareContainer.addEventListener('touchmove', (e) => {
+                if (!isDraggingSlider) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = els.compareContainer.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                updateSliderPosition(x, rect.width);
+            });
+
+            // Editor Events
+            els.bgImageInput.addEventListener('change', handleBgImageUpload);
+
+            // Scale
+            els.subjectScaleInput.addEventListener('input', (e) => {
+                subjectScale = parseFloat(e.target.value);
+                requestRender();
+            });
+
+            // Pan (Mouse)
+            els.canvas.addEventListener('mousedown', (e) => {
+                isDraggingSubject = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDraggingSubject) return;
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+
+                // Adjust for canvas scale (visual vs actual pixels)
+                // We need to map screen pixels to canvas pixels
+                const rect = els.canvas.getBoundingClientRect();
+                const scaleX = els.canvas.width / rect.width;
+                const scaleY = els.canvas.height / rect.height;
+
+                subjectX += dx * scaleX;
+                subjectY += dy * scaleY;
+
+                requestRender();
+            });
+
+            // Pan (Wheel Zoom)
+            els.canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY * -0.001;
+                subjectScale = Math.min(Math.max(0.1, subjectScale + delta), 3.0);
+                els.subjectScaleInput.value = subjectScale;
+                requestRender();
+            });
+        }
+
+        // --- Render Loop (Optimization) ---
+        function requestRender() {
+            if (!renderRequested) {
+                renderRequested = true;
+                requestAnimationFrame(() => {
+                    drawEditor();
+                    renderRequested = false;
+                });
+            }
+        }
+
+        function updateSlider(e) {
+            const rect = els.compareContainer.getBoundingClientRect();
+            const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+            updateSliderPosition(x, rect.width);
+        }
+
+        function updateSliderPosition(x, width) {
+            const percent = (x / width) * 100;
+            els.compareOverlay.style.width = `${percent}%`;
+            els.sliderHandle.style.left = `${percent}%`;
+        }
+
+        // --- File Handling ---
+        function handleDrop(e) {
+            e.preventDefault();
+            els.uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) showPreview(e.dataTransfer.files[0]);
+        }
+
+        function handleFileSelect(e) {
+            if (e.target.files.length) showPreview(e.target.files[0]);
+        }
+
+        // Show preview before processing (UX improvement)
+        async function showPreview(file) {
+            currentFile = file;
+            hideError();
+
+            try {
+                const previewSrc = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    reader.readAsDataURL(file);
+                });
+
+                els.previewImage.src = previewSrc;
+                els.uploadZone.classList.add('hidden');
+                els.previewSection.classList.remove('hidden');
+                els.workspace.classList.add('hidden');
+            } catch (err) {
+                showError(err.message);
+            }
+        }
+
+        // Helper: Load image with Promise (fixes race condition)
+        function loadImage(img, src) {
+            return new Promise((resolve, reject) => {
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('Failed to load image'));
+                img.src = src;
+            });
+        }
+
+        async function processFile() {
+            if (isProcessing || !currentFile) return;
+            isProcessing = true;
+            hideError();
+            els.processingOverlay.classList.remove('hidden');
+
+            try {
+                // 1. Read file as data URL for original preview
+                const originalSrc = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    reader.readAsDataURL(currentFile);
+                });
+
+                // 2. Upload & Process on server
+                const formData = new FormData();
+                formData.append('file', currentFile);
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                if (token) formData.append('__RequestVerificationToken', token);
+                if (els.bgMode && els.bgMode.value) {
+                    formData.append('mode', els.bgMode.value);
+                }
+                if (els.portraitEdgeStrength && els.portraitEdgeStrength.value) {
+                    formData.append('portraitEdgeStrength', els.portraitEdgeStrength.value);
+                }
+
+                const res = await fetch('/ImageTools/RemoveBackgroundAjax', {
+                    method: 'POST', body: formData,
+                    headers: token ? { 'RequestVerificationToken': token } : {}
+                });
+
+                // Handle non-OK responses properly
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`Server error: ${res.status} - ${errorText.substring(0, 100)}`);
+                }
+
+                const data = await res.json();
+
+                if (!data.success) throw new Error(data.error || 'Processing failed');
+
+                // Use preview URL instead of base64 (audit fix - better performance)
+                const processedSrc = data.previewUrl;
+
+                // 3. Load BOTH images before showing UI (fixes race condition)
+                await Promise.all([
+                    loadImage(originalImg, originalSrc),
+                    loadImage(processedImg, processedSrc)
+                ]);
+
+                // 4. Update UI (both images guaranteed loaded)
+                els.compareOriginal.src = originalSrc;
+                els.compareProcessed.src = processedSrc;
+                
+                // Add cache buster to prevent browser from serving original image if cached
+                const downloadBase = data.downloadUrl || `/ImageTools/DownloadBgRemoved?key=${data.downloadKey}&filename=${encodeURIComponent(data.originalFileName)}`;
+                els.btnDownloadPng.href = `${downloadBase}${(downloadBase.includes('?') ? '&' : '?')}t=${new Date().getTime()}`;
+
+                initCanvas();
+                resetPosition();
+
+                els.uploadZone.classList.add('hidden');
+                els.previewSection.classList.add('hidden');
+                els.workspace.classList.remove('hidden');
+
+            } catch (err) {
+                console.error(err);
+                showError(err.message); // Accessible inline error
+            } finally {
+                els.processingOverlay.classList.add('hidden');
+                isProcessing = false;
+            }
+        }
+
+        // --- Editor Logic ---
+        const MAX_CANVAS_SIZE = 4096; // Phase 2: Cap canvas for browser stability
+        let canvasScaleFactor = 1.0; // Used for accurate export positioning
+
+        function initCanvas() {
+            const natW = originalImg.naturalWidth;
+            const natH = originalImg.naturalHeight;
+
+            // Cap canvas size to prevent browser instability
+            if (natW > MAX_CANVAS_SIZE || natH > MAX_CANVAS_SIZE) {
+                canvasScaleFactor = MAX_CANVAS_SIZE / Math.max(natW, natH);
+                els.canvas.width = Math.round(natW * canvasScaleFactor);
+                els.canvas.height = Math.round(natH * canvasScaleFactor);
+                console.log(`Canvas capped: ${natW}x${natH} -> ${els.canvas.width}x${els.canvas.height}`);
+            } else {
+                canvasScaleFactor = 1.0;
+                els.canvas.width = natW;
+                els.canvas.height = natH;
+            }
+        }
+
+        function resetPosition() {
+            subjectX = 0;
+            subjectY = 0;
+            subjectScale = 1.0;
+            els.subjectScaleInput.value = "1.0";
+            requestRender();
+        }
+
+        function setEditorBg(color, evt) {
+            if (color === null) {
+                currentBgInfo = { type: 'transparent', value: null };
+            } else {
+                currentBgInfo = { type: 'color', value: color };
+            }
+
+            // Update active swatch (using explicit event parameter)
+            document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active'));
+            if (evt && evt.currentTarget && evt.currentTarget.classList.contains('color-swatch')) {
+                evt.currentTarget.classList.add('active');
+            }
+
+            requestRender();
+        }
+
+        function handleBgImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                    currentBgInfo = { type: 'image', value: img };
+                    requestRender();
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function drawEditor() {
+            const ctx = els.canvas.getContext('2d');
+            const w = els.canvas.width;
+            const h = els.canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // 1. Draw Background
+            if (currentBgInfo.type === 'color') {
+                ctx.fillStyle = currentBgInfo.value;
+                ctx.fillRect(0, 0, w, h);
+            } else if (currentBgInfo.type === 'image') {
+                const bg = currentBgInfo.value;
+                const ratio = Math.max(w / bg.width, h / bg.height);
+                const cw = bg.width * ratio;
+                const ch = bg.height * ratio;
+                const cx = (w - cw) / 2;
+                const cy = (h - ch) / 2;
+                ctx.drawImage(bg, cx, cy, cw, ch);
+            }
+
+            // 2. Draw Subject (Processed Image)
+            // Scale logic: Center scale + Pan Offset
+            const sw = w * subjectScale;
+            const sh = h * subjectScale;
+            const sx = (w - sw) / 2 + subjectX;
+            const sy = (h - sh) / 2 + subjectY;
+
+            ctx.drawImage(processedImg, sx, sy, sw, sh);
+        }
+
+        function downloadEditorImage() {
+            // UI Feedback
+            const originalBtnText = els.btnEditorDownload.innerHTML;
+            els.btnEditorDownload.innerHTML = `<div class="spinner w-5 h-5 border-2 border-white border-t-transparent inline-block mr-2"></div> Saving...`;
+            els.btnEditorDownload.disabled = true;
+
+            setTimeout(() => { // Allow UI to update
+                const isTransparent = currentBgInfo.type === 'transparent';
+                const dateStr = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+                const filename = `edited-image-${dateStr}.${isTransparent ? 'png' : 'jpg'}`;
+                const mime = isTransparent ? 'image/png' : 'image/jpeg';
+                const quality = 0.9; // High quality JPG
+
+                if (els.canvas.toBlob) {
+                    els.canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.download = filename;
+                        link.href = url;
+                        link.click();
+                        URL.revokeObjectURL(url);
+
+                        // Reset UI
+                        els.btnEditorDownload.innerHTML = originalBtnText;
+                        els.btnEditorDownload.disabled = false;
+                    }, mime, quality);
+                } else {
+                    // Fallback for older browsers
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = els.canvas.toDataURL(mime, quality);
+                    link.click();
+
+                    els.btnEditorDownload.innerHTML = originalBtnText;
+                    els.btnEditorDownload.disabled = false;
+                }
+            }, 50);
+        }
+
+
+        // --- UI Utilities ---
+        window.switchTab = function (tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'text-purple-600', 'border-purple-600'));
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.add('active', 'text-purple-600', 'border-purple-600');
+
+            document.getElementById('content-remove').classList.add('hidden');
+            document.getElementById('content-edit').classList.add('hidden');
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+
+            if (tabName === 'edit') requestRender();
+        };
+
+        window.resetTool = function () {
+            els.fileInput.value = '';
+            els.workspace.classList.add('hidden');
+            els.uploadZone.classList.remove('hidden');
+            // reset state
+            currentBgInfo = { type: 'transparent', value: null };
+            resetPosition();
+        };
+
+        // Start
+        init();
+
+    </script>
+}
+
+

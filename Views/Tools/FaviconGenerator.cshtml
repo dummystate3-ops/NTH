@@ -1,0 +1,873 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["PageTitle"] = "Favicon Generator | NovaTools Hub";
+    ViewData["MetaDescription"] = "Create favicon.ico and PWA icons from any logo with padding, rounding, and safe-area presets.";
+}
+
+<div class="container-custom section-padding">
+    <div class="max-w-7xl mx-auto space-y-8">
+        <div class="card bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white shadow-xl">
+            <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between gap-6">
+                <div class="space-y-3">
+                    <p class="text-xs uppercase tracking-[0.3em] opacity-80">Brand Ops Suite</p>
+                    <h1 class="text-4xl md:text-5xl font-bold">Favicon Generator</h1>
+                    <p class="text-lg max-w-3xl opacity-90">
+                        Drop in your logo, tune padding and rounding, and export a production-ready favicon.ico plus a full PWA icon set. Everything runs locally for enterprise privacy.
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 rounded-full bg-white/10 border border-white/20">Multi-size ICO</span>
+                        <span class="px-3 py-1 rounded-full bg-white/10 border border-white/20">PWA PNG set</span>
+                        <span class="px-3 py-1 rounded-full bg-white/10 border border-white/20">Client-side only</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs min-w-[240px]">
+                    <div class="p-3 rounded-xl bg-white/10 border border-white/20">
+                        <p class="uppercase tracking-wide opacity-80">Output</p>
+                        <p class="text-2xl font-semibold">ICO + PNG</p>
+                        <p class="opacity-80">16 ? 512 px</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-white/10 border border-white/20">
+                        <p class="uppercase tracking-wide opacity-80">Brand safe</p>
+                        <p class="text-2xl font-semibold">Padding</p>
+                        <p class="opacity-80">Rounding + stroke</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="space-y-6 xl:col-span-2">
+                <div class="card space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-[var(--color-text-medium)]">Source</p>
+                            <h2 class="text-2xl font-semibold">Upload your brand mark</h2>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="loadSample" class="pill-button">Use Nova sample</button>
+                            <button id="resetBuilder" class="pill-button">Reset</button>
+                        </div>
+                    </div>
+                    <div id="uploadArea" class="border border-dashed border-[var(--color-border)] rounded-xl p-6 bg-[var(--color-bg)] flex flex-col md:flex-row items-center gap-4 cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white flex items-center justify-center text-2xl font-bold shadow-inner">
+                            <span>Upload</span>
+                        </div>
+                        <div class="flex-1 space-y-1">
+                            <p class="font-semibold">Drop a PNG/JPG/WebP (max 8MB)</p>
+                            <p class="text-sm text-[var(--color-text-medium)]">We keep everything client-side. Square-ish logos work best.</p>
+                            <div class="flex items-center gap-2 text-xs text-[var(--color-text-medium)]">
+                                <span class="px-2 py-1 rounded bg-white/5 border border-[var(--color-border)]">Transparency preserved</span>
+                                <span class="px-2 py-1 rounded bg-white/5 border border-[var(--color-border)]">Auto-center + padding</span>
+                            </div>
+                        </div>
+                        <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden" />
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div class="p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)]">
+                            <p class="text-xs uppercase text-[var(--color-text-medium)]">Status</p>
+                            <p id="uploadStatus" class="font-semibold">Awaiting logo</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)]">
+                            <p class="text-xs uppercase text-[var(--color-text-medium)]">Canvas padding</p>
+                            <p id="paddingLabel" class="font-semibold">18%</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)]">
+                            <p class="text-xs uppercase text-[var(--color-text-medium)]">Corner radius</p>
+                            <p id="radiusLabel" class="font-semibold">28%</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)]">
+                            <p class="text-xs uppercase text-[var(--color-text-medium)]">Icons ready</p>
+                            <p id="iconCount" class="font-semibold">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <label class="form-label">Background style</label>
+                            <div class="grid grid-cols-3 gap-2 text-sm">
+                                <button data-bg="gradient" class="bg-mode active px-3 py-2 rounded-lg border border-[var(--color-border)]">Gradient</button>
+                                <button data-bg="solid" class="bg-mode px-3 py-2 rounded-lg border border-[var(--color-border)]">Solid</button>
+                                <button data-bg="transparent" class="bg-mode px-3 py-2 rounded-lg border border-[var(--color-border)]">Transparent</button>
+                            </div>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <button class="pill-button" type="button" onclick="applyPreset('brand')">Aurora brand</button>
+                                <button class="pill-button" type="button" onclick="applyPreset('mono')">Monochrome</button>
+                                <button class="pill-button" type="button" onclick="applyPreset('flat')">Flat solid</button>
+                                <button class="pill-button" type="button" onclick="applyPreset('transparent')">Transparent</button>
+                            </div>
+                            <div class="flex gap-3 items-center">
+                                <div class="flex-1">
+                                    <label class="form-label">Primary color</label>
+                                    <input id="primaryColor" type="color" value="#0f172a" class="w-full h-12 rounded-lg border border-[var(--color-border)] cursor-pointer" />
+                                </div>
+                                <div class="flex-1">
+                                    <label class="form-label flex items-center justify-between">
+                                        Secondary
+                                        <span id="secondaryLabel" class="text-[var(--color-text-medium)] text-xs">Gradient end</span>
+                                    </label>
+                                    <input id="secondaryColor" type="color" value="#2563eb" class="w-full h-12 rounded-lg border border-[var(--color-border)] cursor-pointer" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="form-label flex justify-between">
+                                Safe area padding
+                                <span id="paddingValue" class="text-[var(--color-text-medium)] text-xs">18%</span>
+                            </label>
+                            <input id="paddingRange" type="range" min="0" max="30" value="18" class="w-full" />
+
+                            <label class="form-label flex justify-between">
+                                Corner rounding
+                                <span id="radiusValue" class="text-[var(--color-text-medium)] text-xs">28%</span>
+                            </label>
+                            <input id="radiusRange" type="range" min="0" max="50" value="28" class="w-full" />
+
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <label class="flex items-center gap-2 p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] cursor-pointer">
+                                    <input id="safeZone" type="checkbox" class="w-4 h-4" checked>
+                                    <span class="text-sm">Retina safe zone</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] cursor-pointer">
+                                    <input id="highlight" type="checkbox" class="w-4 h-4" checked>
+                                    <span class="text-sm">Gloss overlay</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] cursor-pointer">
+                                    <input id="shadow" type="checkbox" class="w-4 h-4" checked>
+                                    <span class="text-sm">Soft shadow</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] cursor-pointer">
+                                    <input id="stroke" type="checkbox" class="w-4 h-4" checked>
+                                    <span class="text-sm">Hairline stroke</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold">Icon set</h3>
+                            <p class="text-sm text-[var(--color-text-medium)]">Pick target sizes for favicon.ico and PWA assets.</p>
+                        </div>
+                        <button id="selectAllSizes" class="pill-button text-sm">Toggle all</button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 text-sm" id="sizeGrid">
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="16" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">16</span>
+                                <small class="text-[var(--color-text-medium)]">favicon</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="32" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">32</span>
+                                <small class="text-[var(--color-text-medium)]">tabs</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="48" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">48</span>
+                                <small class="text-[var(--color-text-medium)]">windows</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="64" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">64</span>
+                                <small class="text-[var(--color-text-medium)]">retina</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="96" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">96</span>
+                                <small class="text-[var(--color-text-medium)]">legacy</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="128" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">128</span>
+                                <small class="text-[var(--color-text-medium)]">desktop</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="180" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">180</span>
+                                <small class="text-[var(--color-text-medium)]">iOS</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="192" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">192</span>
+                                <small class="text-[var(--color-text-medium)]">manifest</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="256" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">256</span>
+                                <small class="text-[var(--color-text-medium)]">PWA</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="384" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">384</span>
+                                <small class="text-[var(--color-text-medium)]">PWA</small>
+                            </div>
+                        </label>
+                        <label class="size-pill flex items-center justify-between gap-2 p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] cursor-pointer hover:border-[var(--color-primary)] transition-colors">
+                            <input type="checkbox" class="size-input" value="512" checked>
+                            <div>
+                                <span class="font-semibold block leading-tight">512</span>
+                                <small class="text-[var(--color-text-medium)]">store</small>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button id="generateIcons" class="btn btn-primary flex items-center gap-2">
+                            <i class="fas fa-magic"></i> Generate icons
+                        </button>
+                        <button id="downloadAll" class="btn btn-secondary flex items-center gap-2">
+                            <i class="fas fa-file-download"></i> Download all (ZIP)
+                        </button>
+                        <button id="downloadIco" class="btn btn-outline flex items-center gap-2">
+                            <i class="fas fa-star"></i> Download favicon.ico
+                        </button>
+                    </div>
+                    <p class="text-sm text-[var(--color-text-medium)]">Tip: Keep at least 16, 32, and 48 selected for the multi-size ICO. 180 and 192 cover iOS and Android touch icons.</p>
+                </div>
+
+                <div class="card grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="p-4 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)]">
+                        <p class="text-xs uppercase text-[var(--color-text-medium)] mb-2">Audit checklist</p>
+                        <ul class="space-y-2 text-[var(--color-text-medium)]">
+                            <li>Square canvas with safe padding</li>
+                            <li>Transparent edges trimmed cleanly</li>
+                            <li>Colors match brand palette</li>
+                            <li>16/32/48 sizes in ICO</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)]">
+                        <p class="text-xs uppercase text-[var(--color-text-medium)] mb-2">Delivery bundle</p>
+                        <ul class="space-y-2 text-[var(--color-text-medium)]">
+                            <li>favicon.ico (multi-size)</li>
+                            <li>PNG set (16-512)</li>
+                            <li>manifest-friendly sizes (192, 512)</li>
+                            <li>Preview thumbs for QA</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)]">
+                        <p class="text-xs uppercase text-[var(--color-text-medium)] mb-2">Quality presets</p>
+                        <ul class="space-y-2 text-[var(--color-text-medium)]">
+                            <li>Retina safe zone to avoid cropping</li>
+                            <li>Hairline stroke for low-contrast logos</li>
+                            <li>Gloss overlay for light-on-dark marks</li>
+                            <li>All processing stays client-side</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="card space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold">Live preview</h3>
+                        <span class="text-xs text-[var(--color-text-medium)]">Updates as you tweak styles</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <p class="text-xs uppercase text-[var(--color-text-medium)]">64 px (tab)</p>
+                            <div class="w-24 h-24 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center justify-center">
+                                <img data-preview="64" alt="64px preview" class="w-16 h-16 rounded-xl shadow-sm" />
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-xs uppercase text-[var(--color-text-medium)]">180 px (touch)</p>
+                            <div class="w-28 h-28 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center justify-center">
+                                <img data-preview="180" alt="180px preview" class="w-24 h-24 rounded-xl shadow-sm" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] text-sm">
+                        <p id="renderSummary" class="text-[var(--color-text-medium)]">Load a logo to view your favicon story.</p>
+                    </div>
+                </div>
+
+                <div class="card space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold">Download center</h3>
+                        <span class="text-xs text-[var(--color-text-medium)]" id="bundleSize">Bundle size: 0 KB</span>
+                    </div>
+                    <div id="generatedList" class="space-y-3 text-sm text-[var(--color-text-medium)]">
+                        <p>No icons yet. Generate to see your set here.</p>
+                    </div>
+                </div>
+
+                <div class="card space-y-3">
+                    <h3 class="text-lg font-semibold">Implementation snippet</h3>
+                    <pre class="bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg p-3 text-xs overflow-auto"><code>&lt;link rel="icon" type="image/x-icon" href="/favicon.ico"&gt;
+&lt;link rel="apple-touch-icon" href="/images/icons/icon-180x180.png"&gt;
+&lt;link rel="manifest" href="/manifest.json"&gt;</code></pre>
+                    <p class="text-xs text-[var(--color-text-medium)]">Remember to upload icons to <code>/wwwroot/images/icons/</code> and update <code>manifest.json</code> with 192 and 512 sizes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="favToast" class="fixed top-4 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+    const state = {
+        bgMode: 'gradient',
+        primary: '#0f172a',
+        secondary: '#2563eb',
+        padding: 18,
+        radius: 28,
+        safeZone: true,
+        highlight: true,
+        shadow: true,
+        stroke: true,
+        image: null,
+        imageName: 'favicon',
+        objectUrls: []
+    };
+
+    const generatedIcons = new Map();
+    const sizeInputs = () => Array.from(document.querySelectorAll('.size-input')).filter(i => i.checked).map(i => Number(i.value));
+
+    document.addEventListener('DOMContentLoaded', () => {
+        wireUploadArea();
+        wireControls();
+        createSampleLogo();
+    });
+
+    function wireUploadArea() {
+        const area = document.getElementById('uploadArea');
+        const input = document.getElementById('fileInput');
+
+        area.addEventListener('click', () => input.click());
+        area.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            area.classList.add('border-[var(--color-primary)]');
+        });
+        area.addEventListener('dragleave', () => area.classList.remove('border-[var(--color-primary)]'));
+        area.addEventListener('drop', (e) => {
+            e.preventDefault();
+            area.classList.remove('border-[var(--color-primary)]');
+            if (e.dataTransfer?.files?.length) {
+                handleFiles(e.dataTransfer.files);
+            }
+        });
+
+        input.addEventListener('change', (e) => {
+            if (e.target.files?.length) {
+                handleFiles(e.target.files);
+            }
+        });
+    }
+
+    function wireControls() {
+        document.querySelectorAll('.bg-mode').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.bg-mode').forEach(b => b.classList.remove('active', 'border-[var(--color-primary)]'));
+                btn.classList.add('active', 'border-[var(--color-primary)]');
+                state.bgMode = btn.getAttribute('data-bg');
+                document.getElementById('secondaryColor').disabled = state.bgMode === 'solid' || state.bgMode === 'transparent';
+                document.getElementById('secondaryLabel').textContent = state.bgMode === 'gradient' ? 'Gradient end' : 'Disabled';
+                generateIcons();
+            });
+        });
+
+        document.getElementById('primaryColor').addEventListener('input', (e) => {
+            state.primary = e.target.value;
+            generateIcons();
+        });
+        document.getElementById('secondaryColor').addEventListener('input', (e) => {
+            state.secondary = e.target.value;
+            generateIcons();
+        });
+
+        document.getElementById('paddingRange').addEventListener('input', (e) => {
+            state.padding = Number(e.target.value);
+            document.getElementById('paddingValue').textContent = `${state.padding}%`;
+            document.getElementById('paddingLabel').textContent = `${state.padding}%`;
+            generateIcons();
+        });
+
+        document.getElementById('radiusRange').addEventListener('input', (e) => {
+            state.radius = Number(e.target.value);
+            document.getElementById('radiusValue').textContent = `${state.radius}%`;
+            document.getElementById('radiusLabel').textContent = `${state.radius}%`;
+            generateIcons();
+        });
+
+        ['safeZone', 'highlight', 'shadow', 'stroke'].forEach(id => {
+            document.getElementById(id).addEventListener('change', (e) => {
+                state[id] = e.target.checked;
+                generateIcons();
+            });
+        });
+
+        document.getElementById('selectAllSizes').addEventListener('click', () => {
+            const inputs = Array.from(document.querySelectorAll('.size-input'));
+            const shouldSelectAll = inputs.some(i => !i.checked);
+            inputs.forEach(i => i.checked = shouldSelectAll);
+            generateIcons();
+        });
+
+        document.getElementById('generateIcons').addEventListener('click', () => generateIcons(true));
+        document.getElementById('downloadAll').addEventListener('click', downloadZip);
+        document.getElementById('downloadIco').addEventListener('click', downloadIcoFile);
+        document.getElementById('loadSample').addEventListener('click', () => createSampleLogo(true));
+        document.getElementById('resetBuilder').addEventListener('click', resetBuilder);
+
+        document.querySelectorAll('.size-input').forEach(input => {
+            input.addEventListener('change', () => generateIcons());
+        });
+    }
+
+    function handleFiles(files) {
+        const file = files[0];
+        if (!file) return;
+        if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) {
+            showToast('Unsupported format. Use PNG, JPG, or WebP.', 'error');
+            return;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+            showToast('File too large. Max 8MB.', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => setImageSource(e.target?.result, file.name);
+        reader.readAsDataURL(file);
+    }
+
+    function setImageSource(dataUrl, name) {
+        const img = new Image();
+        img.onload = () => {
+            state.image = img;
+            state.imageName = sanitizeName(name || 'favicon');
+            document.getElementById('uploadStatus').textContent = `${img.width}x${img.height}px loaded`;
+            generateIcons(true);
+        };
+        img.onerror = () => showToast('Could not read that image.', 'error');
+        img.src = dataUrl;
+    }
+
+    function sanitizeName(name) {
+        return (name || 'favicon').replace(/\.[^.]+$/, '').replace(/[^a-z0-9-_]+/gi, '-').toLowerCase();
+    }
+
+    function createSampleLogo(showToastMessage = false) {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+        gradient.addColorStop(0, '#1d4ed8');
+        gradient.addColorStop(1, '#22d3ee');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 512, 512);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 220px Inter, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('NT', 256, 256);
+        setImageSource(canvas.toDataURL('image/png'), 'nova-sample');
+        if (showToastMessage) {
+            showToast('Loaded Nova sample logo.');
+        }
+    }
+
+    function buildCanvas(size) {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, size, size);
+
+        const radius = (state.radius / 100) * size;
+        ctx.save();
+        roundedRect(ctx, 0, 0, size, size, radius);
+        ctx.clip();
+
+        if (state.bgMode !== 'transparent') {
+            if (state.bgMode === 'gradient') {
+                const grad = ctx.createLinearGradient(0, 0, size, size);
+                grad.addColorStop(0, state.primary);
+                grad.addColorStop(1, state.secondary);
+                ctx.fillStyle = grad;
+            } else {
+                ctx.fillStyle = state.primary;
+            }
+            if (state.shadow) {
+                ctx.shadowColor = 'rgba(0,0,0,0.18)';
+                ctx.shadowBlur = size * 0.08;
+                ctx.shadowOffsetY = size * 0.03;
+            }
+            ctx.fillRect(0, 0, size, size);
+            ctx.shadowColor = 'transparent';
+        }
+
+        if (state.stroke && state.bgMode !== 'transparent') {
+            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+            ctx.lineWidth = Math.max(1, Math.floor(size * 0.01));
+            ctx.strokeRect(0, 0, size, size);
+        }
+
+        if (state.image) {
+            const paddingPx = (state.padding / 100) * size;
+            const safeFactor = state.safeZone ? 0.9 : 1;
+            const available = (size - paddingPx * 2) * safeFactor;
+            const ratio = Math.min(available / state.image.width, available / state.image.height);
+            const drawW = state.image.width * ratio;
+            const drawH = state.image.height * ratio;
+            const offsetX = (size - drawW) / 2;
+            const offsetY = (size - drawH) / 2;
+
+            ctx.drawImage(state.image, offsetX, offsetY, drawW, drawH);
+        }
+
+        if (state.highlight && state.bgMode !== 'transparent') {
+            const gloss = ctx.createLinearGradient(0, 0, 0, size);
+            gloss.addColorStop(0, 'rgba(255,255,255,0.32)');
+            gloss.addColorStop(0.4, 'rgba(255,255,255,0.08)');
+            gloss.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = gloss;
+            ctx.fillRect(0, 0, size, size);
+        }
+
+        ctx.restore();
+        return canvas;
+    }
+
+    async function createIcon(size) {
+        const canvas = buildCanvas(size);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error('Could not encode PNG.');
+        const url = URL.createObjectURL(blob);
+        state.objectUrls.push(url);
+        return { size, url, blob };
+    }
+
+    async function generateIcons(explicitTrigger = false) {
+        if (!state.image) {
+            renderPreviewPlaceholders();
+            return;
+        }
+
+        const sizes = sizeInputs();
+        if (!sizes.length) {
+            showToast('Select at least one size.', 'warning');
+            return;
+        }
+
+        clearObjectUrls();
+        generatedIcons.clear();
+        setBusy(true);
+
+        const results = [];
+        for (const size of sizes) {
+            const icon = await createIcon(size);
+            generatedIcons.set(size, icon);
+            results.push(icon);
+        }
+
+        renderGenerated(results);
+        renderPreview();
+        setBusy(false);
+        if (explicitTrigger) {
+            showToast(`Generated ${results.length} icons.`);
+        }
+    }
+
+    function renderGenerated(icons) {
+        const container = document.getElementById('generatedList');
+        if (!icons.length) {
+            container.innerHTML = '<p>No icons yet. Generate to see your set here.</p>';
+            return;
+        }
+
+        const totalBytes = icons.reduce((sum, icon) => sum + icon.blob.size, 0);
+        document.getElementById('bundleSize').textContent = `Bundle size: ${formatBytes(totalBytes)}`;
+        document.getElementById('iconCount').textContent = icons.length.toString();
+
+        container.innerHTML = icons
+            .sort((a, b) => a.size - b.size)
+            .map(icon => {
+                const kb = formatBytes(icon.blob.size);
+                return `
+                    <div class="flex items-center justify-between p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)]">
+                        <div class="flex items-center gap-3">
+                            <img src="${icon.url}" alt="${icon.size}px icon" class="w-12 h-12 rounded-lg border border-[var(--color-border)] shadow-sm">
+                            <div>
+                                <p class="font-semibold">${icon.size}x${icon.size}px</p>
+                                <p class="text-xs text-[var(--color-text-medium)]">${kb}</p>
+                            </div>
+                        </div>
+                        <button class="pill-button text-sm" data-size="${icon.size}" onclick="downloadSingle(event)">Download</button>
+                    </div>
+                `;
+            }).join('');
+    }
+    function renderPreview() {
+        const targets = [64, 180];
+        targets.forEach(size => {
+            const img = document.querySelector(`img[data-preview="${size}"]`);
+            if (!img) return;
+            const canvas = buildCanvas(size);
+            img.src = canvas.toDataURL('image/png');
+        });
+        document.getElementById('renderSummary').textContent = `Using ${state.bgMode} background with ${state.padding}% padding and ${state.radius}% rounding.`;
+    }
+
+    function renderPreviewPlaceholders() {
+        document.querySelectorAll('img[data-preview]').forEach(img => img.removeAttribute('src'));
+        document.getElementById('renderSummary').textContent = 'Load a logo to view your favicon story.';
+    }
+
+    function clearObjectUrls() {
+        state.objectUrls.forEach(url => URL.revokeObjectURL(url));
+        state.objectUrls = [];
+    }
+
+    function formatBytes(bytes) {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+
+    async function downloadSingle(event) {
+        const size = Number(event.currentTarget.getAttribute('data-size'));
+        const icon = generatedIcons.get(size);
+        if (!icon) return;
+        downloadBlob(icon.blob, `${state.imageName}-${size}x${size}.png`);
+    }
+
+    async function downloadZip() {
+        if (!generatedIcons.size) {
+            showToast('Generate icons first.', 'warning');
+            return;
+        }
+        if (typeof JSZip === 'undefined') {
+            showToast('JSZip failed to load.', 'error');
+            return;
+        }
+
+        const zip = new JSZip();
+        generatedIcons.forEach((icon) => {
+            zip.file(`${state.imageName}-${icon.size}x${icon.size}.png`, icon.blob);
+        });
+
+        const ico = await buildIcoBlob();
+        if (ico) {
+            zip.file('favicon.ico', ico);
+        }
+
+        const bundle = await zip.generateAsync({ type: 'blob' });
+        downloadBlob(bundle, `${state.imageName}-favicons.zip`);
+        showToast('ZIP download started.');
+    }
+
+    async function downloadIcoFile() {
+        if (!generatedIcons.size) {
+            showToast('Generate icons first.', 'warning');
+            return;
+        }
+        const ico = await buildIcoBlob();
+        if (ico) {
+            downloadBlob(ico, 'favicon.ico');
+            showToast('favicon.ico ready.');
+        }
+    }
+
+    async function buildIcoBlob() {
+        const requiredSizes = [16, 32, 48];
+        const icoSizes = requiredSizes.map(size => ensureIcon(size));
+        const buffers = await Promise.all(icoSizes.map(icon => icon.blob.arrayBuffer()));
+
+        const entries = icoSizes.length;
+        const headerSize = 6 + entries * 16;
+        const totalSize = headerSize + buffers.reduce((sum, buf) => sum + buf.byteLength, 0);
+        const array = new ArrayBuffer(totalSize);
+        const view = new DataView(array);
+        view.setUint16(0, 0, true); // reserved
+        view.setUint16(2, 1, true); // type: ICO
+        view.setUint16(4, entries, true);
+
+        let offset = headerSize;
+        icoSizes.forEach((icon, index) => {
+            const sizeByte = icon.size === 256 ? 0 : icon.size;
+            const buffer = new Uint8Array(buffers[index]);
+            const entryPos = 6 + index * 16;
+            view.setUint8(entryPos, sizeByte);
+            view.setUint8(entryPos + 1, sizeByte);
+            view.setUint8(entryPos + 2, 0); // palette
+            view.setUint8(entryPos + 3, 0); // reserved
+            view.setUint16(entryPos + 4, 1, true); // color planes
+            view.setUint16(entryPos + 6, 32, true); // bits per pixel
+            view.setUint32(entryPos + 8, buffer.byteLength, true);
+            view.setUint32(entryPos + 12, offset, true);
+            new Uint8Array(array, offset, buffer.byteLength).set(buffer);
+            offset += buffer.byteLength;
+        });
+
+        return new Blob([array], { type: 'image/x-icon' });
+    }
+
+    function ensureIcon(size) {
+        const existing = generatedIcons.get(size);
+        if (existing) return existing;
+        const canvas = buildCanvas(size);
+        const blob = dataUrlToBlob(canvas.toDataURL('image/png'));
+        const url = URL.createObjectURL(blob);
+        state.objectUrls.push(url);
+        return { size, url, blob };
+    }
+
+    function dataUrlToBlob(dataUrl) {
+        const [meta, content] = dataUrl.split(',');
+        const mime = meta.match(/:(.*?);/)[1];
+        const binary = atob(content);
+        const len = binary.length;
+        const arr = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            arr[i] = binary.charCodeAt(i);
+        }
+        return new Blob([arr], { type: mime });
+    }
+
+    function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    }
+
+    function setBusy(isBusy) {
+        const button = document.getElementById('generateIcons');
+        button.disabled = isBusy;
+        button.textContent = isBusy ? 'Rendering...' : 'Generate icons';
+    }
+
+    function roundedRect(ctx, x, y, width, height, radius) {
+        const r = Math.min(radius, width / 2, height / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + width - r, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+        ctx.lineTo(x + width, y + height - r);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        ctx.lineTo(x + r, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+
+    function resetBuilder() {
+        state.bgMode = 'gradient';
+        state.primary = '#0f172a';
+        state.secondary = '#2563eb';
+        state.padding = 18;
+        state.radius = 28;
+        state.safeZone = true;
+        state.highlight = true;
+        state.shadow = true;
+        state.stroke = true;
+
+        document.getElementById('primaryColor').value = state.primary;
+        document.getElementById('secondaryColor').value = state.secondary;
+        document.getElementById('paddingRange').value = state.padding;
+        document.getElementById('radiusRange').value = state.radius;
+        document.getElementById('paddingValue').textContent = `${state.padding}%`;
+        document.getElementById('radiusValue').textContent = `${state.radius}%`;
+        document.getElementById('paddingLabel').textContent = `${state.padding}%`;
+        document.getElementById('radiusLabel').textContent = `${state.radius}%`;
+        ['safeZone', 'highlight', 'shadow', 'stroke'].forEach(id => {
+            document.getElementById(id).checked = true;
+        });
+
+        document.querySelectorAll('.bg-mode').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-bg') === state.bgMode);
+            btn.classList.toggle('border-[var(--color-primary)]', btn.getAttribute('data-bg') === state.bgMode);
+        });
+
+        generateIcons(true);
+        showToast('Builder reset to defaults.');
+    }
+
+    function applyPreset(mode) {
+        const presets = {
+            brand: { bgMode: 'gradient', primary: '#1d4ed8', secondary: '#22d3ee', padding: 18, radius: 28, highlight: true, stroke: true, shadow: true },
+            mono: { bgMode: 'solid', primary: '#0f172a', secondary: '#0f172a', padding: 16, radius: 18, highlight: false, stroke: true, shadow: false },
+            flat: { bgMode: 'solid', primary: '#2563eb', secondary: '#2563eb', padding: 20, radius: 24, highlight: false, stroke: false, shadow: false },
+            transparent: { bgMode: 'transparent', primary: '#ffffff', secondary: '#ffffff', padding: 14, radius: 16, highlight: false, stroke: false, shadow: false }
+        };
+        const preset = presets[mode];
+        if (!preset) return;
+        state.bgMode = preset.bgMode;
+        state.primary = preset.primary;
+        state.secondary = preset.secondary;
+        state.padding = preset.padding;
+        state.radius = preset.radius;
+        state.highlight = preset.highlight;
+        state.stroke = preset.stroke;
+        state.shadow = preset.shadow;
+        state.safeZone = true;
+
+        document.getElementById('primaryColor').value = state.primary;
+        document.getElementById('secondaryColor').value = state.secondary;
+        document.getElementById('paddingRange').value = state.padding;
+        document.getElementById('radiusRange').value = state.radius;
+        document.getElementById('paddingValue').textContent = `${state.padding}%`;
+        document.getElementById('radiusValue').textContent = `${state.radius}%`;
+        document.getElementById('paddingLabel').textContent = `${state.padding}%`;
+        document.getElementById('radiusLabel').textContent = `${state.radius}%`;
+        ['highlight','stroke','shadow','safeZone'].forEach(id => document.getElementById(id).checked = state[id]);
+
+        document.querySelectorAll('.bg-mode').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-bg') === state.bgMode);
+            btn.classList.toggle('border-[var(--color-primary)]', btn.getAttribute('data-bg') === state.bgMode);
+        });
+        document.getElementById('secondaryColor').disabled = state.bgMode === 'solid' || state.bgMode === 'transparent';
+        document.getElementById('secondaryLabel').textContent = state.bgMode === 'gradient' ? 'Gradient end' : 'Disabled';
+        generateIcons(true);
+        showToast(`${mode.charAt(0).toUpperCase() + mode.slice(1)} preset applied.`, 'info');
+    }
+
+    function showToast(message, tone = 'success') {
+        const container = document.getElementById('favToast');
+        const toast = document.createElement('div');
+        const colors = {
+            success: 'bg-gray-900 text-white',
+            error: 'bg-red-600 text-white',
+            warning: 'bg-amber-500 text-white',
+            info: 'bg-slate-700 text-white'
+        };
+        toast.className = `pointer-events-auto px-4 py-2 rounded-lg shadow-lg text-sm transition-all duration-300 ${colors[tone] || colors.info}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
+</script>
+}

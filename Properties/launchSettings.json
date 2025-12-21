@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "NovaToolsHub": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:7280;http://localhost:7281"
+    }
+  }
+}

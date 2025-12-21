@@ -1,0 +1,536 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section Head {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "FinancialService",
+        "name": "ROI Analysis Calculator",
+        "serviceType": "Investment Analysis",
+        "description": "Calculate return on investment (ROI) for business projects and investments with visual trend analysis"
+    }
+    </script>
+}
+
+<!-- Page Header -->
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">📈</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">ROI Analysis Calculator</h1>
+            <p class="text-xl opacity-90">Analyze return on investment and visualize payback periods for your projects</p>
+        </div>
+    </div>
+</section>
+
+<!-- Calculator Section -->
+<section class="section-padding">
+    <div class="container-custom max-w-6xl">
+        
+        <!-- Privacy Notice -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <div class="text-sm text-blue-900 dark:text-blue-100">
+                    <strong>Your privacy matters:</strong> All calculations are performed instantly in your browser. No financial data is stored on our servers.
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Input Panel -->
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Investment Details</h2>
+                
+                <div class="space-y-6">
+                    <!-- Currency Selector -->
+                    <div>
+                        <label for="currency" class="block text-sm font-medium mb-2">Currency</label>
+                        <select id="currency" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800">
+                            <option value="USD" data-symbol="$">USD - US Dollar ($)</option>
+                            <option value="PKR" data-symbol="₨">PKR - Pakistani Rupee (₨)</option>
+                            <option value="INR" data-symbol="₹">INR - Indian Rupee (₹)</option>
+                            <option value="SAR" data-symbol="﷼">SAR - Saudi Riyal (﷼)</option>
+                            <option value="AED" data-symbol="د.إ">AED - UAE Dirham (د.إ)</option>
+                            <option value="EUR" data-symbol="€">EUR - Euro (€)</option>
+                            <option value="GBP" data-symbol="£">GBP - British Pound (£)</option>
+                        </select>
+                    </div>
+
+                    <!-- Initial Investment -->
+                    <div>
+                        <label for="initialInvestment" class="block text-sm font-medium mb-2">
+                            Initial Investment
+                        </label>
+                        <div class="relative">
+                            <span id="investmentSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" id="initialInvestment" step="0.01" min="0" 
+                                   class="w-full pl-8 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                                   placeholder="10000.00">
+                        </div>
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">Total upfront cost of the investment</p>
+                    </div>
+
+                    <!-- Expected Annual Return -->
+                    <div>
+                        <label for="annualReturn" class="block text-sm font-medium mb-2">
+                            Expected Annual Return
+                        </label>
+                        <div class="relative">
+                            <span id="returnSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" id="annualReturn" step="0.01" min="0" 
+                                   class="w-full pl-8 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                                   placeholder="2000.00">
+                        </div>
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">Expected profit or savings per year</p>
+                    </div>
+
+                    <!-- Time Period -->
+                    <div>
+                        <label for="timePeriod" class="block text-sm font-medium mb-2">
+                            Analysis Period (years)
+                        </label>
+                        <input type="number" id="timePeriod" min="1" max="50" value="5"
+                               class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                               placeholder="5">
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">How many years to analyze</p>
+                    </div>
+
+                    <!-- Annual Growth Rate (Optional) -->
+                    <div>
+                        <label for="growthRate" class="block text-sm font-medium mb-2">
+                            Annual Growth Rate (Optional)
+                        </label>
+                        <div class="relative">
+                            <input type="number" id="growthRate" step="0.1" min="-100" max="100" value="0"
+                                   class="w-full pr-8 px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                                   placeholder="0">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                        </div>
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">Expected year-over-year growth in returns</p>
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <button onclick="calculateROI()" class="btn btn-primary w-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Calculate ROI
+                    </button>
+
+                    <button onclick="clearAll()" class="btn btn-outline w-full">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Analysis Results</h2>
+                
+                <div id="resultsContainer" class="hidden">
+                    <!-- Key Metrics -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                            <div class="text-sm text-green-600 dark:text-green-400 mb-1">ROI</div>
+                            <div id="roiPercentage" class="text-2xl font-bold text-green-700 dark:text-green-300">0%</div>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div class="text-sm text-blue-600 dark:text-blue-400 mb-1">Payback Period</div>
+                            <div id="paybackPeriod" class="text-2xl font-bold text-blue-700 dark:text-blue-300">0 yrs</div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdown -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Total Returns</span>
+                            <span id="totalReturns" class="font-semibold text-green-600 dark:text-green-400">$0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Net Profit</span>
+                            <span id="netProfit" class="font-semibold">$0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Annual ROI</span>
+                            <span id="annualROI" class="font-semibold">0%</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Break-even Year</span>
+                            <span id="breakEven" class="font-semibold">Year 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Interpretation -->
+                    <div id="interpretation" class="p-4 rounded-lg mb-4"></div>
+
+                    <!-- Export Button -->
+                    <button onclick="exportResults()" class="btn btn-outline w-full">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Export Report
+                    </button>
+                </div>
+
+                <div id="emptyState" class="text-center py-12">
+                    <div class="text-6xl mb-4 opacity-20">📊</div>
+                    <p class="text-[var(--color-text-medium)]">Enter investment details to see ROI analysis</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROI Trend Chart -->
+        <div id="chartContainer" class="card mt-8 hidden">
+            <h3 class="text-xl font-bold mb-4">ROI Trend Over Time</h3>
+            <div class="relative" style="height: 400px;">
+                <canvas id="roiChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Understanding ROI -->
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">Understanding ROI Metrics</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold mb-2">💡 What is ROI?</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Return on Investment (ROI) measures the profitability of an investment relative to its cost. Formula: (Total Returns - Investment) / Investment × 100
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">⏱️ Payback Period</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        The time it takes to recover your initial investment from the returns generated. Shorter payback periods are generally preferred.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">📈 Good ROI Benchmarks</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        A "good" ROI varies by industry. Generally: Marketing: 5:1 ratio (500%), Equipment: 15-20% annual, Technology: 25-30% annual.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">🎯 Decision Making</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Consider ROI alongside other factors: risk level, time commitment, opportunity cost, and alignment with business goals.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Affiliate Section -->
+        <div class="card mt-8 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
+            <h3 class="text-lg font-bold mb-3">💼 Investment & Business Resources</h3>
+            <p class="text-sm text-[var(--color-text-medium)] mb-4">
+                Explore tools and services to help you make better investment decisions and grow your business.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Investment Platforms →</a>
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Business Analytics Tools →</a>
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Financial Planning →</a>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let currentResults = null;
+        let roiChart = null;
+        let currencySymbol = '$';
+
+        document.getElementById('currency').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            currencySymbol = selectedOption.getAttribute('data-symbol');
+            document.getElementById('investmentSymbol').textContent = currencySymbol;
+            document.getElementById('returnSymbol').textContent = currencySymbol;
+            if (document.getElementById('initialInvestment').value && document.getElementById('annualReturn').value) {
+                calculateROI();
+            }
+        });
+
+        function calculateROI() {
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment').value);
+            const annualReturn = parseFloat(document.getElementById('annualReturn').value);
+            const timePeriod = parseInt(document.getElementById('timePeriod').value);
+            const growthRate = parseFloat(document.getElementById('growthRate').value) || 0;
+
+            // Validation
+            if (!initialInvestment || initialInvestment <= 0) {
+                alert('Please enter a valid initial investment');
+                return;
+            }
+
+            if (!annualReturn || annualReturn < 0) {
+                alert('Please enter a valid annual return');
+                return;
+            }
+
+            if (!timePeriod || timePeriod <= 0) {
+                alert('Please enter a valid time period');
+                return;
+            }
+
+            // Calculate cumulative returns with growth
+            let totalReturns = 0;
+            let cumulativeReturns = [];
+            let currentReturn = annualReturn;
+
+            for (let year = 1; year <= timePeriod; year++) {
+                totalReturns += currentReturn;
+                cumulativeReturns.push({
+                    year: year,
+                    returns: totalReturns,
+                    netProfit: totalReturns - initialInvestment
+                });
+                currentReturn = currentReturn * (1 + growthRate / 100);
+            }
+
+            // Calculate metrics
+            const netProfit = totalReturns - initialInvestment;
+            const roiPercentage = (netProfit / initialInvestment) * 100;
+            const annualROI = roiPercentage / timePeriod;
+            
+            // Calculate payback period
+            let paybackPeriod = 0;
+            let accumulated = 0;
+            currentReturn = annualReturn;
+            for (let year = 1; year <= timePeriod; year++) {
+                accumulated += currentReturn;
+                if (accumulated >= initialInvestment && paybackPeriod === 0) {
+                    paybackPeriod = year + ((initialInvestment - (accumulated - currentReturn)) / currentReturn);
+                }
+                currentReturn = currentReturn * (1 + growthRate / 100);
+            }
+
+            // Store results
+            currentResults = {
+                initialInvestment,
+                annualReturn,
+                timePeriod,
+                growthRate,
+                totalReturns,
+                netProfit,
+                roiPercentage,
+                annualROI,
+                paybackPeriod,
+                cumulativeReturns
+            };
+
+            // Display results
+            document.getElementById('roiPercentage').textContent = `${roiPercentage.toFixed(2)}%`;
+            document.getElementById('paybackPeriod').textContent = paybackPeriod > 0 ? `${paybackPeriod.toFixed(1)} yrs` : 'Not within period';
+            document.getElementById('totalReturns').textContent = `${currencySymbol}${totalReturns.toFixed(2)}`;
+            document.getElementById('netProfit').textContent = `${currencySymbol}${netProfit.toFixed(2)}`;
+            document.getElementById('annualROI').textContent = `${annualROI.toFixed(2)}%`;
+            document.getElementById('breakEven').textContent = paybackPeriod > 0 ? `Year ${Math.ceil(paybackPeriod)}` : 'Beyond analysis period';
+
+            // Show interpretation
+            showInterpretation(roiPercentage, paybackPeriod);
+
+            // Draw chart
+            drawROIChart(cumulativeReturns, initialInvestment);
+
+            // Toggle visibility
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('chartContainer').classList.remove('hidden');
+        }
+
+        function showInterpretation(roi, payback) {
+            const container = document.getElementById('interpretation');
+            let message = '';
+            let bgClass = '';
+
+            if (roi < 0) {
+                message = '⚠️ <strong>Negative ROI:</strong> This investment is projected to lose money over the analysis period. Reconsider or look for ways to increase returns.';
+                bgClass = 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-100';
+            } else if (roi < 50) {
+                message = '📉 <strong>Low ROI:</strong> The return is modest. Consider if there are better investment opportunities available.';
+                bgClass = 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-900 dark:text-yellow-100';
+            } else if (roi < 200) {
+                message = '✅ <strong>Good ROI:</strong> This investment shows a healthy return. Ensure risks are acceptable and payback period meets your needs.';
+                bgClass = 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-900 dark:text-green-100';
+            } else {
+                message = '🎯 <strong>Excellent ROI:</strong> Outstanding projected returns! Verify assumptions are realistic and consider risk factors.';
+                bgClass = 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100';
+            }
+
+            container.className = `p-4 rounded-lg mb-4 ${bgClass}`;
+            container.innerHTML = `<p class="text-sm">${message}</p>`;
+        }
+
+        function drawROIChart(data, investment) {
+            const ctx = document.getElementById('roiChart').getContext('2d');
+            
+            if (roiChart) {
+                roiChart.destroy();
+            }
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const textColor = isDark ? '#E5E7EB' : '#374151';
+            const gridColor = isDark ? '#374151' : '#E5E7EB';
+
+            roiChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => `Year ${d.year}`),
+                    datasets: [
+                        {
+                            label: 'Cumulative Returns',
+                            data: data.map(d => d.returns),
+                            borderColor: '#50E3C2',
+                            backgroundColor: 'rgba(80, 227, 194, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Net Profit',
+                            data: data.map(d => d.netProfit),
+                            borderColor: '#4A90E2',
+                            backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Break-even',
+                            data: data.map(() => 0),
+                            borderColor: '#9B59B6',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: textColor,
+                                font: { size: 12 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: textColor,
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: textColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('initialInvestment').value = '';
+            document.getElementById('annualReturn').value = '';
+            document.getElementById('timePeriod').value = '5';
+            document.getElementById('growthRate').value = '0';
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('chartContainer').classList.add('hidden');
+            currentResults = null;
+        }
+
+        function exportResults() {
+            if (!currentResults) return;
+
+            let report = `ROI ANALYSIS REPORT
+Generated: ${new Date().toLocaleString()}
+
+INVESTMENT DETAILS:
+Initial Investment: $${currentResults.initialInvestment.toFixed(2)}
+Expected Annual Return: $${currentResults.annualReturn.toFixed(2)}
+Analysis Period: ${currentResults.timePeriod} years
+Annual Growth Rate: ${currentResults.growthRate}%
+
+RESULTS:
+Total Returns: $${currentResults.totalReturns.toFixed(2)}
+Net Profit: $${currentResults.netProfit.toFixed(2)}
+Total ROI: ${currentResults.roiPercentage.toFixed(2)}%
+Annual ROI: ${currentResults.annualROI.toFixed(2)}%
+Payback Period: ${currentResults.paybackPeriod > 0 ? currentResults.paybackPeriod.toFixed(1) + ' years' : 'Not within analysis period'}
+
+YEAR-BY-YEAR BREAKDOWN:
+`;
+
+            currentResults.cumulativeReturns.forEach(item => {
+                report += `Year ${item.year}: Returns: $${item.returns.toFixed(2)}, Net Profit: $${item.netProfit.toFixed(2)}\n`;
+            });
+
+            report += '\nGenerated by NovaTools Hub - https://NovaToolsHub.com\n';
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'roi-analysis-report.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Auto-calculate on input change
+        ['initialInvestment', 'annualReturn', 'timePeriod', 'growthRate'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                const investment = document.getElementById('initialInvestment').value;
+                const returns = document.getElementById('annualReturn').value;
+                const period = document.getElementById('timePeriod').value;
+                if (investment && returns && period) {
+                    calculateROI();
+                }
+            });
+        });
+
+        // Redraw chart on theme change
+        document.addEventListener('themeChanged', () => {
+            if (currentResults) {
+                drawROIChart(currentResults.cumulativeReturns, currentResults.initialInvestment);
+            }
+        });
+    </script>
+}

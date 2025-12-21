@@ -1,0 +1,414 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "SoftwareApplication",
+        "name": "Profit Margin & Pricing Calculator",
+        "applicationCategory": "FinancialApplication",
+        "offers": {
+            "@@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "Calculate profit margins, markup percentages, and optimal pricing for products and services"
+    }
+    </script>
+}
+
+<!-- Page Header -->
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">💰</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Profit Margin & Pricing Calculator</h1>
+            <p class="text-xl opacity-90">Calculate profit margins, markup percentages, and optimal pricing strategies</p>
+        </div>
+    </div>
+</section>
+
+<!-- Calculator Section -->
+<section class="section-padding">
+    <div class="container-custom max-w-6xl">
+        
+        <!-- Privacy Notice -->
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <div class="text-sm text-blue-900 dark:text-blue-100">
+                    <strong>Your privacy matters:</strong> All calculations are performed instantly in your browser. No financial data is stored on our servers.
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Input Panel -->
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Enter Your Numbers</h2>
+                
+                <div class="space-y-6">
+                    <!-- Currency Selector -->
+                    <div>
+                        <label for="currency" class="block text-sm font-medium mb-2">
+                            Currency
+                        </label>
+                        <select id="currency" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800">
+                            <option value="USD" data-symbol="$">USD - US Dollar ($)</option>
+                            <option value="PKR" data-symbol="₨">PKR - Pakistani Rupee (₨)</option>
+                            <option value="INR" data-symbol="₹">INR - Indian Rupee (₹)</option>
+                            <option value="SAR" data-symbol="﷼">SAR - Saudi Riyal (﷼)</option>
+                            <option value="AED" data-symbol="د.إ">AED - UAE Dirham (د.إ)</option>
+                            <option value="EUR" data-symbol="€">EUR - Euro (€)</option>
+                            <option value="GBP" data-symbol="£">GBP - British Pound (£)</option>
+                        </select>
+                    </div>
+
+                    <!-- Cost Price -->
+                    <div>
+                        <label for="costPrice" class="block text-sm font-medium mb-2">
+                            Cost Price (per unit)
+                        </label>
+                        <div class="relative">
+                            <span id="costPriceSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" id="costPrice" step="0.01" min="0" 
+                                   class="w-full pl-8 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                                   placeholder="100.00">
+                        </div>
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">Total cost to produce or acquire</p>
+                    </div>
+
+                    <!-- Selling Price -->
+                    <div>
+                        <label for="sellingPrice" class="block text-sm font-medium mb-2">
+                            Selling Price (per unit)
+                        </label>
+                        <div class="relative">
+                            <span id="sellingPriceSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" id="sellingPrice" step="0.01" min="0" 
+                                   class="w-full pl-8 pr-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                                   placeholder="150.00">
+                        </div>
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">Price you charge customers</p>
+                    </div>
+
+                    <!-- Quantity (Optional) -->
+                    <div>
+                        <label for="quantity" class="block text-sm font-medium mb-2">
+                            Quantity (Optional)
+                        </label>
+                        <input type="number" id="quantity" min="1" value="1"
+                               class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-800"
+                               placeholder="1">
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">Calculate total profit for multiple units</p>
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <button onclick="calculateProfit()" class="btn btn-primary w-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Calculate Profit & Margins
+                    </button>
+
+                    <!-- Quick Actions -->
+                    <div class="flex gap-2">
+                        <button onclick="reverseCalculate('margin')" class="btn btn-outline flex-1 text-sm">
+                            Find Price from Margin
+                        </button>
+                        <button onclick="clearAll()" class="btn btn-outline flex-1 text-sm">
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Results</h2>
+                
+                <div id="resultsContainer" class="hidden">
+                    <!-- Key Metrics -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                            <div class="text-sm text-green-600 dark:text-green-400 mb-1">Profit per Unit</div>
+                            <div id="profitPerUnit" class="text-2xl font-bold text-green-700 dark:text-green-300">$0.00</div>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div class="text-sm text-blue-600 dark:text-blue-400 mb-1">Profit Margin</div>
+                            <div id="profitMargin" class="text-2xl font-bold text-blue-700 dark:text-blue-300">0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdown -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Markup Percentage</span>
+                            <span id="markup" class="font-semibold">0%</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Gross Profit Margin</span>
+                            <span id="grossMargin" class="font-semibold">0%</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Total Profit (All Units)</span>
+                            <span id="totalProfit" class="font-semibold text-green-600 dark:text-green-400">$0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Total Revenue</span>
+                            <span id="totalRevenue" class="font-semibold">$0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
+                            <span class="text-[var(--color-text-medium)]">Total Cost</span>
+                            <span id="totalCost" class="font-semibold">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Interpretation -->
+                    <div id="interpretation" class="p-4 rounded-lg mb-4"></div>
+
+                    <!-- Export Options -->
+                    <div class="flex gap-2">
+                        <button onclick="exportResults()" class="btn btn-outline flex-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="text-center py-12">
+                    <div class="text-6xl mb-4 opacity-20">📊</div>
+                    <p class="text-[var(--color-text-medium)]">Enter your cost and selling price to see results</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Understanding Metrics -->
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">Understanding Your Metrics</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold mb-2">💡 Profit Margin</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Shows what percentage of your selling price is profit. Formula: (Selling Price - Cost) / Selling Price × 100
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">📈 Markup Percentage</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Shows how much you're adding to your cost. Formula: (Selling Price - Cost) / Cost × 100
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">✅ Healthy Margins</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Most businesses target 20-50% profit margins, but this varies by industry. Retail: 20-30%, Services: 40-60%
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">🎯 Pricing Strategy</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Consider market rates, competition, value provided, and operating expenses when setting prices.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Affiliate Section (Placeholder) -->
+        <div class="card mt-8 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
+            <h3 class="text-lg font-bold mb-3">📚 Need Help with Business Planning?</h3>
+            <p class="text-sm text-[var(--color-text-medium)] mb-4">
+                Check out recommended business planning tools and resources to optimize your pricing strategy.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Business Planning Software →</a>
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Accounting Tools →</a>
+                <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Pricing Guides →</a>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let currentResults = null;
+        let currencySymbol = '$';
+
+        // Update currency symbols
+        document.getElementById('currency').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            currencySymbol = selectedOption.getAttribute('data-symbol');
+            document.getElementById('costPriceSymbol').textContent = currencySymbol;
+            document.getElementById('sellingPriceSymbol').textContent = currencySymbol;
+            if (document.getElementById('costPrice').value && document.getElementById('sellingPrice').value) {
+                calculateProfit();
+            }
+        });
+
+        function calculateProfit() {
+            const costPrice = parseFloat(document.getElementById('costPrice').value);
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value);
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+
+            // Validation
+            if (!costPrice || costPrice <= 0) {
+                alert('Please enter a valid cost price');
+                return;
+            }
+
+            if (!sellingPrice || sellingPrice <= 0) {
+                alert('Please enter a valid selling price');
+                return;
+            }
+
+            // Calculations
+            const profitPerUnit = sellingPrice - costPrice;
+            const profitMargin = (profitPerUnit / sellingPrice) * 100;
+            const markup = (profitPerUnit / costPrice) * 100;
+            const totalProfit = profitPerUnit * quantity;
+            const totalRevenue = sellingPrice * quantity;
+            const totalCost = costPrice * quantity;
+
+            // Store results
+            currentResults = {
+                costPrice,
+                sellingPrice,
+                quantity,
+                profitPerUnit,
+                profitMargin,
+                markup,
+                totalProfit,
+                totalRevenue,
+                totalCost
+            };
+
+            // Display results
+            document.getElementById('profitPerUnit').textContent = `${currencySymbol}${profitPerUnit.toFixed(2)}`;
+            document.getElementById('profitMargin').textContent = `${profitMargin.toFixed(2)}%`;
+            document.getElementById('markup').textContent = `${markup.toFixed(2)}%`;
+            document.getElementById('grossMargin').textContent = `${profitMargin.toFixed(2)}%`;
+            document.getElementById('totalProfit').textContent = `${currencySymbol}${totalProfit.toFixed(2)}`;
+            document.getElementById('totalRevenue').textContent = `${currencySymbol}${totalRevenue.toFixed(2)}`;
+            document.getElementById('totalCost').textContent = `${currencySymbol}${totalCost.toFixed(2)}`;
+
+            // Show interpretation
+            showInterpretation(profitMargin, profitPerUnit);
+
+            // Toggle visibility
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+        }
+
+        function showInterpretation(margin, profit) {
+            const container = document.getElementById('interpretation');
+            let message = '';
+            let bgClass = '';
+
+            if (profit < 0) {
+                message = '⚠️ <strong>Loss Alert:</strong> You\'re selling below cost. This will result in a loss. Consider increasing your price or reducing costs.';
+                bgClass = 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-100';
+            } else if (margin < 10) {
+                message = '📉 <strong>Low Margin:</strong> Your profit margin is quite low. Consider strategies to increase profitability.';
+                bgClass = 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-900 dark:text-yellow-100';
+            } else if (margin < 30) {
+                message = '✅ <strong>Healthy Margin:</strong> Your profit margin is in a reasonable range for most businesses.';
+                bgClass = 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-900 dark:text-green-100';
+            } else {
+                message = '🎯 <strong>Strong Margin:</strong> Excellent profit margin! Ensure your pricing remains competitive in your market.';
+                bgClass = 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100';
+            }
+
+            container.className = `p-4 rounded-lg mb-4 ${bgClass}`;
+            container.innerHTML = `<p class="text-sm">${message}</p>`;
+        }
+
+        function reverseCalculate(type) {
+            const cost = parseFloat(prompt('Enter your cost price:'));
+            const targetMargin = parseFloat(prompt('Enter your desired profit margin (%):'));
+
+            if (cost && targetMargin) {
+                // Calculate selling price from desired margin
+                // Margin = (Price - Cost) / Price
+                // Solving for Price: Price = Cost / (1 - Margin/100)
+                const sellingPrice = cost / (1 - targetMargin / 100);
+                
+                document.getElementById('costPrice').value = cost.toFixed(2);
+                document.getElementById('sellingPrice').value = sellingPrice.toFixed(2);
+                
+                alert(`To achieve a ${targetMargin}% margin with a cost of $${cost.toFixed(2)}, set your selling price to $${sellingPrice.toFixed(2)}`);
+                
+                calculateProfit();
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('costPrice').value = '';
+            document.getElementById('sellingPrice').value = '';
+            document.getElementById('quantity').value = '1';
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            currentResults = null;
+        }
+
+        function exportResults() {
+            if (!currentResults) return;
+
+            const report = `PROFIT MARGIN & PRICING REPORT
+Generated: ${new Date().toLocaleString()}
+
+INPUT VALUES:
+Cost Price per Unit: $${currentResults.costPrice.toFixed(2)}
+Selling Price per Unit: $${currentResults.sellingPrice.toFixed(2)}
+Quantity: ${currentResults.quantity}
+
+RESULTS:
+Profit per Unit: $${currentResults.profitPerUnit.toFixed(2)}
+Profit Margin: ${currentResults.profitMargin.toFixed(2)}%
+Markup Percentage: ${currentResults.markup.toFixed(2)}%
+
+TOTALS:
+Total Revenue: $${currentResults.totalRevenue.toFixed(2)}
+Total Cost: $${currentResults.totalCost.toFixed(2)}
+Total Profit: $${currentResults.totalProfit.toFixed(2)}
+
+Generated by NovaTools Hub - https://NovaToolsHub.com
+`;
+
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'profit-margin-report.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Auto-calculate on input change
+        ['costPrice', 'sellingPrice', 'quantity'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                const cost = document.getElementById('costPrice').value;
+                const price = document.getElementById('sellingPrice').value;
+                if (cost && price) {
+                    calculateProfit();
+                }
+            });
+        });
+    </script>
+}

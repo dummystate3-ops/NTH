@@ -1,0 +1,444 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Cryptography Tool",
+    "applicationCategory": "EducationalApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "educationalUse": "Learning basic cryptography concepts",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-lock text-primary"></i> Cryptography Tool
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Encode and decode messages using classic ciphers
+        </p>
+        <div class="mt-3 inline-block bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-4 py-2 rounded-lg text-sm">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <strong>Educational Purpose Only:</strong> These are basic historical ciphers and not suitable for real encryption.
+        </div>
+    </div>
+
+    <!-- Cipher Type Selector -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            Select Cipher Type
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="selectCipher('caesar')" id="btnCaesar" class="cipher-btn active px-4 py-3 rounded-lg font-medium transition-all">
+                <div class="text-lg font-bold">Caesar Cipher</div>
+                <div class="text-sm">Shift letters by a fixed amount</div>
+            </button>
+            <button onclick="selectCipher('substitution')" id="btnSubstitution" class="cipher-btn px-4 py-3 rounded-lg font-medium transition-all">
+                <div class="text-lg font-bold">Substitution Cipher</div>
+                <div class="text-sm">Replace each letter with another</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mode Selector -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            Select Mode
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="selectMode('encode')" id="btnEncode" class="mode-btn active px-4 py-3 rounded-lg font-medium transition-all">
+                <i class="fas fa-lock text-lg mr-2"></i> Encode (Encrypt)
+            </button>
+            <button onclick="selectMode('decode')" id="btnDecode" class="mode-btn px-4 py-3 rounded-lg font-medium transition-all">
+                <i class="fas fa-unlock text-lg mr-2"></i> Decode (Decrypt)
+            </button>
+        </div>
+    </div>
+
+    <!-- Caesar Cipher Settings -->
+    <div id="caesarSettings" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Caesar Cipher Settings
+        </h2>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Shift Value (1-25)
+            </label>
+            <input type="number" id="caesarShift" min="1" max="25" value="3" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Number of positions to shift each letter (e.g., 3 = A→D, B→E)</p>
+        </div>
+    </div>
+
+    <!-- Substitution Cipher Settings -->
+    <div id="substitutionSettings" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 hidden">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Substitution Cipher Settings
+        </h2>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Substitution Key (26 unique letters)
+            </label>
+            <input type="text" id="substitutionKey" maxlength="26" placeholder="QWERTYUIOPASDFGHJKLZXCVBNM" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary uppercase">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Each letter A-Z maps to the corresponding letter in your key</p>
+            <button onclick="generateRandomKey()" class="mt-2 text-sm text-primary hover:text-blue-600 font-medium">
+                <i class="fas fa-random mr-1"></i> Generate Random Key
+            </button>
+        </div>
+        <div class="bg-blue-50 dark:bg-gray-700 rounded-lg p-3">
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Key Mapping Preview:</p>
+            <div id="keyPreview" class="text-xs font-mono text-gray-600 dark:text-gray-400">
+                A→Q B→W C→E D→R T→Y...
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Enter Your Message
+        </h2>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <span id="inputLabel">Plain Text</span>
+            </label>
+            <textarea id="inputText" rows="4" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="Enter your message here..."></textarea>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Letters will be processed; numbers and special characters remain unchanged</p>
+        </div>
+
+        <button onclick="processMessage()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">
+            <i class="fas fa-key mr-2"></i> <span id="processBtn">Encode Message</span>
+        </button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="hidden">
+        <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-check-circle text-secondary"></i> Result
+            </h2>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-semibold text-gray-800 dark:text-white"><span id="outputLabel">Encoded Text:</span></h3>
+                    <button onclick="copyResult()" class="text-sm text-primary hover:text-blue-600 font-medium">
+                        <i class="fas fa-copy mr-1"></i> Copy
+                    </button>
+                </div>
+                <div id="outputText" class="bg-gray-50 dark:bg-gray-700 rounded p-3 font-mono text-lg break-all">
+                    <!-- Result will be displayed here -->
+                </div>
+            </div>
+
+            <div id="detailsDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                <!-- Details will be displayed here -->
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_SocialSharing")
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            About Cryptography Ciphers
+        </h2>
+        <div class="space-y-4 text-gray-600 dark:text-gray-300">
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">
+                    <i class="fas fa-arrows-alt-h text-primary mr-2"></i>Caesar Cipher
+                </h3>
+                <p class="mb-2">Named after Julius Caesar, who used it for military communications. Each letter is shifted by a fixed number of positions in the alphabet.</p>
+                <p class="text-sm"><strong>Example:</strong> With shift 3, "HELLO" becomes "KHOOR" (H→K, E→H, L→O, L→O, O→R)</p>
+                <p class="text-sm mt-1"><strong>History:</strong> One of the oldest and simplest encryption techniques, dating back to 100 BC.</p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">
+                    <i class="fas fa-exchange-alt text-secondary mr-2"></i>Substitution Cipher
+                </h3>
+                <p class="mb-2">Each letter in the alphabet is mapped to another letter according to a substitution key. More secure than Caesar cipher.</p>
+                <p class="text-sm"><strong>Example:</strong> With key "QWERTYUIOPASDFGHJKLZXCVBNM", "HELLO" becomes "ITSSG"</p>
+                <p class="text-sm mt-1"><strong>Variations:</strong> Includes famous ciphers like the Pigpen cipher and various military codes.</p>
+            </div>
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                <h3 class="font-semibold text-red-800 dark:text-red-300 mb-2">
+                    <i class="fas fa-shield-alt mr-2"></i>Security Warning
+                </h3>
+                <ul class="list-disc list-inside space-y-1 text-sm text-red-700 dark:text-red-300">
+                    <li>These classical ciphers are <strong>NOT SECURE</strong> by modern standards</li>
+                    <li>They can be easily broken using frequency analysis and computational methods</li>
+                    <li>Use only for educational purposes and learning cryptography concepts</li>
+                    <li>For real encryption needs, use modern algorithms like AES, RSA, or established libraries</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let currentCipher = 'caesar';
+    let currentMode = 'encode';
+
+    // Select cipher type
+    function selectCipher(cipher) {
+        currentCipher = cipher;
+        
+        // Update button styles
+        document.querySelectorAll('.cipher-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById('btn' + cipher.charAt(0).toUpperCase() + cipher.slice(1)).classList.add('active');
+        
+        // Show/hide settings
+        if (cipher === 'caesar') {
+            document.getElementById('caesarSettings').classList.remove('hidden');
+            document.getElementById('substitutionSettings').classList.add('hidden');
+        } else {
+            document.getElementById('caesarSettings').classList.add('hidden');
+            document.getElementById('substitutionSettings').classList.remove('hidden');
+        }
+        
+        // Hide results
+        document.getElementById('results').classList.add('hidden');
+    }
+
+    // Select mode
+    function selectMode(mode) {
+        currentMode = mode;
+        
+        // Update button styles
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById('btn' + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add('active');
+        
+        // Update labels
+        document.getElementById('inputLabel').textContent = mode === 'encode' ? 'Plain Text' : 'Encoded Text';
+        document.getElementById('outputLabel').textContent = mode === 'encode' ? 'Encoded Text:' : 'Decoded Text:';
+        document.getElementById('processBtn').textContent = mode === 'encode' ? 'Encode Message' : 'Decode Message';
+        
+        // Hide results
+        document.getElementById('results').classList.add('hidden');
+    }
+
+    // Generate random substitution key
+    function generateRandomKey() {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        // Fisher-Yates shuffle
+        for (let i = alphabet.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [alphabet[i], alphabet[j]] = [alphabet[j], alphabet[i]];
+        }
+        const key = alphabet.join('');
+        document.getElementById('substitutionKey').value = key;
+        updateKeyPreview(key);
+    }
+
+    // Update key preview
+    function updateKeyPreview(key) {
+        if (!key || key.length !== 26) {
+            document.getElementById('keyPreview').textContent = 'Enter a 26-letter key to see mapping';
+            return;
+        }
+        
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let preview = '';
+        for (let i = 0; i < 26; i++) {
+            preview += alphabet[i] + '→' + key[i].toUpperCase() + ' ';
+            if ((i + 1) % 13 === 0) preview += '<br>';
+        }
+        document.getElementById('keyPreview').innerHTML = preview;
+    }
+
+    // Listen for key changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const keyInput = document.getElementById('substitutionKey');
+        if (keyInput) {
+            keyInput.addEventListener('input', function() {
+                updateKeyPreview(this.value);
+            });
+        }
+    });
+
+    // Caesar cipher encode/decode
+    function caesarCipher(text, shift, decode = false) {
+        if (decode) shift = 26 - shift; // Reverse shift for decoding
+        
+        return text.split('').map(char => {
+            if (char.match(/[a-z]/i)) {
+                const code = char.charCodeAt(0);
+                const isUpper = code >= 65 && code <= 90;
+                const base = isUpper ? 65 : 97;
+                return String.fromCharCode(((code - base + shift) % 26) + base);
+            }
+            return char;
+        }).join('');
+    }
+
+    // Substitution cipher encode/decode
+    function substitutionCipher(text, key, decode = false) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const upperKey = key.toUpperCase();
+        
+        return text.split('').map(char => {
+            if (char.match(/[a-z]/i)) {
+                const isUpper = char === char.toUpperCase();
+                const upperChar = char.toUpperCase();
+                const index = decode ? upperKey.indexOf(upperChar) : alphabet.indexOf(upperChar);
+                
+                if (index === -1) return char; // Character not found
+                
+                const newChar = decode ? alphabet[index] : upperKey[index];
+                return isUpper ? newChar : newChar.toLowerCase();
+            }
+            return char;
+        }).join('');
+    }
+
+    // Process message
+    function processMessage() {
+        const inputText = document.getElementById('inputText').value;
+        
+        if (!inputText.trim()) {
+            alert('Please enter a message to process.');
+            return;
+        }
+        
+        let outputText = '';
+        let details = '';
+        
+        if (currentCipher === 'caesar') {
+            const shift = parseInt(document.getElementById('caesarShift').value);
+            
+            if (isNaN(shift) || shift < 1 || shift > 25) {
+                alert('Please enter a valid shift value between 1 and 25.');
+                return;
+            }
+            
+            outputText = caesarCipher(inputText, shift, currentMode === 'decode');
+            
+            details = `
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Details:</h3>
+                <ul class="space-y-1 text-sm">
+                    <li><strong>Cipher:</strong> Caesar Cipher</li>
+                    <li><strong>Mode:</strong> ${currentMode === 'encode' ? 'Encode (Encrypt)' : 'Decode (Decrypt)'}</li>
+                    <li><strong>Shift:</strong> ${shift}</li>
+                    <li><strong>Input Length:</strong> ${inputText.length} characters</li>
+                    <li><strong>Output Length:</strong> ${outputText.length} characters</li>
+                </ul>
+            `;
+        } else {
+            const key = document.getElementById('substitutionKey').value.toUpperCase();
+            
+            if (!key || key.length !== 26) {
+                alert('Please enter a 26-letter substitution key.');
+                return;
+            }
+            
+            // Validate key has all unique letters
+            const uniqueChars = new Set(key.split(''));
+            if (uniqueChars.size !== 26 || !/^[A-Z]{26}$/.test(key)) {
+                alert('Substitution key must contain exactly 26 unique letters (A-Z).');
+                return;
+            }
+            
+            outputText = substitutionCipher(inputText, key, currentMode === 'decode');
+            
+            details = `
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Details:</h3>
+                <ul class="space-y-1 text-sm mb-3">
+                    <li><strong>Cipher:</strong> Substitution Cipher</li>
+                    <li><strong>Mode:</strong> ${currentMode === 'encode' ? 'Encode (Encrypt)' : 'Decode (Decrypt)'}</li>
+                    <li><strong>Key:</strong> ${key}</li>
+                    <li><strong>Input Length:</strong> ${inputText.length} characters</li>
+                    <li><strong>Output Length:</strong> ${outputText.length} characters</li>
+                </ul>
+                <div class="text-xs font-mono bg-gray-50 dark:bg-gray-700 rounded p-2">
+                    ${generateKeyMapping(key)}
+                </div>
+            `;
+        }
+        
+        document.getElementById('outputText').textContent = outputText;
+        document.getElementById('detailsDisplay').innerHTML = details;
+        
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Generate key mapping display
+    function generateKeyMapping(key) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let html = '<div class="grid grid-cols-13 gap-1">';
+        for (let i = 0; i < 26; i++) {
+            html += `<span>${alphabet[i]}→${key[i]}</span>`;
+        }
+        html += '</div>';
+        return html;
+    }
+
+    // Copy result to clipboard
+    function copyResult() {
+        const text = document.getElementById('outputText').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        }).catch(err => {
+            alert('Failed to copy text: ' + err);
+        });
+    }
+</script>
+
+<style>
+    .cipher-btn, .mode-btn {
+        background: #f3f4f6;
+        border: 2px solid transparent;
+        color: #4b5563;
+    }
+    
+    .cipher-btn:hover, .mode-btn:hover {
+        background: #e5e7eb;
+        transform: translateY(-2px);
+    }
+    
+    .cipher-btn.active, .mode-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+        border-color: #4A90E2;
+    }
+    
+    .dark .cipher-btn, .dark .mode-btn {
+        background: #374151;
+        color: #d1d5db;
+    }
+    
+    .dark .cipher-btn:hover, .dark .mode-btn:hover {
+        background: #4b5563;
+    }
+    
+    .dark .cipher-btn.active, .dark .mode-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+    }
+</style>
+}

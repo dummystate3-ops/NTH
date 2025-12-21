@@ -1,0 +1,237 @@
+@model NovaToolsHub.Models.SharedQuizResponse
+@{
+    ViewData["Title"] = Model.Title + " - Take Quiz";
+    ViewData["Description"] = Model.Description ?? $"Take the \"{Model.Title}\" quiz and test your knowledge!";
+}
+
+<div class="max-w-3xl mx-auto">
+    <!-- Quiz Header -->
+    <div class="card p-6 mb-6">
+        <div class="flex items-start justify-between mb-4">
+            <div>
+                <h1 class="text-2xl font-bold text-[var(--color-text)]">@Model.Title</h1>
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <p class="text-[var(--color-text-light)] mt-2">@Model.Description</p>
+                }
+            </div>
+            <div class="text-right text-sm text-[var(--color-text-light)]">
+                <div>@Model.Questions.Count questions</div>
+                @if (Model.TimesPlayed > 0)
+                {
+                    <div>@Model.TimesPlayed plays</div>
+                    <div>Avg: @Model.AverageScore%</div>
+                }
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div id="quizProgress" class="mb-4">
+            <div class="flex justify-between text-sm mb-1">
+                <span>Question <span id="currentQ">1</span> of @Model.Questions.Count</span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div id="progressBar" class="bg-[var(--color-primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Display -->
+    <div id="questionContainer" class="card p-6">
+        <div id="questionDisplay"></div>
+    </div>
+
+    <!-- Results -->
+    <div id="resultsContainer" class="card p-6 hidden">
+        <div class="text-center">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold mb-2">Quiz Complete!</h2>
+            <p class="text-4xl font-bold text-[var(--color-primary)] mb-2">
+                <span id="finalScore">0</span>/@Model.Questions.Count
+            </p>
+            <p class="text-xl text-[var(--color-text-light)] mb-6">
+                <span id="percentage">0</span>% correct
+            </p>
+            
+            <div id="feedbackMessage" class="mb-6 text-lg"></div>
+
+            <div class="flex justify-center gap-4">
+                <button onclick="restartQuiz()" class="btn btn-primary">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Try Again
+                </button>
+                <a href="/Academic/QuizBuilder" class="btn btn-secondary">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Create Your Own
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share This Quiz -->
+    <div class="card p-4 mt-6">
+        <div class="flex items-center justify-between">
+            <span class="text-sm text-[var(--color-text-light)]">Share this quiz:</span>
+            <div class="flex items-center gap-2">
+                <input type="text" id="shareUrl" value="@Context.Request.Scheme://@Context.Request.Host/Quiz/Take/@Model.ShareCode" 
+                       readonly class="text-sm px-3 py-1 rounded border border-[var(--color-border)] bg-[var(--color-surface)] w-64">
+                <button onclick="copyShareUrl()" class="btn-secondary text-sm px-3 py-1">
+                    📋 Copy
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const quizData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Questions));
+        const shareCode = '@Model.ShareCode';
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        function init() {
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentIndex >= quizData.length) {
+                showResults();
+                return;
+            }
+
+            const q = quizData[currentIndex];
+            document.getElementById('currentQ').textContent = currentIndex + 1;
+            
+            const progress = ((currentIndex) / quizData.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            answered = false;
+            document.getElementById('questionDisplay').innerHTML = `
+                <h3 class="text-lg font-semibold mb-4">${escapeHtml(q.text)}</h3>
+                <div class="space-y-3">
+                    ${q.options.map((opt, idx) => `
+                        <button onclick="selectAnswer(${idx})" id="option-${idx}"
+                                class="w-full text-left px-4 py-3 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-bg)] hover:border-[var(--color-primary)] transition-all">
+                            <span class="font-semibold mr-2">${String.fromCharCode(65 + idx)}.</span>
+                            ${escapeHtml(opt)}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectAnswer(selectedIdx) {
+            if (answered) return;
+            answered = true;
+
+            const q = quizData[currentIndex];
+            const isCorrect = selectedIdx === q.correctAnswer;
+
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+
+            // Highlight correct and wrong answers
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`option-${idx}`);
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-[var(--color-bg)]', 'hover:border-[var(--color-primary)]');
+                
+                if (idx === q.correctAnswer) {
+                    btn.classList.add('bg-green-100', 'dark:bg-green-900', 'border-green-500', 'text-green-800', 'dark:text-green-200');
+                } else if (idx === selectedIdx) {
+                    btn.classList.add('bg-red-100', 'dark:bg-red-900', 'border-red-500', 'text-red-800', 'dark:text-red-200');
+                }
+            });
+
+            // Auto-advance after delay
+            setTimeout(() => {
+                currentIndex++;
+                showQuestion();
+            }, 1500);
+        }
+
+        function showResults() {
+            document.getElementById('questionContainer').classList.add('hidden');
+            document.getElementById('quizProgress').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('progressBar').style.width = '100%';
+
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('percentage').textContent = percentage;
+
+            // Feedback message
+            let message = '';
+            if (percentage === 100) {
+                message = '🏆 Perfect score! You\'re a genius!';
+            } else if (percentage >= 80) {
+                message = '🌟 Excellent work! You really know your stuff!';
+            } else if (percentage >= 60) {
+                message = '👍 Good job! Keep learning!';
+            } else if (percentage >= 40) {
+                message = '📚 Not bad, but there\'s room for improvement.';
+            } else {
+                message = '💪 Keep practicing, you\'ll get better!';
+            }
+            document.getElementById('feedbackMessage').textContent = message;
+
+            // Submit result to server
+            submitResult();
+        }
+
+        function submitResult() {
+            fetch('/Quiz/SubmitResult', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify({
+                    shareCode: shareCode,
+                    correctAnswers: score,
+                    totalQuestions: quizData.length
+                })
+            }).catch(console.error);
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            score = 0;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('questionContainer').classList.remove('hidden');
+            document.getElementById('quizProgress').classList.remove('hidden');
+            document.getElementById('resultsContainer').classList.add('hidden');
+            showQuestion();
+        }
+
+        function copyShareUrl() {
+            const input = document.getElementById('shareUrl');
+            input.select();
+            document.execCommand('copy');
+            
+            // Show feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => btn.textContent = originalText, 2000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Init
+        init();
+    </script>
+}

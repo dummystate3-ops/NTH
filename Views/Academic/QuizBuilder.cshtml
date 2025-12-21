@@ -1,0 +1,819 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "SoftwareApplication",
+        "name": "Online Quiz Builder",
+        "applicationCategory": "EducationalApplication",
+        "description": "Create custom quizzes and assessments for teaching and learning"
+    }
+    </script>
+    <style>
+        .question-card {
+            transition: all 0.2s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            transform: scale(1.02);
+        }
+        .edit-mode {
+            animation: pulse-border 2s infinite;
+        }
+        @@keyframes pulse-border {
+            0%, 100% { border-color: var(--color-primary); }
+            50% { border-color: var(--color-secondary); }
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">📝</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Quiz Builder</h1>
+            <p class="text-xl opacity-90 mb-6">Create interactive quizzes and share them with anyone</p>
+            <div class="flex flex-wrap justify-center gap-4 text-sm">
+                <div class="flex items-center gap-2 bg-white/15 rounded-full px-4 py-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Multiple Choice
+                </div>
+                <div class="flex items-center gap-2 bg-white/15 rounded-full px-4 py-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                    Shareable Links
+                </div>
+                <div class="flex items-center gap-2 bg-white/15 rounded-full px-4 py-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Track Results
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-[var(--color-bg)]">
+    <div class="container-custom max-w-7xl">
+        @Html.AntiForgeryToken()
+        
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            
+            <!-- Main Builder Area -->
+            <div class="xl:col-span-3 space-y-6">
+                
+                <!-- Quiz Info Card -->
+                <div class="card p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] flex items-center justify-center text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold">Quiz Details</h2>
+                            <p class="text-sm text-[var(--color-text-light)]">Give your quiz a name and description</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="quizTitle" class="block text-sm font-medium mb-2">
+                                Quiz Title <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="quizTitle" 
+                                   class="w-full px-4 py-3 border-2 border-[var(--color-border)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] dark:bg-gray-800 transition-all"
+                                   placeholder="e.g., World Geography Quiz">
+                        </div>
+                        <div>
+                            <label for="quizDescription" class="block text-sm font-medium mb-2">Description</label>
+                            <input type="text" id="quizDescription"
+                                   class="w-full px-4 py-3 border-2 border-[var(--color-border)] rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] dark:bg-gray-800 transition-all"
+                                   placeholder="Brief description of this quiz">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Question Card -->
+                <div id="questionFormCard" class="card p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div id="formIcon" class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-accent)] flex items-center justify-center text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            </div>
+                            <div>
+                                <h2 id="formTitle" class="text-xl font-bold">Add Question</h2>
+                                <p id="formSubtitle" class="text-sm text-[var(--color-text-light)]">Create a multiple choice question</p>
+                            </div>
+                        </div>
+                        <button id="cancelEditBtn" onclick="cancelEdit()" class="hidden px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition-colors">
+                            ✕ Cancel
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="questionText" class="block text-sm font-medium mb-2">
+                                Question <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="questionText" rows="2"
+                                      class="w-full px-4 py-3 border-2 border-[var(--color-border)] rounded-xl focus:ring-2 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] dark:bg-gray-800 transition-all resize-none"
+                                      placeholder="Enter your question here..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-3">
+                                Answer Options <span class="text-red-500">*</span>
+                                <span class="text-[var(--color-text-light)] font-normal ml-2">(Select the correct answer)</span>
+                            </label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="flex items-center gap-3 p-3 border-2 border-[var(--color-border)] rounded-xl hover:border-[var(--color-secondary)] transition-all group">
+                                    <input type="radio" name="correctAnswer" value="0" id="correct0" checked 
+                                           class="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]">
+                                    <span class="font-bold text-[var(--color-primary)] w-6">A</span>
+                                    <input type="text" id="option0" 
+                                           class="flex-1 px-3 py-2 bg-transparent border-0 focus:ring-0 placeholder-gray-400" 
+                                           placeholder="Option A">
+                                </div>
+                                <div class="flex items-center gap-3 p-3 border-2 border-[var(--color-border)] rounded-xl hover:border-[var(--color-secondary)] transition-all group">
+                                    <input type="radio" name="correctAnswer" value="1" id="correct1"
+                                           class="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]">
+                                    <span class="font-bold text-[var(--color-secondary)] w-6">B</span>
+                                    <input type="text" id="option1" 
+                                           class="flex-1 px-3 py-2 bg-transparent border-0 focus:ring-0 placeholder-gray-400" 
+                                           placeholder="Option B">
+                                </div>
+                                <div class="flex items-center gap-3 p-3 border-2 border-[var(--color-border)] rounded-xl hover:border-[var(--color-secondary)] transition-all group">
+                                    <input type="radio" name="correctAnswer" value="2" id="correct2"
+                                           class="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]">
+                                    <span class="font-bold text-[var(--color-accent)] w-6">C</span>
+                                    <input type="text" id="option2" 
+                                           class="flex-1 px-3 py-2 bg-transparent border-0 focus:ring-0 placeholder-gray-400" 
+                                           placeholder="Option C">
+                                </div>
+                                <div class="flex items-center gap-3 p-3 border-2 border-[var(--color-border)] rounded-xl hover:border-[var(--color-secondary)] transition-all group">
+                                    <input type="radio" name="correctAnswer" value="3" id="correct3"
+                                           class="w-5 h-5 text-[var(--color-secondary)] focus:ring-[var(--color-secondary)]">
+                                    <span class="font-bold text-[var(--color-warning)] w-6">D</span>
+                                    <input type="text" id="option3" 
+                                           class="flex-1 px-3 py-2 bg-transparent border-0 focus:ring-0 placeholder-gray-400" 
+                                           placeholder="Option D">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="addQuestionBtn" onclick="addOrUpdateQuestion()" 
+                                class="w-full py-3 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-accent)] hover:opacity-90 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
+                            <svg id="addBtnIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                            <span id="addQuestionBtnText">Add Question</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Questions List -->
+                <div class="card p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] flex items-center justify-center text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold">Questions</h2>
+                                <p id="questionCount" class="text-sm text-[var(--color-text-light)]">0 questions added</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="questionsContainer" class="space-y-4">
+                        <div class="text-center py-12 text-[var(--color-text-light)]">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="text-lg font-medium">No questions yet</p>
+                            <p class="text-sm">Add your first question above to get started</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="xl:col-span-1">
+                <div class="sticky top-20 space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto">
+                
+                <!-- Actions Card -->
+                <div class="card p-5">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Actions
+                    </h3>
+                    <div class="space-y-3">
+                        <button id="shareBtn" onclick="shareQuiz()" 
+                                class="action-btn w-full py-3 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-success)] hover:opacity-90 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                            Share Online
+                        </button>
+                        <button onclick="saveQuiz()" 
+                                class="action-btn w-full py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] hover:opacity-90 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                            Save Locally
+                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="exportQuiz()" 
+                                    class="action-btn py-2.5 border-2 border-[var(--color-border)] rounded-xl hover:bg-[var(--color-bg)] transition-all flex items-center justify-center gap-1 text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                Export
+                            </button>
+                            <label class="action-btn py-2.5 border-2 border-[var(--color-border)] rounded-xl hover:bg-[var(--color-bg)] transition-all flex items-center justify-center gap-1 text-sm cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Import
+                                <input type="file" id="importFile" accept=".json" class="hidden" onchange="importQuiz()">
+                            </label>
+                        </div>
+                        <button onclick="clearBuilder()" 
+                                class="w-full py-2.5 text-red-600 border-2 border-red-200 dark:border-red-800 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all flex items-center justify-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Saved Quizzes -->
+                <div class="card p-5">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-[var(--color-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                        Saved Quizzes
+                    </h3>
+                    <div id="savedQuizzesList" class="space-y-3 max-h-64 overflow-y-auto">
+                        <p class="text-sm text-[var(--color-text-light)] text-center py-4">No saved quizzes</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Taking Mode -->
+        <div id="quizMode" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-[var(--color-surface)] rounded-2xl shadow-2xl w-full max-w-xl lg:max-w-2xl border border-[var(--color-border)] overflow-hidden flex flex-col" style="max-height: calc(100vh - 3rem);">
+                <div class="px-5 py-4 border-b border-[var(--color-border)] flex-shrink-0">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-xs uppercase text-[var(--color-text-light)] tracking-wide">Interactive Quiz</p>
+                            <h2 id="quizModeTitle" class="text-2xl font-bold text-[var(--color-text-dark)]"></h2>
+                        </div>
+                        <button onclick="exitQuizMode()" class="p-2 hover:bg-[var(--color-bg)] rounded-lg transition-colors" aria-label="Close quiz window">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Question <span id="currentQ">1</span> of <span id="totalQ">0</span></span>
+                            <span class="font-semibold">Score: <span id="score" class="text-[var(--color-secondary)]">0</span></span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div id="progressBar" class="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="questionDisplay" class="p-5 overflow-y-auto flex-grow bg-[var(--color-bg)]"></div>
+                <div id="quizResults" class="hidden p-5 overflow-y-auto flex-grow bg-[var(--color-bg)]"></div>
+            </div>
+        </div>
+
+        <!-- Share Modal -->
+        <div id="shareModal" class="hidden fixed inset-0 bg-black/55 z-50 flex items-center justify-center p-4">
+            <div class="bg-[var(--color-surface)] rounded-2xl shadow-2xl w-full max-w-lg p-6 border border-[var(--color-border)]">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[var(--color-secondary)]/15">
+                        <svg class="w-8 h-8 text-[var(--color-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold">Quiz Shared!</h3>
+                        <p class="text-sm text-[var(--color-text-light)] mt-1">Send the link or share code so others can start the quiz instantly.</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Share Link</label>
+                        <div class="flex flex-col gap-2 sm:flex-row">
+                            <input type="text" id="shareUrl" readonly 
+                                   class="flex-1 px-4 py-3 border-2 border-[var(--color-border)] rounded-xl bg-[var(--color-bg)] text-sm font-mono">
+                            <div class="flex gap-2 sm:w-auto w-full">
+                                <button onclick="copyShareUrl()" id="copyBtn" class="flex-1 px-4 py-3 bg-[var(--color-primary)] hover:opacity-90 text-white rounded-xl transition-colors whitespace-nowrap">Copy</button>
+                                <a id="takeQuizLink" href="#" target="_blank" class="flex-1 px-4 py-3 border-2 border-[var(--color-primary)] text-[var(--color-primary)] rounded-xl font-semibold hover:bg-[var(--color-bg)] text-center whitespace-nowrap">Open</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg)] p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs uppercase tracking-wide text-[var(--color-text-light)]">Share Code</p>
+                            <p id="shareCode" class="text-3xl font-mono font-bold text-[var(--color-primary)]"></p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-xs font-semibold">6 Characters</span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button onclick="closeShareModal()" class="flex-1 py-3 bg-[var(--color-primary)] text-white font-semibold rounded-xl hover:opacity-90 transition-colors">Done</button>
+                        <button onclick="continueEditingQuiz()" class="flex-1 py-3 border-2 border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)] transition-colors font-semibold">Continue Editing</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let currentQuiz = { title: '', description: '', questions: [] };
+        let savedQuizzes = JSON.parse(localStorage.getItem('quizzes') || '[]');
+        let quizState = { currentIndex: 0, score: 0, answers: [], quiz: null };
+        let editingQuestionId = null;
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSavedQuizzes();
+            updateQuestionCount();
+        });
+
+        function updateQuestionCount() {
+            const count = currentQuiz.questions.length;
+            document.getElementById('questionCount').textContent = 
+                count === 0 ? '0 questions added' : 
+                count === 1 ? '1 question added' : 
+                `${count} questions added`;
+        }
+
+        function addOrUpdateQuestion() {
+            const text = document.getElementById('questionText').value.trim();
+            const options = [
+                document.getElementById('option0').value.trim(),
+                document.getElementById('option1').value.trim(),
+                document.getElementById('option2').value.trim(),
+                document.getElementById('option3').value.trim()
+            ].filter(opt => opt !== '');
+
+            const correctAnswer = parseInt(document.querySelector('input[name="correctAnswer"]:checked').value);
+
+            if (!text) {
+                alert('Please enter a question');
+                document.getElementById('questionText').focus();
+                return;
+            }
+            
+            if (options.length < 2) {
+                alert('Please enter at least 2 answer options');
+                return;
+            }
+
+            if (correctAnswer >= options.length) {
+                alert('Please select a valid correct answer from the filled options');
+                return;
+            }
+
+            if (editingQuestionId !== null) {
+                const idx = currentQuiz.questions.findIndex(q => q.id === editingQuestionId);
+                if (idx !== -1) {
+                    currentQuiz.questions[idx] = { id: editingQuestionId, text, options, correctAnswer };
+                }
+                cancelEdit();
+            } else {
+                currentQuiz.questions.push({ id: Date.now(), text, options, correctAnswer });
+            }
+
+            clearQuestionForm();
+            renderQuestions();
+            updateQuestionCount();
+        }
+
+        function clearQuestionForm() {
+            document.getElementById('questionText').value = '';
+            document.getElementById('option0').value = '';
+            document.getElementById('option1').value = '';
+            document.getElementById('option2').value = '';
+            document.getElementById('option3').value = '';
+            document.getElementById('correct0').checked = true;
+        }
+
+        function editQuestion(id) {
+            const question = currentQuiz.questions.find(q => q.id === id);
+            if (!question) return;
+
+            editingQuestionId = id;
+            
+            document.getElementById('questionText').value = question.text;
+            document.getElementById('option0').value = question.options[0] || '';
+            document.getElementById('option1').value = question.options[1] || '';
+            document.getElementById('option2').value = question.options[2] || '';
+            document.getElementById('option3').value = question.options[3] || '';
+            document.getElementById(`correct${question.correctAnswer}`).checked = true;
+
+            document.getElementById('formTitle').textContent = 'Edit Question';
+            document.getElementById('formSubtitle').textContent = 'Modify your question and save changes';
+            document.getElementById('addQuestionBtnText').textContent = 'Save Changes';
+            document.getElementById('addBtnIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            document.getElementById('questionFormCard').classList.add('edit-mode');
+            document.getElementById('formIcon').className = 'w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] flex items-center justify-center text-white';
+            document.getElementById('addQuestionBtn').className = 'w-full py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] hover:opacity-90 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl';
+
+            document.getElementById('questionFormCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('questionText').focus();
+        }
+
+        function cancelEdit() {
+            editingQuestionId = null;
+            clearQuestionForm();
+            
+            document.getElementById('formTitle').textContent = 'Add Question';
+            document.getElementById('formSubtitle').textContent = 'Create a multiple choice question';
+            document.getElementById('addQuestionBtnText').textContent = 'Add Question';
+            document.getElementById('addBtnIcon').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>';
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            document.getElementById('questionFormCard').classList.remove('edit-mode');
+            document.getElementById('formIcon').className = 'w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-accent)] flex items-center justify-center text-white';
+            document.getElementById('addQuestionBtn').className = 'w-full py-3 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-accent)] hover:opacity-90 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl';
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            if (currentQuiz.questions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-[var(--color-text-light)]">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-lg font-medium">No questions yet</p>
+                        <p class="text-sm">Add your first question above to get started</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = currentQuiz.questions.map((q, idx) => `
+                <div class="question-card border-2 border-[var(--color-border)] rounded-xl p-5 bg-[var(--color-surface)] ${editingQuestionId === q.id ? 'ring-2 ring-[var(--color-primary)] border-[var(--color-primary)]' : ''}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-start gap-3 flex-1 min-w-0">
+                            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white flex items-center justify-center font-bold text-sm">${idx + 1}</span>
+                            <p class="font-medium text-lg leading-relaxed break-words">${escapeHtml(q.text)}</p>
+                        </div>
+                        <div class="flex items-center gap-1 flex-shrink-0 ml-4">
+                            <button onclick="editQuestion(${q.id})" class="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors" title="Edit question">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
+                            <button onclick="removeQuestion(${q.id})" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors" title="Delete question">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 ml-11">
+                        ${q.options.map((opt, optIdx) => `
+                            <div class="flex items-center gap-2 px-3 py-2 rounded-lg ${optIdx === q.correctAnswer ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 font-medium' : 'bg-gray-100 dark:bg-gray-800'}">
+                                <span class="w-6 h-6 rounded-full ${optIdx === q.correctAnswer ? 'bg-green-500 text-white' : 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300'} flex items-center justify-center text-xs font-bold">${String.fromCharCode(65 + optIdx)}</span>
+                                <span class="text-sm flex-1">${escapeHtml(opt)}</span>
+                                ${optIdx === q.correctAnswer ? '<svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>' : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeQuestion(id) {
+            if (!confirm('Delete this question?')) return;
+            if (editingQuestionId === id) cancelEdit();
+            currentQuiz.questions = currentQuiz.questions.filter(q => q.id !== id);
+            renderQuestions();
+            updateQuestionCount();
+        }
+
+        function saveQuiz() {
+            const title = document.getElementById('quizTitle').value.trim();
+            const description = document.getElementById('quizDescription').value.trim();
+
+            if (!title) {
+                alert('Please add a quiz title');
+                document.getElementById('quizTitle').focus();
+                return;
+            }
+            if (currentQuiz.questions.length === 0) {
+                alert('Please add at least one question');
+                return;
+            }
+
+            const quizToSave = {
+                id: Date.now(),
+                title,
+                description,
+                questions: currentQuiz.questions.map(q => ({...q, options: [...q.options]}))
+            };
+
+            const existingIdx = savedQuizzes.findIndex(q => q.title === title);
+            if (existingIdx !== -1) {
+                if (!confirm('A quiz with this title already exists. Replace it?')) return;
+                savedQuizzes[existingIdx] = quizToSave;
+            } else {
+                savedQuizzes.push(quizToSave);
+            }
+            
+            localStorage.setItem('quizzes', JSON.stringify(savedQuizzes));
+            alert('Quiz saved!');
+            renderSavedQuizzes();
+        }
+
+        async function shareQuiz() {
+            const title = document.getElementById('quizTitle').value.trim();
+            const description = document.getElementById('quizDescription').value.trim();
+
+            if (!title) {
+                alert('Please add a quiz title');
+                document.getElementById('quizTitle').focus();
+                return;
+            }
+            if (currentQuiz.questions.length === 0) {
+                alert('Please add at least one question to share');
+                return;
+            }
+
+            const quizData = {
+                title,
+                description: description || '',
+                questions: currentQuiz.questions.map(q => ({
+                    id: q.id,
+                    text: q.text,
+                    options: q.options,
+                    correctAnswer: q.correctAnswer
+                }))
+            };
+
+            const shareBtn = document.getElementById('shareBtn');
+            const originalContent = shareBtn.innerHTML;
+            shareBtn.disabled = true;
+            shareBtn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Sharing...</span>';
+
+            try {
+                const token = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (!token) throw new Error('Security token not found. Please refresh the page.');
+
+                const response = await fetch('/Quiz/Create', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token.value
+                    },
+                    body: JSON.stringify(quizData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('shareUrl').value = result.shareUrl;
+                    document.getElementById('shareCode').textContent = result.quiz.shareCode;
+                    document.getElementById('takeQuizLink').href = result.shareUrl;
+                    document.getElementById('shareModal').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert('Error sharing quiz: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error sharing quiz: ' + error.message);
+            } finally {
+                shareBtn.disabled = false;
+                shareBtn.innerHTML = originalContent;
+            }
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function continueEditingQuiz() {
+            closeShareModal();
+            const titleInput = document.getElementById('quizTitle');
+            if (titleInput) {
+                requestAnimationFrame(() => titleInput.focus());
+            }
+        }
+
+        function copyShareUrl() {
+            const input = document.getElementById('shareUrl');
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                setTimeout(() => {
+                    btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>';
+                }, 2000);
+            });
+        }
+
+        function renderSavedQuizzes() {
+            const container = document.getElementById('savedQuizzesList');
+            if (savedQuizzes.length === 0) {
+                container.innerHTML = '<p class="text-sm text-[var(--color-text-light)] text-center py-4">No saved quizzes</p>';
+                return;
+            }
+
+            container.innerHTML = savedQuizzes.map(quiz => `
+                <div class="p-3 border-2 border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] transition-all">
+                    <p class="font-semibold text-sm truncate mb-1" title="${escapeHtml(quiz.title)}">${escapeHtml(quiz.title)}</p>
+                    <p class="text-xs text-[var(--color-text-light)] mb-2">${quiz.questions.length} question${quiz.questions.length !== 1 ? 's' : ''}</p>
+                    <div class="flex gap-1">
+                        <button onclick="takeQuiz(${quiz.id})" class="flex-1 text-xs py-1.5 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)]/20 transition-colors font-medium">Play</button>
+                        <button onclick="loadQuiz(${quiz.id})" class="flex-1 text-xs py-1.5 bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] rounded-lg hover:bg-[var(--color-secondary)]/20 transition-colors font-medium">Edit</button>
+                        <button onclick="deleteQuiz(${quiz.id})" class="px-2 text-xs py-1.5 text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadQuiz(id) {
+            const quiz = savedQuizzes.find(q => q.id === id);
+            if (!quiz) return;
+
+            currentQuiz = {
+                id: quiz.id,
+                title: quiz.title,
+                description: quiz.description || '',
+                questions: quiz.questions.map(q => ({ id: q.id, text: q.text, options: [...q.options], correctAnswer: q.correctAnswer }))
+            };
+            
+            document.getElementById('quizTitle').value = currentQuiz.title;
+            document.getElementById('quizDescription').value = currentQuiz.description;
+            cancelEdit();
+            renderQuestions();
+            updateQuestionCount();
+            document.getElementById('quizTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function deleteQuiz(id) {
+            if (!confirm('Delete this quiz?')) return;
+            savedQuizzes = savedQuizzes.filter(q => q.id !== id);
+            localStorage.setItem('quizzes', JSON.stringify(savedQuizzes));
+            renderSavedQuizzes();
+        }
+
+        function clearBuilder() {
+            if (currentQuiz.questions.length === 0 && !document.getElementById('quizTitle').value) return;
+            if (!confirm('Clear everything and start fresh?')) return;
+            currentQuiz = { title: '', description: '', questions: [] };
+            document.getElementById('quizTitle').value = '';
+            document.getElementById('quizDescription').value = '';
+            cancelEdit();
+            renderQuestions();
+            updateQuestionCount();
+        }
+
+        function exportQuiz() {
+            const title = document.getElementById('quizTitle').value.trim();
+            if (!title || currentQuiz.questions.length === 0) {
+                alert('Please create a quiz with a title and questions first');
+                return;
+            }
+            const exportData = { title, description: document.getElementById('quizDescription').value.trim(), questions: currentQuiz.questions };
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${title.replace(/\s+/g, '_')}.json`;
+            a.click();
+        }
+
+        function importQuiz() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const quiz = JSON.parse(e.target.result);
+                    if (!quiz.title || !Array.isArray(quiz.questions)) throw new Error('Invalid format');
+                    currentQuiz = {
+                        title: quiz.title,
+                        description: quiz.description || '',
+                        questions: quiz.questions.map(q => ({ id: q.id || Date.now() + Math.random(), text: q.text, options: q.options, correctAnswer: q.correctAnswer }))
+                    };
+                    document.getElementById('quizTitle').value = currentQuiz.title;
+                    document.getElementById('quizDescription').value = currentQuiz.description;
+                    renderQuestions();
+                    updateQuestionCount();
+                    alert('Quiz imported!');
+                } catch (error) { alert('Invalid quiz file'); }
+            };
+            reader.readAsText(file);
+            document.getElementById('importFile').value = '';
+        }
+
+        function takeQuiz(id) {
+            const quiz = savedQuizzes.find(q => q.id === id);
+            if (!quiz) return;
+            quizState = { currentIndex: 0, score: 0, answers: [], quiz };
+            document.getElementById('quizMode').classList.remove('hidden');
+            document.getElementById('quizModeTitle').textContent = quiz.title;
+            document.getElementById('totalQ').textContent = quiz.questions.length;
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('questionDisplay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const { quiz, currentIndex, score } = quizState;
+            const q = quiz.questions[currentIndex];
+            document.getElementById('currentQ').textContent = currentIndex + 1;
+            document.getElementById('score').textContent = score;
+            document.getElementById('progressBar').style.width = `${(currentIndex / quiz.questions.length) * 100}%`;
+
+            document.getElementById('questionDisplay').innerHTML = `
+                <div class="max-w-3xl mx-auto space-y-5">
+                    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 shadow-sm">
+                        <p class="text-xs uppercase tracking-wide text-[var(--color-text-light)] mb-2">Question ${currentIndex + 1}</p>
+                        <h3 class="text-2xl font-semibold text-[var(--color-text-dark)] leading-snug">${escapeHtml(q.text)}</h3>
+                    </div>
+                    <div class="grid gap-3">
+                        ${q.options.map((opt, idx) => `
+                            <button onclick="answerQuestion(${idx})" class="group w-full text-left px-4 py-4 border-2 border-[var(--color-border)] rounded-xl hover:border-[var(--color-primary)] hover:bg-[var(--color-surface)] transition-all flex items-center gap-3 shadow-sm">
+                                <span class="w-8 h-8 rounded-full bg-[var(--color-bg)] text-[var(--color-text-dark)] flex items-center justify-center font-bold text-sm group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors">${String.fromCharCode(65 + idx)}</span>
+                                <span class="text-[var(--color-text-dark)]">${escapeHtml(opt)}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+
+        function answerQuestion(selectedIdx) {
+            const { quiz, currentIndex } = quizState;
+            if (selectedIdx === quiz.questions[currentIndex].correctAnswer) quizState.score++;
+            quizState.answers.push(selectedIdx);
+            document.getElementById('score').textContent = quizState.score;
+            quizState.currentIndex++;
+            if (quizState.currentIndex < quiz.questions.length) showQuestion();
+            else showResults();
+        }
+
+        function showResults() {
+            const { quiz, score } = quizState;
+            document.getElementById('questionDisplay').classList.add('hidden');
+            document.getElementById('quizResults').classList.remove('hidden');
+            document.getElementById('progressBar').style.width = '100%';
+            
+            const pct = Math.round((score / quiz.questions.length) * 100);
+            let emoji = '🎉', msg = 'Perfect!';
+            if (pct < 100) { emoji = '🌟'; msg = 'Excellent effort!'; }
+            if (pct < 80) { emoji = '👍'; msg = 'Solid performance!'; }
+            if (pct < 60) { emoji = '📚'; msg = 'Keep practicing!'; }
+            if (pct < 40) { emoji = '💪'; msg = 'Give it another go!'; }
+
+            document.getElementById('quizResults').innerHTML = `
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 text-center shadow-sm">
+                        <div class="text-5xl mb-3">${emoji}</div>
+                        <h3 class="text-2xl font-bold mb-2">Quiz Complete!</h3>
+                        <p class="text-[var(--color-text-light)]">${msg}</p>
+                    </div>
+                    <div class="grid gap-4 md:grid-cols-3">
+                        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-center">
+                            <p class="text-xs uppercase tracking-wide text-[var(--color-text-light)]">Total Score</p>
+                            <p class="text-3xl font-bold text-[var(--color-primary)]">${score}/${quiz.questions.length}</p>
+                        </div>
+                        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-center">
+                            <p class="text-xs uppercase tracking-wide text-[var(--color-text-light)]">Accuracy</p>
+                            <p class="text-3xl font-bold text-[var(--color-secondary)]">${pct}%</p>
+                        </div>
+                        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-center">
+                            <p class="text-xs uppercase tracking-wide text-[var(--color-text-light)]">Questions</p>
+                            <p class="text-3xl font-bold text-[var(--color-text-dark)]">${quiz.questions.length}</p>
+                        </div>
+                    </div>
+                    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5">
+                        <p class="text-sm text-[var(--color-text-light)]">Review the questions above or challenge yourself again to improve your mastery.</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <button onclick="takeQuiz(${quiz.id})" class="flex-1 px-6 py-3 bg-[var(--color-primary)] hover:opacity-90 text-white rounded-xl transition-colors font-semibold">Retake Quiz</button>
+                        <button onclick="exitQuizMode()" class="flex-1 px-6 py-3 border-2 border-[var(--color-border)] rounded-xl hover:bg-[var(--color-surface)] transition-colors font-semibold">Close Window</button>
+                    </div>
+                </div>`;
+        }
+
+        function exitQuizMode() {
+            document.getElementById('quizMode').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { closeShareModal(); exitQuizMode(); }
+        });
+    </script>
+}

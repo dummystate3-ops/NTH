@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Dynamic Page Title -->
+    <title>@ViewBag.PageTitle</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="@ViewBag.MetaDescription" />
+    @if (!string.IsNullOrEmpty(ViewBag.CanonicalUrl))
+    {
+        <link rel="canonical" href="@ViewBag.CanonicalUrl" />
+    }
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="@ViewBag.PageTitle" />
+    <meta property="og:description" content="@ViewBag.MetaDescription" />
+    <meta property="og:type" content="@(ViewBag.OgType ?? "website")" />
+    <meta property="og:url" content="@(ViewBag.CanonicalUrl ?? Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path)" />
+    <meta property="og:image" content="@(ViewBag.OgImage ?? "/images/og-default.png")" />
+    <meta property="og:site_name" content="NovaTools Hub" />
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@ViewBag.PageTitle" />
+    <meta name="twitter:description" content="@ViewBag.MetaDescription" />
+    <meta name="twitter:image" content="@(ViewBag.OgImage ?? "/images/og-default.png")" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4A90E2" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="NovaTools Hub" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/images/icons/icon-192x192.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    
+    <!-- JSON-LD Schema -->
+    @if (ViewBag.JsonLdSchema != null)
+    {
+        <script type="application/ld+json">
+            @Html.Raw(ViewBag.JsonLdSchema)
+        </script>
+    }
+    
+    @await RenderSectionAsync("Head", required: false)
+    @await RenderSectionAsync("JsonLd", required: false)
+    
+    <!-- Google Analytics (consent-based) -->
+    @await Html.PartialAsync("_GoogleAnalytics")
+    
+    <!-- Google AdSense (consent-based) -->
+    @await Html.PartialAsync("_AdSenseScript")
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-[var(--color-surface)] shadow-md sticky top-0 z-50 border-b border-[var(--color-border)]">
+        <nav class="container-custom">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a asp-controller="Home" asp-action="Index" class="flex items-center gap-3 text-2xl font-bold no-underline group">
+                        <div class="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-shadow">
+                            <span class="text-sm font-bold">NT</span>
+                        </div>
+                        <span class="text-gradient hidden sm:inline">NovaTools Hub</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center gap-1">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link px-4 py-2 rounded-lg font-medium transition-all hover:bg-[var(--color-bg)]">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            Home
+                        </span>
+                    </a>
+                    
+                    <a asp-controller="Tools" asp-action="Index" class="nav-link px-4 py-2 rounded-lg font-medium transition-all hover:bg-[var(--color-bg)]">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            All Tools
+                        </span>
+                    </a>
+                    
+                    <!-- Categories Mega Menu -->
+                    <div class="relative group">
+                        <button class="nav-link px-4 py-2 rounded-lg font-medium transition-all hover:bg-[var(--color-bg)] flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                            </svg>
+                            Categories
+                            <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        @await Html.PartialAsync("_Navigation")
+                    </div>
+                    
+                    <a asp-controller="Blog" asp-action="Index" class="nav-link px-4 py-2 rounded-lg font-medium transition-all hover:bg-[var(--color-bg)]">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                            </svg>
+                            Blog
+                        </span>
+                    </a>
+                    
+                    <a asp-controller="Home" asp-action="About" class="nav-link px-4 py-2 rounded-lg font-medium transition-all hover:bg-[var(--color-bg)]">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            About
+                        </span>
+                    </a>
+                    
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle p-2 rounded-lg hover:bg-[var(--color-bg)] transition-colors" aria-label="Toggle theme">
+                        <svg class="sun-icon w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <svg class="moon-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path class="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path class="close-icon hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden lg:hidden border-t border-[var(--color-border)] max-h-[70vh] overflow-y-auto">
+                <div class="flex flex-col gap-1 p-4">
+                    <a asp-controller="Home" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                        <svg class="w-5 h-5 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="font-medium">Home</span>
+                    </a>
+                    
+                    <a asp-controller="Tools" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                        <svg class="w-5 h-5 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        <span class="font-medium">All Tools</span>
+                    </a>
+                    
+                    <a asp-controller="Blog" asp-action="Index" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                        <svg class="w-5 h-5 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                        </svg>
+                        <span class="font-medium">Blog</span>
+                    </a>
+                    
+                    <a asp-controller="Home" asp-action="About" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                        <svg class="w-5 h-5 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="font-medium">About</span>
+                    </a>
+                    
+                    <a asp-controller="Home" asp-action="Contact" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                        <svg class="w-5 h-5 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="font-medium">Contact</span>
+                    </a>
+                    
+                    <a asp-controller="Home" asp-action="Privacy" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                        <svg class="w-5 h-5 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        <span class="font-medium">Privacy Policy</span>
+                    </a>
+                    
+                    <a asp-controller="Home" asp-action="Terms" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg)] transition-colors">
+                        <svg class="w-5 h-5 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="font-medium">Terms of Service</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        @RenderBody()
+    </main>
+    <!-- Footer -->
+    <footer class="bg-[var(--color-surface)] border-t border-[var(--color-border)] mt-16">
+        <div class="container-custom py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center text-white">
+                            <span class="font-bold">NT</span>
+                        </div>
+                        <span class="text-xl font-bold text-gradient">NovaTools Hub</span>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] text-sm">
+                        Your comprehensive suite of calculators and tools for business, education, and everyday tasks.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h5 class="font-semibold mb-4">Quick Links</h5>
+                    <ul class="space-y-2 text-sm">
+                        <li><a asp-controller="Home" asp-action="Index" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">Home</a></li>
+                        <li><a asp-controller="Home" asp-action="About" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">About Us</a></li>
+                        <li><a asp-controller="Blog" asp-action="Index" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">Blog</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Legal -->
+                <div>
+                    <h5 class="font-semibold mb-4">Legal</h5>
+                    <ul class="space-y-2 text-sm">
+                        <li><a asp-controller="Home" asp-action="Privacy" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">Privacy Policy</a></li>
+                        <li><a asp-controller="Home" asp-action="Terms" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">Terms of Service</a></li>
+                        <li><a href="#" onclick="openCookieSettings(); return false;" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">Cookie Preferences</a></li>
+                        <li><a href="#" class="text-[var(--color-text-medium)] hover:text-[var(--color-primary)]">Disclaimer</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Social -->
+                <div>
+                    <h5 class="font-semibold mb-4">Follow Us</h5>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-lg bg-[var(--color-bg)] flex items-center justify-center hover:bg-[var(--color-primary)] hover:text-white transition-colors" aria-label="Twitter">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-[var(--color-bg)] flex items-center justify-center hover:bg-[var(--color-primary)] hover:text-white transition-colors" aria-label="LinkedIn">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path><circle cx="4" cy="4" r="2"></circle></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-lg bg-[var(--color-bg)] flex items-center justify-center hover:bg-[var(--color-primary)] hover:text-white transition-colors" aria-label="GitHub">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-[var(--color-border)] mt-8 pt-8 text-center text-sm text-[var(--color-text-medium)]">
+                <p>&copy; @DateTime.Now.Year NovaTools Hub. All rights reserved. Built with Aurora Tech design system.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/js/performance.js" asp-append-version="true" defer></script>
+    <script src="~/js/theme.js" asp-append-version="true"></script>
+    <script src="~/js/utils.js" asp-append-version="true"></script>
+    
+    <!-- Mobile Menu Toggle -->
+    <script>
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registered', reg))
+                .catch(err => console.log('Service Worker registration failed', err));
+        }
+    </script>
+
+    <!-- Cookie Consent Banner (GDPR) -->
+    @await Html.PartialAsync("_CookieConsent")
+    @await Html.PartialAsync("_ToastNotifications")
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

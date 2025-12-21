@@ -1,0 +1,442 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "WebPage",
+    "name": "Mathematical Indicator Codes Reference",
+    "description": "@Model.MetaDescription"
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-book text-primary"></i> Mathematical Indicator Codes Reference
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Comprehensive guide to mathematical symbols, notation, and indicator codes
+        </p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center">
+            <i class="fas fa-search text-gray-400 mr-3"></i>
+            <input type="text" id="searchBox" placeholder="Search symbols, codes, or descriptions..." class="flex-1 px-4 py-2 border-0 focus:ring-2 focus:ring-primary rounded-lg dark:bg-gray-700 dark:text-white" oninput="filterSymbols()">
+        </div>
+    </div>
+
+    <!-- Symbol Categories -->
+    <div class="space-y-6">
+        <!-- Basic Operations -->
+        <div class="symbol-category">
+            <div class="bg-gradient-to-r from-primary to-secondary rounded-t-lg p-4">
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-plus-circle mr-2"></i>Basic Operations
+                </h2>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-category="basic">
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">+</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Addition / Plus</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Binary operation for adding two numbers</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a + b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">−</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Subtraction / Minus</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Binary operation for subtracting numbers</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a − b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">×</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Multiplication</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Product of two numbers</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a × b, a · b, or ab</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">÷</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Division</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Quotient of two numbers</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ÷ b, a / b, or a/b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">=</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Equals</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Equality relation</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a = b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">≠</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Not Equal</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Inequality relation</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ≠ b</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison & Inequalities -->
+        <div class="symbol-category">
+            <div class="bg-gradient-to-r from-secondary to-accent rounded-t-lg p-4">
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-balance-scale mr-2"></i>Comparison & Inequalities
+                </h2>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-category="comparison">
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">&lt;</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Less Than</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is smaller than b</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a &lt; b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">&gt;</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Greater Than</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is larger than b</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a &gt; b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">≤</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Less Than or Equal</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is smaller than or equal to b</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ≤ b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">≥</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Greater Than or Equal</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is larger than or equal to b</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ≥ b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">≈</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Approximately Equal</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is approximately equal to b</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ≈ b</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">≡</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Identical / Equivalent</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is identical or equivalent to b</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ≡ b</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Operations -->
+        <div class="symbol-category">
+            <div class="bg-gradient-to-r from-accent to-primary rounded-t-lg p-4">
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-superscript mr-2"></i>Advanced Operations
+                </h2>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-category="advanced">
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-accent mr-4 w-12 text-center">√</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Square Root</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Principal square root</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">√a or a^(1/2)</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-accent mr-4 w-12 text-center">∛</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Cube Root</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Cubic root</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">∛a or a^(1/3)</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-accent mr-4 w-12 text-center">x²</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Exponentiation</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Raise to power</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">x^n or x**n</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-accent mr-4 w-12 text-center">|x|</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Absolute Value</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Distance from zero</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">|x| or abs(x)</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-accent mr-4 w-12 text-center">n!</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Factorial</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Product of integers from 1 to n</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">n! = n × (n-1) × ... × 2 × 1</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-accent mr-4 w-12 text-center">%</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Modulo / Remainder</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Remainder after division</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a mod b or a % b</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Greek Letters & Constants -->
+        <div class="symbol-category">
+            <div class="bg-gradient-to-r from-primary to-accent rounded-t-lg p-4">
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-omega mr-2"></i>Greek Letters & Constants
+                </h2>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-category="greek">
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">π</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Pi</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Ratio of circumference to diameter</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">π ≈ 3.14159...</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">e</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Euler's Number</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Natural logarithm base</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">e ≈ 2.71828...</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">φ</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Golden Ratio (Phi)</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Golden proportion</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">φ = (1 + √5) / 2 ≈ 1.618</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">∞</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Infinity</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Unbounded quantity</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">lim (x→∞)</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">Σ</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Sigma (Summation)</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Sum of a sequence</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">Σ(i=1 to n) aᵢ</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-primary mr-4 w-12 text-center">Π</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Pi (Product)</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Product of a sequence</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">Π(i=1 to n) aᵢ</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Set Theory & Logic -->
+        <div class="symbol-category">
+            <div class="bg-gradient-to-r from-secondary to-primary rounded-t-lg p-4">
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-sitemap mr-2"></i>Set Theory & Logic
+                </h2>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-b-lg shadow-md p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-category="set">
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">∈</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Element Of</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is an element of set A</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ∈ A</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">∉</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Not Element Of</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">a is not an element of set A</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">a ∉ A</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">∪</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Union</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Elements in A or B or both</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">A ∪ B</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">∩</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Intersection</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Elements in both A and B</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">A ∩ B</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">⊂</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Subset</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">A is a subset of B</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">A ⊂ B</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="symbol-item">
+                        <div class="flex items-start">
+                            <div class="text-3xl font-bold text-secondary mr-4 w-12 text-center">∅</div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 dark:text-white">Empty Set</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Set with no elements</p>
+                                <code class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-1 inline-block">∅ or {}</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="hidden text-center py-12">
+        <i class="fas fa-search text-gray-300 text-6xl mb-4"></i>
+        <p class="text-xl text-gray-600 dark:text-gray-400">No symbols found matching your search.</p>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function filterSymbols() {
+        const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+        const categories = document.querySelectorAll('.symbol-category');
+        let visibleCount = 0;
+        
+        categories.forEach(category => {
+            const items = category.querySelectorAll('.symbol-item');
+            let categoryHasVisible = false;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = '';
+                    categoryHasVisible = true;
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Hide category if no items visible
+            category.style.display = categoryHasVisible ? '' : 'none';
+        });
+        
+        // Show/hide no results message
+        document.getElementById('noResults').classList.toggle('hidden', visibleCount > 0);
+    }
+</script>
+}

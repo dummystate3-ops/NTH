@@ -1,0 +1,393 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Expression Evaluator",
+    "applicationCategory": "EducationalApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<!-- Load math.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-function text-primary"></i> Math Expression Evaluator
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Evaluate complex mathematical expressions with advanced functions
+        </p>
+    </div>
+
+    <!-- Input Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Enter Expression
+        </h2>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Mathematical Expression
+            </label>
+            <input type="text" id="expression" class="w-full px-4 py-3 text-lg font-mono border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., sqrt(16) + 2^3 * sin(pi/2)">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Enter any mathematical expression using supported functions</p>
+        </div>
+
+        <!-- Quick Insert Buttons -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Quick Insert
+            </label>
+            <div class="grid grid-cols-4 md:grid-cols-8 gap-2">
+                <button onclick="insertText('sin(')" class="quick-btn">sin</button>
+                <button onclick="insertText('cos(')" class="quick-btn">cos</button>
+                <button onclick="insertText('tan(')" class="quick-btn">tan</button>
+                <button onclick="insertText('sqrt(')" class="quick-btn">√</button>
+                <button onclick="insertText('log(')" class="quick-btn">log</button>
+                <button onclick="insertText('abs(')" class="quick-btn">|x|</button>
+                <button onclick="insertText('pi')" class="quick-btn">π</button>
+                <button onclick="insertText('e')" class="quick-btn">e</button>
+            </div>
+        </div>
+
+        <button onclick="evaluateExpression()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">
+            <i class="fas fa-calculator mr-2"></i> Evaluate Expression
+        </button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="hidden">
+        <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-check-circle text-secondary"></i> Result
+            </h2>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 mb-4">
+                <div class="mb-3">
+                    <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Expression:</h3>
+                    <p id="displayExpression" class="text-lg font-mono text-gray-800 dark:text-white"></p>
+                </div>
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Result:</h3>
+                    <p id="displayResult" class="text-3xl font-bold text-primary"></p>
+                </div>
+            </div>
+
+            <div id="detailsDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                <!-- Additional details will be displayed here -->
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_SocialSharing")
+    </div>
+
+    <!-- History Section -->
+    <div id="history" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
+                <i class="fas fa-history text-primary mr-2"></i>Recent Calculations
+            </h2>
+            <button onclick="clearHistory()" class="text-sm text-red-600 hover:text-red-700 font-medium">
+                <i class="fas fa-trash mr-1"></i> Clear
+            </button>
+        </div>
+        <div id="historyList" class="space-y-2">
+            <!-- History items will be added here -->
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Supported Functions & Operators
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 dark:text-gray-300">
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Basic Operators</h3>
+                <ul class="space-y-1 text-sm">
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">+</code> Addition</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">-</code> Subtraction</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">*</code> Multiplication</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">/</code> Division</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">^</code> or <code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">**</code> Power</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">%</code> Modulo</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Trigonometric Functions</h3>
+                <ul class="space-y-1 text-sm">
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">sin(x)</code> Sine</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">cos(x)</code> Cosine</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">tan(x)</code> Tangent</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">asin(x)</code> Arcsine</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">acos(x)</code> Arccosine</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">atan(x)</code> Arctangent</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Logarithmic & Exponential</h3>
+                <ul class="space-y-1 text-sm">
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">log(x)</code> Natural log (ln)</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">log10(x)</code> Base 10 log</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">exp(x)</code> e^x</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">sqrt(x)</code> Square root</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">cbrt(x)</code> Cube root</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Other Functions</h3>
+                <ul class="space-y-1 text-sm">
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">abs(x)</code> Absolute value</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">ceil(x)</code> Round up</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">floor(x)</code> Round down</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">round(x)</code> Round</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">max(a,b,...)</code> Maximum</li>
+                    <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">min(a,b,...)</code> Minimum</li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-4 bg-blue-50 dark:bg-gray-700 rounded-lg p-4">
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">
+                <i class="fas fa-lightbulb text-accent mr-2"></i>Constants
+            </h3>
+            <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-300">
+                <li><code class="bg-gray-100 dark:bg-gray-600 px-2 py-0.5 rounded">pi</code> or <code class="bg-gray-100 dark:bg-gray-600 px-2 py-0.5 rounded">π</code> = 3.14159...</li>
+                <li><code class="bg-gray-100 dark:bg-gray-600 px-2 py-0.5 rounded">e</code> = 2.71828... (Euler's number)</li>
+            </ul>
+        </div>
+        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            <p><strong>Examples:</strong></p>
+            <ul class="list-disc list-inside mt-2 space-y-1">
+                <li><code>2 + 3 * 4</code> → 14</li>
+                <li><code>sqrt(16) + 2^3</code> → 12</li>
+                <li><code>sin(pi/2) * 10</code> → 10</li>
+                <li><code>log(e^2)</code> → 2</li>
+                <li><code>max(5, 10, 3) + min(8, 2, 6)</code> → 12</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<!-- Math.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+
+<script>
+    let calculationHistory = [];
+
+    // Insert text at cursor position
+    function insertText(text) {
+        const input = document.getElementById('expression');
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const value = input.value;
+        
+        input.value = value.substring(0, start) + text + value.substring(end);
+        input.focus();
+        input.selectionStart = input.selectionEnd = start + text.length;
+    }
+
+    // Evaluate expression using math.js
+    function evaluateExpression() {
+        const expression = document.getElementById('expression').value.trim();
+        
+        if (!expression) {
+            alert('Please enter an expression to evaluate.');
+            return;
+        }
+        
+        try {
+            // Use math.js to safely evaluate the expression
+            // math.js provides a safe evaluation environment
+            const result = math.evaluate(expression);
+            
+            // Format the result
+            let formattedResult;
+            if (typeof result === 'number') {
+                // Round to 10 decimal places to avoid floating point errors
+                formattedResult = Math.abs(result) < 1e-10 ? 0 : Number(result.toFixed(10));
+            } else {
+                formattedResult = result.toString();
+            }
+            
+            // Display results
+            document.getElementById('displayExpression').textContent = expression;
+            document.getElementById('displayResult').textContent = formattedResult;
+            
+            // Display additional details
+            let detailsHtml = '<h3 class="font-semibold text-gray-800 dark:text-white mb-2">Details:</h3><ul class="space-y-1 text-sm">';
+            detailsHtml += `<li><strong>Type:</strong> ${typeof result}</li>`;
+            
+            if (typeof result === 'number') {
+                detailsHtml += `<li><strong>Scientific Notation:</strong> ${result.toExponential(6)}</li>`;
+                if (Number.isInteger(result)) {
+                    detailsHtml += `<li><strong>Is Integer:</strong> Yes</li>`;
+                }
+            }
+            
+            detailsHtml += '</ul>';
+            document.getElementById('detailsDisplay').innerHTML = detailsHtml;
+            
+            // Add to history
+            addToHistory(expression, formattedResult);
+            
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+        } catch (error) {
+            // Display error
+            alert('Error evaluating expression: ' + error.message);
+        }
+    }
+
+    // Add to calculation history
+    function addToHistory(expression, result) {
+        calculationHistory.unshift({ expression, result, timestamp: new Date() });
+        
+        // Keep only last 10 calculations
+        if (calculationHistory.length > 10) {
+            calculationHistory = calculationHistory.slice(0, 10);
+        }
+        
+        // Save to localStorage
+        try {
+            localStorage.setItem('mathHistory', JSON.stringify(calculationHistory));
+        } catch (e) {
+            console.error('Failed to save history:', e);
+        }
+        
+        updateHistoryDisplay();
+    }
+
+    // Update history display
+    function updateHistoryDisplay() {
+        const historyList = document.getElementById('historyList');
+        const historySection = document.getElementById('history');
+        
+        if (calculationHistory.length === 0) {
+            historySection.classList.add('hidden');
+            return;
+        }
+        
+        historySection.classList.remove('hidden');
+        
+        historyList.innerHTML = calculationHistory.map((item, index) => `
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 flex justify-between items-center hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer" onclick="useHistoryItem(${index})">
+                <div class="flex-1">
+                    <div class="font-mono text-sm text-gray-700 dark:text-gray-300">${escapeHtml(item.expression)}</div>
+                    <div class="font-mono text-lg font-bold text-primary">${escapeHtml(item.result.toString())}</div>
+                </div>
+                <button onclick="event.stopPropagation(); deleteHistoryItem(${index})" class="text-red-600 hover:text-red-700 ml-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    // Use history item
+    function useHistoryItem(index) {
+        const item = calculationHistory[index];
+        document.getElementById('expression').value = item.expression;
+        document.getElementById('expression').focus();
+    }
+
+    // Delete history item
+    function deleteHistoryItem(index) {
+        calculationHistory.splice(index, 1);
+        try {
+            localStorage.setItem('mathHistory', JSON.stringify(calculationHistory));
+        } catch (e) {
+            console.error('Failed to save history:', e);
+        }
+        updateHistoryDisplay();
+    }
+
+    // Clear history
+    function clearHistory() {
+        if (confirm('Are you sure you want to clear all calculation history?')) {
+            calculationHistory = [];
+            try {
+                localStorage.removeItem('mathHistory');
+            } catch (e) {
+                console.error('Failed to clear history:', e);
+            }
+            updateHistoryDisplay();
+        }
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Load history on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const saved = localStorage.getItem('mathHistory');
+            if (saved) {
+                calculationHistory = JSON.parse(saved);
+                updateHistoryDisplay();
+            }
+        } catch (e) {
+            console.error('Failed to load history:', e);
+        }
+        
+        // Add Enter key support
+        document.getElementById('expression').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                evaluateExpression();
+            }
+        });
+    });
+</script>
+
+<style>
+    .quick-btn {
+        background: #f3f4f6;
+        border: 1px solid #d1d5db;
+        color: #4b5563;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .quick-btn:hover {
+        background: #4A90E2;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .dark .quick-btn {
+        background: #374151;
+        border-color: #4b5563;
+        color: #d1d5db;
+    }
+    
+    .dark .quick-btn:hover {
+        background: #4A90E2;
+        color: white;
+    }
+</style>
+}

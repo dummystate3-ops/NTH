@@ -1,0 +1,158 @@
+@*
+    Affiliate Links Module
+    Displays relevant affiliate products/services for the current tool
+    
+    Usage:
+    @await Html.PartialAsync("_AffiliateLinks", new { category = "business", keywords = "calculator,finance" })
+*@
+
+@{
+    var category = ViewBag.AffiliateCategory ?? "general";
+    var toolName = ViewBag.PageTitle ?? "Tool";
+}
+
+<div class="affiliate-container card mt-8 border-l-4 border-[var(--color-accent)]">
+    <div class="flex items-start gap-3 mb-4">
+        <div class="text-2xl">🎯</div>
+        <div class="flex-1">
+            <h3 class="text-lg font-semibold mb-2">Recommended Resources</h3>
+            <p class="text-sm text-[var(--color-text-medium)] mb-4">
+                These carefully selected resources can help you get more value from @toolName
+            </p>
+        </div>
+    </div>
+
+    @if (category == "business" || category == "finance")
+    {
+        <div class="space-y-3">
+            <!-- QuickBooks -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">💼</div>
+                <div class="flex-1">
+                    <a href="https://quickbooks.intuit.com" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        QuickBooks Online
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">Professional accounting software for small businesses</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+
+            <!-- FreshBooks -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">📊</div>
+                <div class="flex-1">
+                    <a href="https://www.freshbooks.com" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        FreshBooks
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">Invoicing and time tracking for freelancers</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+        </div>
+    }
+    else if (category == "productivity")
+    {
+        <div class="space-y-3">
+            <!-- Notion -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">📝</div>
+                <div class="flex-1">
+                    <a href="https://www.notion.so" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        Notion
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">All-in-one workspace for notes, tasks, and wikis</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+
+            <!-- Todoist -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">✅</div>
+                <div class="flex-1">
+                    <a href="https://todoist.com" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        Todoist Premium
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">Advanced task management and productivity</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+        </div>
+    }
+    else if (category == "academic" || category == "education")
+    {
+        <div class="space-y-3">
+            <!-- Coursera -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">🎓</div>
+                <div class="flex-1">
+                    <a href="https://www.coursera.org" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        Coursera Plus
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">Unlimited access to 7,000+ courses and specializations</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+
+            <!-- Khan Academy -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">📚</div>
+                <div class="flex-1">
+                    <a href="https://www.khanacademy.org" target="_blank" rel="nofollow" class="font-medium text-[var(--color-primary)] hover:underline">
+                        Khan Academy
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">Free world-class education for anyone, anywhere</p>
+                </div>
+            </div>
+        </div>
+    }
+    else if (category == "ai" || category == "trending")
+    {
+        <div class="space-y-3">
+            <!-- ChatGPT Plus -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">🤖</div>
+                <div class="flex-1">
+                    <a href="https://chat.openai.com" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        ChatGPT Plus
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">Advanced AI assistant with GPT-4 access</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+
+            <!-- Grammarly -->
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">✍️</div>
+                <div class="flex-1">
+                    <a href="https://www.grammarly.com" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        Grammarly Premium
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">AI-powered writing assistant for perfect content</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- General recommendations -->
+        <div class="space-y-3">
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-lg hover:bg-[var(--color-border)] transition-colors">
+                <div class="text-2xl">🛠️</div>
+                <div class="flex-1">
+                    <a href="https://www.skillshare.com" target="_blank" rel="nofollow sponsored" class="font-medium text-[var(--color-primary)] hover:underline">
+                        Skillshare
+                    </a>
+                    <p class="text-xs text-[var(--color-text-medium)]">Learn new skills with thousands of online classes</p>
+                </div>
+                <span class="text-xs px-2 py-1 bg-[var(--color-accent)] text-white rounded">Partner</span>
+            </div>
+        </div>
+    }
+
+    <div class="mt-4 pt-4 border-t border-[var(--color-border)]">
+        <p class="text-xs text-[var(--color-text-medium)]">
+            <strong>Disclosure:</strong> Some links above are affiliate links. We may earn a commission at no extra cost to you when you make a purchase through these links. This helps us keep NovaTools Hub free for everyone.
+        </p>
+    </div>
+</div>

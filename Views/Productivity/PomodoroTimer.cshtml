@@ -1,0 +1,486 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Pomodoro Timer",
+    "applicationCategory": "UtilityApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-hourglass-half text-primary"></i> Pomodoro Timer
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Boost productivity with focused work intervals
+        </p>
+    </div>
+
+    <!-- Notification Permission Banner -->
+    <div id="notificationBanner" class="bg-blue-100 dark:bg-blue-900/30 border-l-4 border-blue-500 p-4 mb-6 hidden">
+        <div class="flex justify-between items-center">
+            <p class="text-blue-700 dark:text-blue-300">
+                <i class="fas fa-bell mr-2"></i>
+                Enable notifications to be alerted when sessions end
+            </p>
+            <button onclick="requestNotificationPermission()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                Enable
+            </button>
+        </div>
+    </div>
+
+    <!-- Timer Display -->
+    <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-lg p-8 mb-6">
+        <div class="text-center">
+            <!-- Session Type -->
+            <div id="sessionType" class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+                Work Session
+            </div>
+            
+            <!-- Timer -->
+            <div id="timerDisplay" class="text-8xl font-bold text-primary mb-6 font-mono">
+                25:00
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-6">
+                <div id="progressBar" class="bg-primary h-3 rounded-full transition-all duration-1000" style="width: 100%"></div>
+            </div>
+            
+            <!-- Controls -->
+            <div class="flex justify-center gap-4 mb-4">
+                <button id="startBtn" onclick="startTimer()" class="bg-secondary hover:bg-green-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105">
+                    <i class="fas fa-play mr-2"></i> Start
+                </button>
+                <button id="pauseBtn" onclick="pauseTimer()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200 hidden">
+                    <i class="fas fa-pause mr-2"></i> Pause
+                </button>
+                <button id="resumeBtn" onclick="resumeTimer()" class="bg-secondary hover:bg-green-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200 hidden">
+                    <i class="fas fa-play mr-2"></i> Resume
+                </button>
+                <button onclick="resetTimer()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200">
+                    <i class="fas fa-redo mr-2"></i> Reset
+                </button>
+                <button onclick="skipSession()" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200">
+                    <i class="fas fa-forward mr-2"></i> Skip
+                </button>
+            </div>
+            
+            <!-- Session Counter -->
+            <div class="text-sm text-gray-600 dark:text-gray-300">
+                Session <span id="currentSession">1</span> of <span id="totalSessions">4</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            <i class="fas fa-cog text-primary"></i> Timer Settings
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Work Duration (minutes)
+                </label>
+                <input type="number" id="workDuration" min="1" max="60" value="25" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Short Break (minutes)
+                </label>
+                <input type="number" id="shortBreakDuration" min="1" max="30" value="5" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Long Break (minutes)
+                </label>
+                <input type="number" id="longBreakDuration" min="1" max="60" value="15" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="autoStartBreaks" class="w-4 h-4 text-primary rounded">
+                <span class="text-sm text-gray-700 dark:text-gray-300">Auto-start breaks</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Session History -->
+    <div id="historySection" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
+                <i class="fas fa-history text-primary"></i> Today's Sessions
+            </h2>
+            <button onclick="clearHistory()" class="text-sm text-red-600 hover:text-red-700 font-medium">
+                <i class="fas fa-trash mr-1"></i> Clear
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="bg-blue-50 dark:bg-gray-700 rounded-lg p-4">
+                <p class="text-sm text-gray-600 dark:text-gray-300">Completed Sessions</p>
+                <p id="completedSessions" class="text-2xl font-bold text-primary">0</p>
+            </div>
+            <div class="bg-green-50 dark:bg-gray-700 rounded-lg p-4">
+                <p class="text-sm text-gray-600 dark:text-gray-300">Total Focus Time</p>
+                <p id="totalFocusTime" class="text-2xl font-bold text-secondary">0 min</p>
+            </div>
+            <div class="bg-purple-50 dark:bg-gray-700 rounded-lg p-4">
+                <p class="text-sm text-gray-600 dark:text-gray-300">Break Time</p>
+                <p id="totalBreakTime" class="text-2xl font-bold text-accent">0 min</p>
+            </div>
+        </div>
+        
+        <div id="sessionsList" class="space-y-2 max-h-64 overflow-y-auto">
+            <!-- Session history will be listed here -->
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_SocialSharing")
+
+    <!-- About Pomodoro -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            About the Pomodoro Technique
+        </h2>
+        <div class="space-y-4 text-gray-600 dark:text-gray-300">
+            <p>
+                <strong>What is Pomodoro?</strong> A time management method that breaks work into 25-minute focused intervals (called "pomodoros") separated by short breaks.
+            </p>
+            <p>
+                <strong>How it works:</strong> Work for 25 minutes → Take a 5-minute break → Repeat. After 4 sessions, take a longer 15-minute break.
+            </p>
+            <p>
+                <strong>Benefits:</strong> Improves focus, reduces burnout, maintains mental freshness, and makes large tasks feel more manageable.
+            </p>
+            <p>
+                <strong>Tips:</strong> Eliminate distractions during work sessions, use breaks to step away from your workspace, and track completed sessions to measure productivity.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * Pomodoro Timer with State Machine and Notifications
+     * States: work, shortBreak, longBreak
+     */
+    const STATES = {
+        WORK: 'work',
+        SHORT_BREAK: 'shortBreak',
+        LONG_BREAK: 'longBreak'
+    };
+
+    let currentState = STATES.WORK;
+    let sessionCount = 0;
+    let timerInterval = null;
+    let timeRemaining = 0;
+    let totalTime = 0;
+    let isPaused = false;
+    let sessionsHistory = [];
+
+    // Check notification permission on load
+    function checkNotificationPermission() {
+        if (!('Notification' in window)) {
+            return;
+        }
+        
+        if (Notification.permission === 'default') {
+            document.getElementById('notificationBanner').classList.remove('hidden');
+        }
+    }
+
+    // Request notification permission
+    function requestNotificationPermission() {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                document.getElementById('notificationBanner').classList.add('hidden');
+                showNotification('Notifications enabled!', 'You will be notified when sessions end.');
+            }
+        });
+    }
+
+    // Show browser notification
+    function showNotification(title, body) {
+        if (Notification.permission === 'granted') {
+            new Notification(title, {
+                body: body,
+                icon: '/favicon.ico',
+                badge: '/favicon.ico'
+            });
+        }
+    }
+
+    // Get duration for current state
+    function getDuration() {
+        const workDuration = parseInt(document.getElementById('workDuration').value) * 60;
+        const shortBreak = parseInt(document.getElementById('shortBreakDuration').value) * 60;
+        const longBreak = parseInt(document.getElementById('longBreakDuration').value) * 60;
+        
+        switch (currentState) {
+            case STATES.WORK:
+                return workDuration;
+            case STATES.SHORT_BREAK:
+                return shortBreak;
+            case STATES.LONG_BREAK:
+                return longBreak;
+        }
+    }
+
+    // Format time as MM:SS
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    // Update display
+    function updateDisplay() {
+        document.getElementById('timerDisplay').textContent = formatTime(timeRemaining);
+        
+        // Update progress bar
+        const progress = (timeRemaining / totalTime) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+        
+        // Update session type display
+        const sessionNames = {
+            work: 'Work Session',
+            shortBreak: 'Short Break',
+            longBreak: 'Long Break'
+        };
+        document.getElementById('sessionType').textContent = sessionNames[currentState];
+        
+        // Update page title
+        document.title = `${formatTime(timeRemaining)} - ${sessionNames[currentState]} | NovaTools Hub`;
+    }
+
+    // Start timer
+    function startTimer() {
+        if (timerInterval) return;
+        
+        timeRemaining = getDuration();
+        totalTime = timeRemaining;
+        isPaused = false;
+        
+        document.getElementById('startBtn').classList.add('hidden');
+        document.getElementById('pauseBtn').classList.remove('hidden');
+        
+        updateDisplay();
+        timerInterval = setInterval(tick, 1000);
+    }
+
+    // Timer tick
+    function tick() {
+        if (isPaused) return;
+        
+        timeRemaining--;
+        updateDisplay();
+        
+        if (timeRemaining <= 0) {
+            completeSession();
+        }
+    }
+
+    // Pause timer
+    function pauseTimer() {
+        isPaused = true;
+        document.getElementById('pauseBtn').classList.add('hidden');
+        document.getElementById('resumeBtn').classList.remove('hidden');
+    }
+
+    // Resume timer
+    function resumeTimer() {
+        isPaused = false;
+        document.getElementById('pauseBtn').classList.remove('hidden');
+        document.getElementById('resumeBtn').classList.add('hidden');
+    }
+
+    // Reset timer
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        isPaused = false;
+        timeRemaining = getDuration();
+        totalTime = timeRemaining;
+        
+        document.getElementById('startBtn').classList.remove('hidden');
+        document.getElementById('pauseBtn').classList.add('hidden');
+        document.getElementById('resumeBtn').classList.add('hidden');
+        
+        updateDisplay();
+        document.title = 'Pomodoro Timer | NovaTools Hub';
+    }
+
+    // Complete session
+    function completeSession() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        
+        // Log session
+        logSession();
+        
+        // Show notification
+        if (currentState === STATES.WORK) {
+            sessionCount++;
+            document.getElementById('currentSession').textContent = Math.min(sessionCount + 1, 4);
+            showNotification('Work session complete!', 'Time for a break. Great job! 🎉');
+            
+            // Determine next state
+            if (sessionCount % 4 === 0) {
+                currentState = STATES.LONG_BREAK;
+            } else {
+                currentState = STATES.SHORT_BREAK;
+            }
+        } else {
+            showNotification('Break complete!', 'Ready to focus? Let\'s get back to work! 💪');
+            currentState = STATES.WORK;
+        }
+        
+        // Auto-start or reset
+        if (document.getElementById('autoStartBreaks').checked && currentState !== STATES.WORK) {
+            startTimer();
+        } else {
+            resetTimer();
+        }
+    }
+
+    // Skip to next session
+    function skipSession() {
+        if (!confirm('Skip this session?')) return;
+        completeSession();
+    }
+
+    // Log session to history
+    function logSession() {
+        const session = {
+            type: currentState,
+            duration: Math.ceil((totalTime - timeRemaining) / 60),
+            completedAt: new Date().toISOString()
+        };
+        
+        sessionsHistory.push(session);
+        saveHistory();
+        updateHistory();
+    }
+
+    // Save history to localStorage
+    function saveHistory() {
+        try {
+            // Only save today's sessions
+            const today = new Date().toDateString();
+            const todaySessions = sessionsHistory.filter(s => 
+                new Date(s.completedAt).toDateString() === today
+            );
+            localStorage.setItem('pomodoroHistory', JSON.stringify(todaySessions));
+        } catch (e) {
+            console.error('Failed to save history:', e);
+        }
+    }
+
+    // Load history from localStorage
+    function loadHistory() {
+        try {
+            const saved = localStorage.getItem('pomodoroHistory');
+            if (saved) {
+                const sessions = JSON.parse(saved);
+                // Only keep today's sessions
+                const today = new Date().toDateString();
+                sessionsHistory = sessions.filter(s => 
+                    new Date(s.completedAt).toDateString() === today
+                );
+            }
+            updateHistory();
+        } catch (e) {
+            console.error('Failed to load history:', e);
+        }
+    }
+
+    // Update history display
+    function updateHistory() {
+        if (sessionsHistory.length === 0) {
+            document.getElementById('historySection').classList.add('hidden');
+            return;
+        }
+        
+        document.getElementById('historySection').classList.remove('hidden');
+        
+        // Calculate stats
+        const workSessions = sessionsHistory.filter(s => s.type === STATES.WORK);
+        const breakSessions = sessionsHistory.filter(s => s.type !== STATES.WORK);
+        const totalFocus = workSessions.reduce((sum, s) => sum + s.duration, 0);
+        const totalBreak = breakSessions.reduce((sum, s) => sum + s.duration, 0);
+        
+        document.getElementById('completedSessions').textContent = workSessions.length;
+        document.getElementById('totalFocusTime').textContent = `${totalFocus} min`;
+        document.getElementById('totalBreakTime').textContent = `${totalBreak} min`;
+        
+        // Render list
+        const list = document.getElementById('sessionsList');
+        list.innerHTML = sessionsHistory.map(session => {
+            const time = new Date(session.completedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const typeIcons = {
+                work: '💼',
+                shortBreak: '☕',
+                longBreak: '🌴'
+            };
+            const typeNames = {
+                work: 'Work',
+                shortBreak: 'Short Break',
+                longBreak: 'Long Break'
+            };
+            
+            return `
+                <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <span class="text-sm text-gray-800 dark:text-white">
+                        ${typeIcons[session.type]} ${typeNames[session.type]}
+                    </span>
+                    <div class="text-right">
+                        <span class="text-sm font-medium text-gray-800 dark:text-white">${session.duration} min</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">${time}</span>
+                    </div>
+                </div>
+            `;
+        }).reverse().join('');
+    }
+
+    // Clear history
+    function clearHistory() {
+        if (!confirm('Clear today\'s session history?')) return;
+        sessionsHistory = [];
+        localStorage.removeItem('pomodoroHistory');
+        updateHistory();
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        checkNotificationPermission();
+        loadHistory();
+        resetTimer();
+        
+        // Update session counter
+        document.getElementById('currentSession').textContent = '1';
+        document.getElementById('totalSessions').textContent = '4';
+    });
+</script>

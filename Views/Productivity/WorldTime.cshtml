@@ -1,0 +1,232 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "World Time Viewer",
+    "applicationCategory": "UtilityApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-globe-americas text-primary"></i> World Time Viewer
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            View current time in major cities around the world
+        </p>
+    </div>
+
+    <!-- Current Local Time -->
+    <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-lg p-6 mb-6">
+        <div class="text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">Your Local Time</p>
+            <h2 id="localTime" class="text-5xl font-bold text-gray-800 dark:text-white mb-1">--:--:--</h2>
+            <p id="localDate" class="text-lg text-gray-600 dark:text-gray-300">Loading...</p>
+            <p id="localTimezone" class="text-sm text-gray-500 dark:text-gray-400 mt-2">--</p>
+        </div>
+    </div>
+
+    <!-- World Clocks Grid -->
+    <div id="clocksContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Clock cards will be dynamically generated -->
+    </div>
+
+    <!-- Add Custom City -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            <i class="fas fa-plus-circle text-primary"></i> Add Custom City
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="text" id="customCityName" placeholder="City Name (e.g., Tokyo)" class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            <select id="customTimezone" class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                <option value="">Select Time Zone</option>
+            </select>
+            <button onclick="addCustomCity()" class="bg-primary hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200">
+                <i class="fas fa-plus mr-2"></i> Add City
+            </button>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_SocialSharing")
+
+    <!-- Info Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            About World Time Viewer
+        </h2>
+        <div class="space-y-4 text-gray-600 dark:text-gray-300">
+            <p>
+                <strong>Real-Time Synchronization:</strong> All clocks update every second to show accurate current time across different time zones.
+            </p>
+            <p>
+                <strong>Major Cities Included:</strong> We display time for major business and cultural centers worldwide, including New York, London, Tokyo, Dubai, and more.
+            </p>
+            <p>
+                <strong>Custom Cities:</strong> Add your own cities by selecting from hundreds of available time zones.
+            </p>
+            <p>
+                <strong>Time Zone Information:</strong> Each clock shows the UTC offset and time zone abbreviation for easy reference.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Major world cities with their timezones
+    const defaultCities = [
+        { name: 'New York', timezone: 'America/New_York', flag: '🇺🇸', country: 'USA' },
+        { name: 'Los Angeles', timezone: 'America/Los_Angeles', flag: '🇺🇸', country: 'USA' },
+        { name: 'London', timezone: 'Europe/London', flag: '🇬🇧', country: 'UK' },
+        { name: 'Paris', timezone: 'Europe/Paris', flag: '🇫🇷', country: 'France' },
+        { name: 'Berlin', timezone: 'Europe/Berlin', flag: '🇩🇪', country: 'Germany' },
+        { name: 'Dubai', timezone: 'Asia/Dubai', flag: '🇦🇪', country: 'UAE' },
+        { name: 'Karachi', timezone: 'Asia/Karachi', flag: '🇵🇰', country: 'Pakistan' },
+        { name: 'Tokyo', timezone: 'Asia/Tokyo', flag: '🇯🇵', country: 'Japan' },
+        { name: 'Hong Kong', timezone: 'Asia/Hong_Kong', flag: '🇭🇰', country: 'Hong Kong' },
+        { name: 'Singapore', timezone: 'Asia/Singapore', flag: '🇸🇬', country: 'Singapore' },
+        { name: 'Sydney', timezone: 'Australia/Sydney', flag: '🇦🇺', country: 'Australia' },
+        { name: 'Mumbai', timezone: 'Asia/Kolkata', flag: '🇮🇳', country: 'India' },
+        { name: 'São Paulo', timezone: 'America/Sao_Paulo', flag: '🇧🇷', country: 'Brazil' }
+    ];
+
+    let customCities = [];
+
+    // Load custom cities from localStorage
+    function loadCustomCities() {
+        try {
+            const saved = localStorage.getItem('worldTimeCustomCities');
+            if (saved) {
+                customCities = JSON.parse(saved);
+            }
+        } catch (e) {
+            console.error('Failed to load custom cities:', e);
+        }
+    }
+
+    // Save custom cities to localStorage
+    function saveCustomCities() {
+        try {
+            localStorage.setItem('worldTimeCustomCities', JSON.stringify(customCities));
+        } catch (e) {
+            console.error('Failed to save custom cities:', e);
+        }
+    }
+
+    // Update all clocks
+    function updateClocks() {
+        // Update local time
+        const now = new Date();
+        document.getElementById('localTime').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        document.getElementById('localDate').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
+        // Get local timezone info
+        const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const localOffset = -now.getTimezoneOffset() / 60;
+        const offsetStr = `UTC${localOffset >= 0 ? '+' : ''}${localOffset}`;
+        document.getElementById('localTimezone').textContent = `${localTz} (${offsetStr})`;
+
+        // Update world clocks
+        const allCities = [...defaultCities, ...customCities];
+        const container = document.getElementById('clocksContainer');
+        container.innerHTML = allCities.map((city, index) => {
+            const cityTime = new Date().toLocaleString('en-US', { timeZone: city.timezone, hour12: false });
+            const time = new Date(cityTime).toLocaleTimeString('en-US', { hour12: false });
+            const date = new Date(cityTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            
+            // Calculate UTC offset
+            const dateInTz = new Date(cityTime);
+            const utcDate = new Date(dateInTz.toLocaleString('en-US', { timeZone: 'UTC' }));
+            const offset = (dateInTz - utcDate) / (1000 * 60 * 60);
+            const offsetStr = `UTC${offset >= 0 ? '+' : ''}${offset}`;
+            
+            const isCustom = index >= defaultCities.length;
+            const deleteBtn = isCustom ? `<button onclick="removeCustomCity(${index - defaultCities.length})" class="text-red-600 hover:text-red-700" title="Remove"><i class="fas fa-times"></i></button>` : '';
+            
+            return `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+                                                <div class="flex items-center mb-3">
+                    <span class="text-3xl mr-3" style="font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;">${city.flag}</span>
+                    <div>
+                        <div class="font-semibold text-lg">${city.name}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">${city.country || ''}</div>
+                    </div>
+                </div>
+                            </h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${city.timezone}</p>
+                        </div>
+                        ${deleteBtn}
+                    </div>
+                    <div class="text-3xl font-bold text-primary mb-1">${time}</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">${date}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">${offsetStr}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Populate timezone dropdown
+    function populateTimezones() {
+        const timezones = Intl.supportedValuesOf('timeZone');
+        const select = document.getElementById('customTimezone');
+        select.innerHTML = '<option value="">Select Time Zone</option>' + 
+            timezones.map(tz => `<option value="${tz}">${tz}</option>`).join('');
+    }
+
+    // Add custom city
+    function addCustomCity() {
+        const name = document.getElementById('customCityName').value.trim();
+        const timezone = document.getElementById('customTimezone').value;
+        
+        if (!name || !timezone) {
+            alert('Please enter both city name and timezone.');
+            return;
+        }
+        
+        customCities.push({ name, timezone, flag: '🌍' });
+        saveCustomCities();
+        updateClocks();
+        
+        // Clear inputs
+        document.getElementById('customCityName').value = '';
+        document.getElementById('customTimezone').value = '';
+    }
+
+    // Remove custom city
+    function removeCustomCity(index) {
+        if (confirm('Remove this city from your list?')) {
+            customCities.splice(index, 1);
+            saveCustomCities();
+            updateClocks();
+        }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        loadCustomCities();
+        populateTimezones();
+        updateClocks();
+        
+        // Update every second
+        setInterval(updateClocks, 1000);
+    });
+</script>

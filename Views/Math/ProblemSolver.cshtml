@@ -1,0 +1,902 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "LearningResource",
+    "name": "Interactive Math Problem Solver",
+    "applicationCategory": "LearningResource",
+    "description": "@Model.MetaDescription",
+    "educationalLevel": "High School, College",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-chalkboard-teacher text-primary"></i> Interactive Math Problem Solver
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Learn step-by-step solutions for math problems
+        </p>
+    </div>
+
+    <!-- Problem Type Selector -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            Select Problem Type
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button onclick="selectProblemType('linear')" id="btnLinearProb" class="problem-btn active">
+                <i class="fas fa-sliders-h mr-2"></i>Linear Equations
+            </button>
+            <button onclick="selectProblemType('quadratic')" id="btnQuadraticProb" class="problem-btn">
+                <i class="fas fa-square-root-alt mr-2"></i>Quadratic Equations
+            </button>
+            <button onclick="selectProblemType('simplify')" id="btnSimplifyProb" class="problem-btn">
+                <i class="fas fa-compress-alt mr-2"></i>Simplify Expressions
+            </button>
+            <button onclick="selectProblemType('factoring')" id="btnFactoringProb" class="problem-btn">
+                <i class="fas fa-project-diagram mr-2"></i>Factoring
+            </button>
+        </div>
+    </div>
+
+    <!-- Linear Equation Problem -->
+    <div id="linearProblem" class="problem-section">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                Solve Linear Equation
+            </h2>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Enter equation (e.g., 2x + 5 = 13)
+                </label>
+                <input type="text" id="linearInput" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="3x - 7 = 11">
+            </div>
+            <button onclick="solveLinearProblem()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg">
+                <i class="fas fa-play mr-2"></i>Solve with Steps
+            </button>
+        </div>
+    </div>
+
+    <!-- Quadratic Equation Problem -->
+    <div id="quadraticProblem" class="problem-section hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                Solve Quadratic Equation
+            </h2>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Enter equation (e.g., x² - 5x + 6 = 0)
+                </label>
+                <input type="text" id="quadraticInput" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="x² + 4x + 4 = 0">
+            </div>
+            <button onclick="solveQuadraticProblem()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg">
+                <i class="fas fa-play mr-2"></i>Solve with Steps
+            </button>
+        </div>
+    </div>
+
+    <!-- Simplify Expression Problem -->
+    <div id="simplifyProblem" class="problem-section hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                Simplify Expression
+            </h2>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Enter expression (e.g., 3x + 2x - 5 + 7)
+                </label>
+                <input type="text" id="simplifyInput" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="2(x + 3) + 4x - 6">
+            </div>
+            <button onclick="simplifyExpression()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg">
+                <i class="fas fa-play mr-2"></i>Simplify with Steps
+            </button>
+        </div>
+    </div>
+
+    <!-- Factoring Problem -->
+    <div id="factoringProblem" class="problem-section hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                Factor Expression
+            </h2>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Enter quadratic expression (e.g., x² + 5x + 6)
+                </label>
+                <input type="text" id="factoringInput" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="x² - 9">
+            </div>
+            <button onclick="factorExpression()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg">
+                <i class="fas fa-play mr-2"></i>Factor with Steps
+            </button>
+        </div>
+    </div>
+
+    <!-- Solution Display -->
+    <div id="solution" class="hidden">
+        <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-graduation-cap text-secondary"></i> Step-by-Step Solution
+            </h2>
+            
+            <div id="stepsContainer" class="space-y-4">
+                <!-- Steps will be displayed here -->
+            </div>
+
+            <div id="finalAnswer" class="mt-6 bg-white dark:bg-gray-800 rounded-lg p-6">
+                <!-- Final answer will be displayed here -->
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_SocialSharing")
+    </div>
+
+    <!-- Learning Resources -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            <i class="fas fa-book-open text-accent mr-2"></i>Learning Tips
+        </h2>
+        <div class="space-y-4 text-gray-600 dark:text-gray-300">
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Linear Equations</h3>
+                <p class="text-sm">1. Isolate the variable term on one side<br>2. Isolate the variable by dividing both sides<br>3. Simplify and verify your answer</p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Quadratic Equations</h3>
+                <p class="text-sm">1. Write in standard form (ax² + bx + c = 0)<br>2. Identify coefficients a, b, and c<br>3. Use quadratic formula or factoring<br>4. Simplify and check solutions</p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Simplifying Expressions</h3>
+                <p class="text-sm">1. Remove parentheses using distributive property<br>2. Combine like terms<br>3. Arrange in descending order of exponents</p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Factoring</h3>
+                <p class="text-sm">1. Look for common factors<br>2. For quadratics, find two numbers that multiply to ac and add to b<br>3. Write as a product of binomials</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let currentProblemType = 'linear';
+
+    function selectProblemType(type) {
+        currentProblemType = type;
+        
+        // Update buttons
+        document.querySelectorAll('.problem-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('btn' + type.charAt(0).toUpperCase() + type.slice(1) + 'Prob').classList.add('active');
+        
+        // Show/hide problem sections
+        document.querySelectorAll('.problem-section').forEach(section => section.classList.add('hidden'));
+        document.getElementById(type + 'Problem').classList.remove('hidden');
+        
+        // Hide solution
+        document.getElementById('solution').classList.add('hidden');
+    }
+
+    // Parse linear equation like "2x + 5 = 13"
+    function parseLinearEquation(equation) {
+        // Remove spaces
+        equation = equation.replace(/\s/g, '');
+        
+        // Split by =
+        const parts = equation.split('=');
+        if (parts.length !== 2) throw new Error('Invalid equation format');
+        
+        // Parse left and right sides
+        const left = parts[0];
+        const right = parseFloat(parts[1]);
+        
+        if (isNaN(right)) throw new Error('Right side must be a number');
+        
+        // Extract coefficient and constant from left side
+        // Handle patterns like: 2x+5, 2x-5, -2x+5, x+5, -x-5
+        const match = left.match(/^([+-]?\d*\.?\d*)x([+-]?\d+\.?\d*)?$/);
+        if (!match) throw new Error('Invalid linear equation format');
+        
+        let coeff = match[1];
+        if (coeff === '' || coeff === '+') coeff = '1';
+        if (coeff === '-') coeff = '-1';
+        coeff = parseFloat(coeff);
+        
+        const constant = match[2] ? parseFloat(match[2]) : 0;
+        
+        return { coeff, constant, result: right };
+    }
+
+    function solveLinearProblem() {
+        const input = document.getElementById('linearInput').value.trim();
+        if (!input) {
+            alert('Please enter a linear equation');
+            return;
+        }
+        
+        try {
+            const { coeff, constant, result } = parseLinearEquation(input);
+            
+            // Solve: coeff*x + constant = result
+            // Move constant to right: coeff*x = result - constant
+            const rightSide = result - constant;
+            // Divide by coefficient: x = rightSide / coeff
+            const x = rightSide / coeff;
+            
+            // Display steps
+            let stepsHtml = '<div class="space-y-3">';
+            
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Original Equation</h4>
+                            <p class="text-gray-600 dark:text-gray-400">${input}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (constant !== 0) {
+                stepsHtml += `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Isolate the variable term</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Subtract ${constant} from both sides</p>
+                                <p class="text-gray-600 dark:text-gray-400 mt-1">${coeff}x = ${result} ${constant > 0 ? '-' : '+'} ${Math.abs(constant)}</p>
+                                <p class="text-gray-600 dark:text-gray-400">${coeff}x = ${rightSide}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">${constant !== 0 ? '3' : '2'}</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Solve for x</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Divide both sides by ${coeff}</p>
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">x = ${rightSide} / ${coeff}</p>
+                            <p class="text-gray-600 dark:text-gray-400">x = ${x.toFixed(6)}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            stepsHtml += '</div>';
+            
+            document.getElementById('stepsContainer').innerHTML = stepsHtml;
+            document.getElementById('finalAnswer').innerHTML = `
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Final Answer:</h3>
+                <p class="text-3xl font-bold text-primary">x = ${x.toFixed(6)}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Verification: ${coeff} × ${x.toFixed(6)} + ${constant} = ${(coeff * x + constant).toFixed(6)}</p>
+            `;
+            
+            document.getElementById('solution').classList.remove('hidden');
+            document.getElementById('solution').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+        } catch (error) {
+            alert('Error: ' + error.message + '\\nPlease use format like: 2x + 5 = 13');
+        }
+    }
+
+    // Parse quadratic equation like "x² - 5x + 6 = 0" or "x^2 + 4x + 4 = 0"
+    function parseQuadraticEquation(equation) {
+        // Normalize the equation
+        equation = equation.replace(/\s/g, '')
+                          .replace(/²/g, '^2')
+                          .replace(/\*\*/g, '^')
+                          .toLowerCase();
+        
+        // Split by =
+        const parts = equation.split('=');
+        if (parts.length !== 2) throw new Error('Equation must contain exactly one "=" sign');
+        
+        let left = parts[0];
+        const right = parseFloat(parts[1]) || 0;
+        
+        // Move right side to left: ax² + bx + c - right = 0
+        let a = 0, b = 0, c = -right;
+        
+        // Parse terms from left side
+        // Add a + at the start if it doesn't start with a sign for easier parsing
+        if (left[0] !== '+' && left[0] !== '-') left = '+' + left;
+        
+        // Match terms: coefficient followed by x^2, x, or just a number
+        const termRegex = /([+-]?\d*\.?\d*)(x\^2|x²|x)?/g;
+        let match;
+        
+        // Use a different approach - split by + or - while keeping the sign
+        const terms = left.match(/[+-][^+-]+/g) || [];
+        
+        for (const term of terms) {
+            const cleaned = term.trim();
+            
+            if (cleaned.includes('x^2') || cleaned.includes('x²')) {
+                // Quadratic term
+                let coeff = cleaned.replace(/x\^2|x²/g, '').trim();
+                if (coeff === '+' || coeff === '') coeff = '1';
+                if (coeff === '-') coeff = '-1';
+                a += parseFloat(coeff);
+            } else if (cleaned.includes('x')) {
+                // Linear term
+                let coeff = cleaned.replace(/x/g, '').trim();
+                if (coeff === '+' || coeff === '') coeff = '1';
+                if (coeff === '-') coeff = '-1';
+                b += parseFloat(coeff);
+            } else {
+                // Constant term
+                const val = parseFloat(cleaned);
+                if (!isNaN(val)) c += val;
+            }
+        }
+        
+        if (a === 0) throw new Error('This is not a quadratic equation (no x² term)');
+        
+        return { a, b, c };
+    }
+
+    function solveQuadraticProblem() {
+        const input = document.getElementById('quadraticInput').value.trim();
+        if (!input) {
+            alert('Please enter a quadratic equation');
+            return;
+        }
+        
+        try {
+            const { a, b, c } = parseQuadraticEquation(input);
+            
+            // Calculate discriminant
+            const discriminant = b * b - 4 * a * c;
+            
+            let stepsHtml = '<div class="space-y-3">';
+            
+            // Step 1: Original equation
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Original Equation</h4>
+                            <p class="text-gray-600 dark:text-gray-400">${input}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Step 2: Standard form
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Identify Standard Form</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Standard form: ax² + bx + c = 0</p>
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">a = ${a}, b = ${b}, c = ${c}</p>
+                            <p class="text-gray-600 dark:text-gray-400">${a}x² ${b >= 0 ? '+' : ''}${b}x ${c >= 0 ? '+' : ''}${c} = 0</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Step 3: Calculate discriminant
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">3</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Calculate Discriminant</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Δ = b² - 4ac</p>
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">Δ = (${b})² - 4(${a})(${c})</p>
+                            <p class="text-gray-600 dark:text-gray-400">Δ = ${b*b} - ${4*a*c} = ${discriminant}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            let x1, x2, finalAnswerHtml;
+            
+            if (discriminant > 0) {
+                // Two real roots
+                x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                
+                stepsHtml += `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">4</div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Apply Quadratic Formula</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Since Δ > 0, there are two distinct real roots</p>
+                                <p class="text-gray-600 dark:text-gray-400 mt-1">x = (-b ± √Δ) / 2a</p>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">x₁ = (${-b} + √${discriminant}) / ${2*a} = ${x1.toFixed(6)}</p>
+                                <p class="text-gray-600 dark:text-gray-400">x₂ = (${-b} - √${discriminant}) / ${2*a} = ${x2.toFixed(6)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                finalAnswerHtml = `
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Final Answer (Two Real Roots):</h3>
+                    <p class="text-3xl font-bold text-primary">x₁ = ${x1.toFixed(6)}</p>
+                    <p class="text-3xl font-bold text-primary mt-2">x₂ = ${x2.toFixed(6)}</p>
+                `;
+            } else if (discriminant === 0) {
+                // One repeated root
+                x1 = -b / (2 * a);
+                
+                stepsHtml += `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">4</div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Apply Quadratic Formula</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Since Δ = 0, there is one repeated root</p>
+                                <p class="text-gray-600 dark:text-gray-400 mt-1">x = -b / 2a</p>
+                                <p class="text-gray-600 dark:text-gray-400">x = ${-b} / ${2*a} = ${x1.toFixed(6)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                finalAnswerHtml = `
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Final Answer (Repeated Root):</h3>
+                    <p class="text-3xl font-bold text-primary">x = ${x1.toFixed(6)}</p>
+                `;
+            } else {
+                // Complex roots
+                const realPart = -b / (2 * a);
+                const imaginaryPart = Math.sqrt(-discriminant) / (2 * a);
+                
+                stepsHtml += `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">4</div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Apply Quadratic Formula</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Since Δ < 0, there are two complex conjugate roots</p>
+                                <p class="text-gray-600 dark:text-gray-400 mt-1">x = (-b ± i√|Δ|) / 2a</p>
+                                <p class="text-gray-600 dark:text-gray-400 mt-2">Real part: ${-b} / ${2*a} = ${realPart.toFixed(6)}</p>
+                                <p class="text-gray-600 dark:text-gray-400">Imaginary part: √${-discriminant} / ${2*a} = ${imaginaryPart.toFixed(6)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                finalAnswerHtml = `
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Final Answer (Complex Roots):</h3>
+                    <p class="text-3xl font-bold text-primary">x₁ = ${realPart.toFixed(4)} + ${imaginaryPart.toFixed(4)}i</p>
+                    <p class="text-3xl font-bold text-primary mt-2">x₂ = ${realPart.toFixed(4)} - ${imaginaryPart.toFixed(4)}i</p>
+                `;
+            }
+            
+            stepsHtml += '</div>';
+            
+            document.getElementById('stepsContainer').innerHTML = stepsHtml;
+            document.getElementById('finalAnswer').innerHTML = finalAnswerHtml;
+            
+            document.getElementById('solution').classList.remove('hidden');
+            document.getElementById('solution').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+        } catch (error) {
+            alert('Error: ' + error.message + '\\nPlease use format like: x² - 5x + 6 = 0 or x^2 + 4x + 4 = 0');
+        }
+    }
+
+    function simplifyExpression() {
+        const input = document.getElementById('simplifyInput').value.trim();
+        if (!input) {
+            alert('Please enter an expression to simplify');
+            return;
+        }
+        
+        try {
+            // Parse and simplify the expression
+            let expr = input.replace(/\s/g, '').toLowerCase();
+            
+            // Expand parentheses using distribution
+            // Handle patterns like 2(x + 3), -3(2x - 1), etc.
+            let expanded = expr;
+            const parenRegex = /([+-]?\d*\.?\d*)\(([^)]+)\)/g;
+            let match;
+            let iterations = 0;
+            
+            while ((match = parenRegex.exec(expanded)) !== null && iterations < 10) {
+                let multiplier = match[1];
+                if (multiplier === '' || multiplier === '+') multiplier = '1';
+                if (multiplier === '-') multiplier = '-1';
+                multiplier = parseFloat(multiplier);
+                
+                const inside = match[2];
+                // Expand each term inside parentheses
+                let terms = inside.match(/[+-]?[^+-]+/g) || [];
+                if (inside[0] !== '+' && inside[0] !== '-' && terms.length > 0) {
+                    terms[0] = '+' + terms[0];
+                }
+                
+                let expandedTerms = terms.map(term => {
+                    term = term.trim();
+                    if (term.includes('x')) {
+                        let coeff = term.replace('x', '').trim();
+                        if (coeff === '+' || coeff === '') coeff = '1';
+                        if (coeff === '-') coeff = '-1';
+                        coeff = parseFloat(coeff) * multiplier;
+                        return (coeff >= 0 ? '+' : '') + coeff + 'x';
+                    } else {
+                        let val = parseFloat(term) * multiplier;
+                        return (val >= 0 ? '+' : '') + val;
+                    }
+                }).join('');
+                
+                expanded = expanded.replace(match[0], expandedTerms);
+                parenRegex.lastIndex = 0;
+                iterations++;
+            }
+            
+            // Now combine like terms
+            // Add + at start if needed
+            if (expanded[0] !== '+' && expanded[0] !== '-') expanded = '+' + expanded;
+            
+            let xCoeff = 0;
+            let constant = 0;
+            
+            const termMatches = expanded.match(/[+-][^+-]+/g) || [];
+            
+            for (const term of termMatches) {
+                const cleaned = term.trim();
+                if (cleaned.includes('x')) {
+                    let coeff = cleaned.replace('x', '').trim();
+                    if (coeff === '+' || coeff === '') coeff = '1';
+                    if (coeff === '-') coeff = '-1';
+                    xCoeff += parseFloat(coeff);
+                } else {
+                    const val = parseFloat(cleaned);
+                    if (!isNaN(val)) constant += val;
+                }
+            }
+            
+            // Build simplified expression
+            let simplified = '';
+            if (xCoeff !== 0) {
+                if (xCoeff === 1) simplified = 'x';
+                else if (xCoeff === -1) simplified = '-x';
+                else simplified = xCoeff + 'x';
+            }
+            if (constant !== 0) {
+                if (simplified && constant > 0) simplified += ' + ' + constant;
+                else if (simplified && constant < 0) simplified += ' - ' + Math.abs(constant);
+                else simplified = constant.toString();
+            }
+            if (simplified === '') simplified = '0';
+            
+            // Display steps
+            let stepsHtml = '<div class="space-y-3">';
+            
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Original Expression</h4>
+                            <p class="text-gray-600 dark:text-gray-400">${input}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (input.includes('(')) {
+                stepsHtml += `
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Distribute / Expand Parentheses</h4>
+                                <p class="text-gray-600 dark:text-gray-400">Apply distributive property: a(b + c) = ab + ac</p>
+                                <p class="text-gray-600 dark:text-gray-400 mt-1">Result: ${expanded.replace(/^\+/, '')}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">${input.includes('(') ? '3' : '2'}</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Combine Like Terms</h4>
+                            <p class="text-gray-600 dark:text-gray-400">Sum of x terms: ${xCoeff}x</p>
+                            <p class="text-gray-600 dark:text-gray-400">Sum of constants: ${constant}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            stepsHtml += '</div>';
+            
+            document.getElementById('stepsContainer').innerHTML = stepsHtml;
+            document.getElementById('finalAnswer').innerHTML = `
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Simplified Expression:</h3>
+                <p class="text-3xl font-bold text-primary">${simplified}</p>
+            `;
+            
+            document.getElementById('solution').classList.remove('hidden');
+            document.getElementById('solution').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+        } catch (error) {
+            alert('Error: ' + error.message + '\\nPlease use format like: 2(x + 3) + 4x - 6');
+        }
+    }
+
+    function factorExpression() {
+        const input = document.getElementById('factoringInput').value.trim();
+        if (!input) {
+            alert('Please enter an expression to factor');
+            return;
+        }
+        
+        try {
+            // Normalize the expression
+            let expr = input.replace(/\s/g, '')
+                           .replace(/²/g, '^2')
+                           .replace(/\*\*/g, '^')
+                           .toLowerCase();
+            
+            // Remove = 0 if present
+            expr = expr.replace(/=0$/, '');
+            
+            // Parse as quadratic: ax² + bx + c
+            if (expr[0] !== '+' && expr[0] !== '-') expr = '+' + expr;
+            
+            let a = 0, b = 0, c = 0;
+            const terms = expr.match(/[+-][^+-]+/g) || [];
+            
+            for (const term of terms) {
+                const cleaned = term.trim();
+                
+                if (cleaned.includes('x^2') || cleaned.includes('x²')) {
+                    let coeff = cleaned.replace(/x\^2|x²/g, '').trim();
+                    if (coeff === '+' || coeff === '') coeff = '1';
+                    if (coeff === '-') coeff = '-1';
+                    a += parseFloat(coeff);
+                } else if (cleaned.includes('x')) {
+                    let coeff = cleaned.replace(/x/g, '').trim();
+                    if (coeff === '+' || coeff === '') coeff = '1';
+                    if (coeff === '-') coeff = '-1';
+                    b += parseFloat(coeff);
+                } else {
+                    const val = parseFloat(cleaned);
+                    if (!isNaN(val)) c += val;
+                }
+            }
+            
+            let stepsHtml = '<div class="space-y-3">';
+            let finalAnswerHtml = '';
+            
+            // Step 1: Original expression
+            stepsHtml += `
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Original Expression</h4>
+                            <p class="text-gray-600 dark:text-gray-400">${input}</p>
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">Identified: a=${a}, b=${b}, c=${c}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Check for special cases
+            
+            // Case 1: Difference of squares (a=1, b=0, c<0)
+            if (a === 1 && b === 0 && c < 0) {
+                const root = Math.sqrt(-c);
+                if (Number.isInteger(root)) {
+                    stepsHtml += `
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Identify Pattern: Difference of Squares</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">x² - ${-c} = x² - ${root}²</p>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">Pattern: a² - b² = (a + b)(a - b)</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    stepsHtml += `
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">3</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Apply the Formula</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">x² - ${root}² = (x + ${root})(x - ${root})</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    finalAnswerHtml = `
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Factored Form:</h3>
+                        <p class="text-3xl font-bold text-primary">(x + ${root})(x - ${root})</p>
+                    `;
+                }
+            }
+            // Case 2: Perfect square trinomial
+            else if (a !== 0) {
+                const discriminant = b * b - 4 * a * c;
+                
+                // Check if it's a perfect square
+                if (discriminant === 0) {
+                    const root = -b / (2 * a);
+                    stepsHtml += `
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Identify Pattern: Perfect Square Trinomial</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Discriminant = b² - 4ac = ${discriminant}</p>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">Since Δ = 0, this is a perfect square</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const factor = root >= 0 ? `(x - ${root})²` : `(x + ${-root})²`;
+                    if (a !== 1) {
+                        finalAnswerHtml = `
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Factored Form:</h3>
+                            <p class="text-3xl font-bold text-primary">${a}${factor}</p>
+                        `;
+                    } else {
+                        finalAnswerHtml = `
+                            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Factored Form:</h3>
+                            <p class="text-3xl font-bold text-primary">${factor}</p>
+                        `;
+                    }
+                }
+                // Case 3: General factoring (find two numbers that multiply to ac and add to b)
+                else if (discriminant >= 0) {
+                    const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                    const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                    
+                    stepsHtml += `
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Find the Roots</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Using quadratic formula: x = (-b ± √(b²-4ac)) / 2a</p>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">x₁ = ${x1.toFixed(4)}, x₂ = ${x2.toFixed(4)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    stepsHtml += `
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">3</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Write Factored Form</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">If roots are r₁ and r₂, then: a(x - r₁)(x - r₂)</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Format the factors nicely
+                    const formatFactor = (root) => {
+                        if (root === 0) return 'x';
+                        if (root > 0) return `(x - ${Number.isInteger(root) ? root : root.toFixed(4)})`;
+                        return `(x + ${Number.isInteger(-root) ? -root : (-root).toFixed(4)})`;
+                    };
+                    
+                    const aPrefix = a === 1 ? '' : (a === -1 ? '-' : a);
+                    finalAnswerHtml = `
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Factored Form:</h3>
+                        <p class="text-3xl font-bold text-primary">${aPrefix}${formatFactor(x1)}${formatFactor(x2)}</p>
+                    `;
+                }
+                // Case 4: Complex roots - cannot factor over reals
+                else {
+                    stepsHtml += `
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 dark:text-white mb-1">Check Discriminant</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Δ = b² - 4ac = ${discriminant}</p>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-1">Since Δ < 0, this cannot be factored over real numbers</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    finalAnswerHtml = `
+                        <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Result:</h3>
+                        <p class="text-xl font-bold text-primary">Cannot be factored over real numbers</p>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">The expression ${a}x² ${b >= 0 ? '+' : ''}${b}x ${c >= 0 ? '+' : ''}${c} is irreducible over ℝ</p>
+                    `;
+                }
+            }
+            
+            if (!finalAnswerHtml) {
+                finalAnswerHtml = `
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Result:</h3>
+                    <p class="text-xl text-gray-600 dark:text-gray-400">Could not factor this expression. Please check the format.</p>
+                `;
+            }
+            
+            stepsHtml += '</div>';
+            
+            document.getElementById('stepsContainer').innerHTML = stepsHtml;
+            document.getElementById('finalAnswer').innerHTML = finalAnswerHtml;
+            
+            document.getElementById('solution').classList.remove('hidden');
+            document.getElementById('solution').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+        } catch (error) {
+            alert('Error: ' + error.message + '\\nPlease use format like: x² + 5x + 6 or x² - 9');
+        }
+    }
+</script>
+
+<style>
+    .problem-btn {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        background: #f3f4f6;
+        border: 2px solid transparent;
+        color: #4b5563;
+    }
+    
+    .problem-btn:hover {
+        background: #e5e7eb;
+        transform: translateY(-2px);
+    }
+    
+    .problem-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+        border-color: #4A90E2;
+    }
+    
+    .dark .problem-btn {
+        background: #374151;
+        color: #d1d5db;
+    }
+    
+    .dark .problem-btn:hover {
+        background: #4b5563;
+    }
+    
+    .dark .problem-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+    }
+</style>
+}

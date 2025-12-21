@@ -1,0 +1,295 @@
+@{
+    ViewData["PageTitle"] = "Date Calculator | NovaTools Hub";
+    ViewData["MetaDescription"] = "Calculate date differences and add or subtract days from any date";
+}
+
+<div class="container-custom section-padding">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="text-gradient">Date Calculator</span>
+            </h1>
+            <p class="text-xl text-[var(--color-text-medium)]">
+                Calculate date differences and perform date arithmetic
+            </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex gap-2 mb-6">
+            <button class="tab-btn active" data-tab="difference">Date Difference</button>
+            <button class="tab-btn" data-tab="addsubtract">Add/Subtract Days</button>
+        </div>
+
+        <!-- Date Difference Tab -->
+        <div class="tab-content active" id="difference">
+            <div class="card">
+                <form id="differenceForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="startDate" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label">End Date</label>
+                            <input type="date" id="endDate" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <button type="submit" class="btn btn-primary">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                            Calculate Difference
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Results -->
+                <div id="diffResults" class="mt-8 hidden">
+                    <div class="p-6 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] rounded-lg text-white text-center">
+                        <p class="text-sm mb-2">Time Difference</p>
+                        <p class="text-4xl font-bold mb-2">
+                            <span id="diffYears"></span> years, <span id="diffMonths"></span> months, <span id="diffDays"></span> days
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+                        <div class="p-4 bg-[var(--color-bg)] rounded-lg text-center">
+                            <p class="text-3xl font-bold text-[var(--color-primary)]" id="diffTotalMonths"></p>
+                            <p class="text-sm text-[var(--color-text-medium)]">Total Months</p>
+                        </div>
+                        <div class="p-4 bg-[var(--color-bg)] rounded-lg text-center">
+                            <p class="text-3xl font-bold text-[var(--color-primary)]" id="diffTotalWeeks"></p>
+                            <p class="text-sm text-[var(--color-text-medium)]">Total Weeks</p>
+                        </div>
+                        <div class="p-4 bg-[var(--color-bg)] rounded-lg text-center">
+                            <p class="text-3xl font-bold text-[var(--color-primary)]" id="diffTotalDays"></p>
+                            <p class="text-sm text-[var(--color-text-medium)]">Total Days</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add/Subtract Days Tab -->
+        <div class="tab-content" id="addsubtract">
+            <div class="card">
+                <form id="addSubtractForm">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="baseDate" class="form-input" required>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Operation</label>
+                            <select id="operation" class="form-input">
+                                <option value="add">Add Days</option>
+                                <option value="subtract">Subtract Days</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Number of Days</label>
+                            <input type="number" id="daysToAdd" class="form-input" placeholder="Enter number of days" min="0" required>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <button type="submit" class="btn btn-primary">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Calculate Date
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Results -->
+                <div id="addSubResults" class="mt-8 hidden">
+                    <div class="p-6 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] rounded-lg text-white text-center">
+                        <p class="text-sm mb-2">Result Date</p>
+                        <p class="text-4xl font-bold" id="resultDate"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Use Cases -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Common Use Cases</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-3 bg-[var(--color-bg)] rounded">
+                    <p class="font-semibold mb-1">📅 Project Duration</p>
+                    <p class="text-sm text-[var(--color-text-medium)]">Calculate time between project start and end dates</p>
+                </div>
+                <div class="p-3 bg-[var(--color-bg)] rounded">
+                    <p class="font-semibold mb-1">⏰ Days Until Event</p>
+                    <p class="text-sm text-[var(--color-text-medium)]">Count down to important dates and deadlines</p>
+                </div>
+                <div class="p-3 bg-[var(--color-bg)] rounded">
+                    <p class="font-semibold mb-1">📆 Deadline Calculator</p>
+                    <p class="text-sm text-[var(--color-text-medium)]">Add days to find future delivery or due dates</p>
+                </div>
+                <div class="p-3 bg-[var(--color-bg)] rounded">
+                    <p class="font-semibold mb-1">🎯 Goal Tracking</p>
+                    <p class="text-sm text-[var(--color-text-medium)]">Calculate elapsed time since starting a goal</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <div class="mt-8">
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+<!-- JSON-LD Schema -->
+<script type="application/ld+json">
+@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
+    "Date Calculator",
+    "Calculate date differences, add or subtract days, and perform date arithmetic",
+    Url.Action("DateCalculator", "Tools", null, Context.Request.Scheme) ?? "",
+    "Utility"
+))
+</script>
+
+@section Scripts {
+<script>
+    // Set default dates
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').value = today;
+    document.getElementById('endDate').value = today;
+    document.getElementById('baseDate').value = today;
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabName = this.dataset.tab;
+            
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        });
+    });
+
+    // Date Difference Form
+    document.getElementById('differenceForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert('Please enter both dates');
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tools/CalculateDateDifference', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    startDate: startDate,
+                    endDate: endDate
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                const diff = data.difference;
+                document.getElementById('diffYears').textContent = diff.years;
+                document.getElementById('diffMonths').textContent = diff.months;
+                document.getElementById('diffDays').textContent = diff.days;
+                document.getElementById('diffTotalMonths').textContent = diff.totalMonths.toLocaleString();
+                document.getElementById('diffTotalWeeks').textContent = diff.totalWeeks.toLocaleString();
+                document.getElementById('diffTotalDays').textContent = diff.totalDays.toLocaleString();
+                document.getElementById('diffResults').classList.remove('hidden');
+                
+                document.getElementById('diffResults').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                alert(data.error || 'Calculation failed');
+            }
+        } catch (error) {
+            console.error('Date difference error:', error);
+            alert('Failed to calculate date difference. Please try again.');
+        }
+    });
+
+    // Add/Subtract Form
+    document.getElementById('addSubtractForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const baseDate = document.getElementById('baseDate').value;
+        const operation = document.getElementById('operation').value;
+        const days = parseInt(document.getElementById('daysToAdd').value);
+
+        if (!baseDate || isNaN(days)) {
+            alert('Please enter valid values');
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tools/AddSubtractDays', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    startDate: baseDate,
+                    operation: operation,
+                    days: days
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('resultDate').textContent = data.formattedDate;
+                document.getElementById('addSubResults').classList.remove('hidden');
+                
+                document.getElementById('addSubResults').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                alert(data.error || 'Calculation failed');
+            }
+        } catch (error) {
+            console.error('Date operation error:', error);
+            alert('Failed to calculate date. Please try again.');
+        }
+    });
+</script>
+
+<style>
+    .tab-btn {
+        padding: 0.75rem 1.5rem;
+        background: var(--color-bg);
+        border: 2px solid var(--color-border);
+        border-radius: 0.5rem;
+        font-weight: 500;
+        color: var(--color-text-medium);
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .tab-btn.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+</style>
+}

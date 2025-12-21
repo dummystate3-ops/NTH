@@ -1,0 +1,179 @@
+<div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<style>
+    .toast-container {
+        position: fixed;
+        bottom: 1.25rem;
+        right: 1.25rem;
+        display: grid;
+        gap: 0.75rem;
+        z-index: 9999;
+        max-width: 380px;
+        width: min(92vw, 380px);
+    }
+    .toast {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.75rem;
+        align-items: flex-start;
+        padding: 0.85rem 1rem;
+        border-radius: 14px;
+        border: 1px solid var(--color-border, #e5e7eb);
+        background: var(--color-surface, #0f172a);
+        color: var(--color-text, #0f172a);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        animation: toast-in 220ms ease-out;
+    }
+    .toast-hide {
+        animation: toast-out 180ms ease-in forwards;
+    }
+    .toast-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 9999px;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #0f172a;
+    }
+    .toast-info .toast-icon { background: #e0f2fe; color: #0ea5e9; }
+    .toast-success .toast-icon { background: #dcfce7; color: #16a34a; }
+    .toast-warning .toast-icon { background: #fef3c7; color: #d97706; }
+    .toast-error .toast-icon { background: #fee2e2; color: #dc2626; }
+    .toast-close {
+        border: none;
+        background: none;
+        color: var(--color-text-medium, #64748b);
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 8px;
+        transition: background 150ms ease;
+    }
+    .toast-close:hover { background: rgba(148, 163, 184, 0.15); }
+    .toast-title {
+        font-weight: 700;
+        color: var(--color-text, #0f172a);
+        margin-bottom: 0.15rem;
+    }
+    .toast-message {
+        color: var(--color-text-medium, #334155);
+        line-height: 1.35;
+        font-size: 0.95rem;
+        word-break: break-word;
+    }
+    @@keyframes toast-in {
+        from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @@keyframes toast-out {
+        to { opacity: 0; transform: translateY(-8px) scale(0.98); }
+    }
+    @@media (max-width: 640px) {
+        .toast-container {
+            right: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 1rem;
+            width: min(94vw, 420px);
+        }
+    }
+</style>
+
+<script>
+    (() => {
+        const container = document.getElementById('toast-container');
+        const icons = { info: 'i', success: '?', warning: '!', error: '!' };
+
+        function createElement(tag, className, text) {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            if (text) el.textContent = text;
+            return el;
+        }
+
+        function showToast(message, type = 'info', options = {}) {
+            if (!container || !message) return;
+            const toast = createElement('div', `toast toast-${type}`);
+
+            const icon = createElement('div', 'toast-icon');
+            icon.textContent = icons[type] || 'i';
+            toast.appendChild(icon);
+
+            const content = createElement('div');
+            if (options.title) {
+                content.appendChild(createElement('div', 'toast-title', options.title));
+            }
+            content.appendChild(createElement('div', 'toast-message', message));
+            toast.appendChild(content);
+
+            const closeBtn = createElement('button', 'toast-close');
+            closeBtn.setAttribute('aria-label', 'Dismiss notification');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.addEventListener('click', () => removeToast(toast));
+            toast.appendChild(closeBtn);
+
+            container.appendChild(toast);
+            const duration = Math.min(Math.max(options.duration || 4200, 2000), 10000);
+            let remaining = duration;
+            let startTime = Date.now();
+
+            const startTimer = () => {
+                toast._timeoutId = setTimeout(() => removeToast(toast), remaining);
+                startTime = Date.now();
+            };
+
+            startTimer();
+
+            toast.addEventListener('mouseenter', () => {
+                if (toast._timeoutId) {
+                    clearTimeout(toast._timeoutId);
+                    toast._timeoutId = null;
+                    remaining -= (Date.now() - startTime);
+                    if (remaining < 500) remaining = 500;
+                }
+            });
+
+            toast.addEventListener('mouseleave', () => {
+                if (!toast._timeoutId) {
+                    startTimer();
+                }
+            });
+        }
+
+        function removeToast(toast) {
+            if (!toast) return;
+            if (toast._timeoutId) {
+                clearTimeout(toast._timeoutId);
+                toast._timeoutId = null;
+            }
+            toast.classList.add('toast-hide');
+            setTimeout(() => toast.remove(), 180);
+        }
+
+        window.showToast = showToast;
+        window.toast = {
+            info: (msg, opts) => showToast(msg, 'info', opts),
+            success: (msg, opts) => showToast(msg, 'success', opts),
+            warning: (msg, opts) => showToast(msg, 'warning', opts),
+            error: (msg, opts) => showToast(msg, 'error', opts)
+        };
+
+        const nativeAlert = window.alert;
+        window.alert = function(message) {
+            showToast(String(message), 'info');
+            return;
+        };
+
+        window.addEventListener('unhandledrejection', (event) => {
+            showToast(event.reason?.message || 'Something went wrong.', 'error', { title: 'Unexpected Error' });
+        });
+
+        window.addEventListener('error', (event) => {
+            if (event.message) {
+                showToast(event.message, 'error', { title: 'Unexpected Error' });
+            }
+        });
+    })();
+</script>
+

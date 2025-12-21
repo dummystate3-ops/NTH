@@ -1,0 +1,358 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "SoftwareApplication",
+        "name": "Grammar Helper",
+        "applicationCategory": "EducationalApplication",
+        "description": "AI-powered grammar, spelling, and writing quality checker"
+    }
+    </script>
+    <style>
+        .grammar-loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .grammar-loading-overlay.active { display: flex; }
+        .grammar-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @@keyframes spin { to { transform: rotate(360deg); } }
+        .loading-message {
+            color: white;
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            max-width: 300px;
+        }
+    </style>
+}
+
+<!-- Loading Overlay -->
+<div id="grammarLoadingOverlay" class="grammar-loading-overlay">
+    <div class="grammar-spinner"></div>
+    <div id="loadingMessage" class="loading-message">🔍 Analyzing your text...</div>
+</div>
+
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">✍️</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">AI Grammar Helper</h1>
+            <p class="text-xl opacity-90">Improve your writing with AI-powered grammar and spelling checks</p>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container-custom max-w-4xl">
+        
+        <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-8">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div class="text-sm text-green-900 dark:text-green-100">
+                    <strong>AI-Powered:</strong> This tool uses advanced AI to check grammar, spelling, punctuation, and style. Get intelligent suggestions with explanations!
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-2xl font-bold mb-6">Check Your Writing</h2>
+            
+            <div class="mb-6">
+                <label for="textInput" class="block text-sm font-medium mb-2">Enter Text to Check</label>
+                <textarea id="textInput" rows="12" 
+                          class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800"
+                          placeholder="Type or paste your text here..."></textarea>
+                <div class="flex justify-between text-xs text-[var(--color-text-light)] mt-2">
+                    <span id="wordCount">0 words</span>
+                    <span id="charCount">0 / 8000 characters</span>
+                </div>
+            </div>
+
+            <button onclick="checkGrammar()" id="checkBtn" class="btn-primary w-full">
+                🤖 Check with AI
+            </button>
+        </div>
+
+        <div id="resultsContainer" class="hidden mt-8 space-y-6">
+            <!-- Summary Card -->
+            <div class="card bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="text-3xl">📊</div>
+                    <h2 class="text-2xl font-bold">Analysis Summary</h2>
+                </div>
+                <p id="summaryText" class="text-lg text-[var(--color-text-medium)]"></p>
+            </div>
+
+            <!-- Corrected Text Card -->
+            <div id="correctedContainer" class="card">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold flex items-center gap-2">
+                        <span>✅</span> Corrected Text
+                    </h3>
+                    <button onclick="copyToClipboard()" class="text-sm px-3 py-1 bg-[var(--color-primary)] text-white rounded hover:opacity-90">
+                        📋 Copy
+                    </button>
+                </div>
+                <div id="correctedText" class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 whitespace-pre-wrap"></div>
+            </div>
+
+            <!-- Issues List -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Issues Found</h3>
+                    <div class="flex gap-2 text-sm">
+                        <span class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full" id="highCount">0 high</span>
+                        <span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-full" id="mediumCount">0 medium</span>
+                        <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full" id="lowCount">0 low</span>
+                    </div>
+                </div>
+                <div id="issuesList" class="space-y-3">
+                    <!-- Issues will appear here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const textInput = document.getElementById('textInput');
+        const loadingOverlay = document.getElementById('grammarLoadingOverlay');
+        const loadingMessage = document.getElementById('loadingMessage');
+        
+        const loadingMessages = [
+            "🔍 Analyzing your text...",
+            "📝 Checking grammar rules...",
+            "✏️ Scanning for spelling errors...",
+            "🎯 Looking for style improvements...",
+            "🧠 AI is thinking hard...",
+            "📚 Consulting the grammar gods...",
+            "✨ Polishing your prose...",
+            "🔬 Examining every word...",
+            "💡 Finding suggestions...",
+            "🎨 Perfecting your masterpiece..."
+        ];
+        let messageInterval = null;
+
+        textInput.addEventListener('input', updateCounts);
+
+        function updateCounts() {
+            const text = textInput.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            const chars = textInput.value.length;
+            
+            document.getElementById('wordCount').textContent = `${words} words`;
+            document.getElementById('charCount').textContent = `${chars} / 8000 characters`;
+            
+            // Visual warning if approaching limit
+            const charEl = document.getElementById('charCount');
+            if (chars > 7500) {
+                charEl.classList.add('text-red-500');
+            } else {
+                charEl.classList.remove('text-red-500');
+            }
+        }
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById('checkBtn');
+            if (isLoading) {
+                loadingOverlay.classList.add('active');
+                btn.disabled = true;
+                btn.textContent = '⏳ Checking...';
+                
+                let msgIndex = 0;
+                loadingMessage.textContent = loadingMessages[0];
+                messageInterval = setInterval(() => {
+                    msgIndex = (msgIndex + 1) % loadingMessages.length;
+                    loadingMessage.textContent = loadingMessages[msgIndex];
+                }, 2500);
+            } else {
+                loadingOverlay.classList.remove('active');
+                btn.disabled = false;
+                btn.textContent = '🤖 Check with AI';
+                if (messageInterval) {
+                    clearInterval(messageInterval);
+                    messageInterval = null;
+                }
+            }
+        }
+
+        async function checkGrammar() {
+            const text = textInput.value.trim();
+            if (!text) {
+                alert('Please enter some text to check');
+                return;
+            }
+            if (text.length < 10) {
+                alert('Please enter at least 10 characters');
+                return;
+            }
+            if (text.length > 8000) {
+                alert('Text is too long. Please limit to 8000 characters.');
+                return;
+            }
+
+            setLoading(true);
+
+            try {
+                const response = await fetch('/api/academic/grammar-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Grammar check failed');
+                }
+
+                const result = await response.json();
+                displayResults(result);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Grammar check failed. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function displayResults(result) {
+            // Summary
+            document.getElementById('summaryText').textContent = result.summary;
+
+            // Corrected text
+            const correctedContainer = document.getElementById('correctedContainer');
+            if (result.correctedText && result.correctedText !== textInput.value.trim()) {
+                document.getElementById('correctedText').textContent = result.correctedText;
+                correctedContainer.classList.remove('hidden');
+            } else {
+                correctedContainer.classList.add('hidden');
+            }
+
+            // Issue counts
+            const issues = result.issues || [];
+            const highCount = issues.filter(i => i.severity === 'high').length;
+            const mediumCount = issues.filter(i => i.severity === 'medium').length;
+            const lowCount = issues.filter(i => i.severity === 'low').length;
+
+            document.getElementById('highCount').textContent = `${highCount} high`;
+            document.getElementById('mediumCount').textContent = `${mediumCount} medium`;
+            document.getElementById('lowCount').textContent = `${lowCount} low`;
+
+            // Issues list
+            const container = document.getElementById('issuesList');
+            if (issues.length === 0) {
+                container.innerHTML = `
+                    <div class="p-6 text-center bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <div class="text-4xl mb-2">✅</div>
+                        <div class="font-semibold text-green-600 dark:text-green-400">Perfect! No issues found.</div>
+                        <div class="text-sm text-[var(--color-text-medium)] mt-2">Your writing looks great!</div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = issues.map((issue, idx) => `
+                    <div class="border ${getBorderClass(issue.severity)} rounded-lg p-4 ${getBgClass(issue.severity)}">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 mt-1 text-xl">
+                                ${getIcon(issue.type)}
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="font-semibold">${capitalize(issue.type)}</div>
+                                    <span class="text-xs px-2 py-1 rounded ${getSeverityClass(issue.severity)}">
+                                        ${issue.severity}
+                                    </span>
+                                </div>
+                                <div class="text-sm text-[var(--color-text-medium)] mb-3">
+                                    ${escapeHtml(issue.explanation)}
+                                </div>
+                                <div class="flex items-center gap-3 text-sm bg-white dark:bg-gray-800 px-3 py-2 rounded">
+                                    <span class="text-red-500 line-through">"${escapeHtml(issue.original)}"</span>
+                                    <span class="text-gray-400">→</span>
+                                    <span class="text-green-600 dark:text-green-400 font-medium">"${escapeHtml(issue.suggestion)}"</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('resultsContainer').classList.remove('hidden');
+            document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('correctedText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const original = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => btn.textContent = original, 2000);
+            });
+        }
+
+        function getBorderClass(severity) {
+            if (severity === 'high') return 'border-red-300 dark:border-red-700';
+            if (severity === 'medium') return 'border-yellow-300 dark:border-yellow-700';
+            return 'border-blue-300 dark:border-blue-700';
+        }
+
+        function getBgClass(severity) {
+            if (severity === 'high') return 'bg-red-50 dark:bg-red-900/20';
+            if (severity === 'medium') return 'bg-yellow-50 dark:bg-yellow-900/20';
+            return 'bg-blue-50 dark:bg-blue-900/20';
+        }
+
+        function getIcon(type) {
+            const icons = {
+                'spelling': '📝',
+                'grammar': '⚠️',
+                'punctuation': '❗',
+                'style': '✨'
+            };
+            return icons[type] || '📋';
+        }
+
+        function getSeverityClass(severity) {
+            if (severity === 'high') return 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400';
+            if (severity === 'medium') return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400';
+            return 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400';
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+}

@@ -1,0 +1,69 @@
+@* Partial view for displaying image processing results *@
+<div id="processingResults" class="bg-white rounded-2xl shadow-xl p-6 animate-fadeIn">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Processing Result</h3>
+        <button onclick="clearResults()" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Statistics -->
+    <div class="space-y-3 mb-6">
+        <div class="bg-blue-50 rounded-lg p-3">
+            <div class="text-xs text-blue-600 font-medium mb-1">Original</div>
+            <div class="text-sm text-gray-800" id="originalDimensions">-</div>
+            <div class="text-sm text-gray-600" id="originalSize">-</div>
+        </div>
+        
+        <div class="bg-green-50 rounded-lg p-3">
+            <div class="text-xs text-green-600 font-medium mb-1">Processed</div>
+            <div class="text-sm text-gray-800" id="processedDimensions">-</div>
+            <div class="text-sm text-gray-600" id="processedSize">-</div>
+        </div>
+        
+        <div id="compressionInfo" class="bg-purple-50 rounded-lg p-3 hidden">
+            <div class="text-xs text-purple-600 font-medium mb-1">Compression</div>
+            <div class="text-lg font-bold text-purple-700" id="compressionRatio">-</div>
+        </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="mb-4">
+        <div class="text-sm font-medium text-gray-700 mb-2">Preview</div>
+        <div class="border border-gray-200 rounded-lg p-2 bg-gray-50 overflow-hidden">
+            <img id="processedImagePreview" 
+                 src="" 
+                 alt="Processed image" 
+                 class="w-full h-auto rounded" />
+        </div>
+    </div>
+
+    <!-- Download Button -->
+    <a id="downloadButton" 
+       href="#" 
+       class="block w-full text-center px-4 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold rounded-lg shadow hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
+        <svg class="inline-block w-5 h-5 mr-2 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+        </svg>
+        Download Image
+    </a>
+</div>
+
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out;
+    }
+</style>

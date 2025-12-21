@@ -1,0 +1,383 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["PageTitle"] = "Lorem Ipsum Generator | NovaTools Hub";
+    ViewData["MetaDescription"] = "Generate placeholder text for mockups, wireframes, and design prototypes with customizable length and format.";
+}
+
+<!-- Page Container -->
+<div class="min-h-screen bg-[var(--color-bg)]">
+
+    <!-- Header Section -->
+    <div class="container-custom py-8 lg:py-10">
+        <div class="max-w-4xl mx-auto text-center space-y-4">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-sm font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                </svg>
+                Content Tools
+            </div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                <span class="text-gradient">Lorem Ipsum</span> Generator
+            </h1>
+            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                Generate placeholder text for mockups, wireframes, and design prototypes.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tool Workspace -->
+    <div class="container-custom pb-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Controls Panel -->
+                <div class="space-y-4">
+                    <!-- Settings Card -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-lg overflow-hidden">
+                        <div class="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-5 py-4">
+                            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Settings
+                            </h2>
+                        </div>
+                        <div class="p-5 space-y-5">
+                            <!-- Quick Presets -->
+                            <div class="space-y-2">
+                                <label
+                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Quick
+                                    Presets</label>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <button id="btnShort"
+                                        class="preset-btn py-2 text-xs font-medium rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all">Short</button>
+                                    <button id="btnMedium"
+                                        class="preset-btn py-2 text-xs font-medium rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all">Medium</button>
+                                    <button id="btnLong"
+                                        class="preset-btn py-2 text-xs font-medium rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all">Long</button>
+                                    <button id="btnExtraLong"
+                                        class="preset-btn py-2 text-xs font-medium rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all">XL</button>
+                                </div>
+                            </div>
+
+                            <!-- Type & Amount -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Type</label>
+                                    <select id="selectType"
+                                        class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none transition-all">
+                                        <option value="paragraphs">Paragraphs</option>
+                                        <option value="words">Words</option>
+                                        <option value="bytes">Bytes</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Amount</label>
+                                    <input id="inputAmount" type="number"
+                                        class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none transition-all"
+                                        value="3" min="1" max="100">
+                                </div>
+                            </div>
+
+                            <!-- Options -->
+                            <div class="space-y-2">
+                                <label
+                                    class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer hover:bg-[var(--color-border)]/30 transition-colors">
+                                    <input type="checkbox" id="chkStartWithLorem" checked
+                                        class="w-4 h-4 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]">
+                                    <span class="text-sm">Start with "Lorem ipsum..."</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer hover:bg-[var(--color-border)]/30 transition-colors">
+                                    <input type="checkbox" id="chkHipster"
+                                        class="w-4 h-4 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]">
+                                    <span class="text-sm">Hipster Mode 🧔</span>
+                                </label>
+                            </div>
+
+                            <!-- Generate Button -->
+                            <button id="btnGenerate"
+                                class="w-full py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] hover:opacity-90 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                Generate Text
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Card -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                        <h3 class="text-sm font-bold text-[var(--color-text)] mb-3">Text Metrics</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div
+                                class="p-3 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)] text-center">
+                                <p class="text-xs text-[var(--color-text-medium)] mb-1">Characters</p>
+                                <p id="metricChars" class="text-xl font-bold text-[var(--color-primary)]">0</p>
+                            </div>
+                            <div
+                                class="p-3 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)] text-center">
+                                <p class="text-xs text-[var(--color-text-medium)] mb-1">Words</p>
+                                <p id="metricWords" class="text-xl font-bold text-[var(--color-primary)]">0</p>
+                            </div>
+                            <div
+                                class="p-3 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)] text-center">
+                                <p class="text-xs text-[var(--color-text-medium)] mb-1">Paragraphs</p>
+                                <p id="metricParas" class="text-xl font-bold text-[var(--color-primary)]">0</p>
+                            </div>
+                            <div
+                                class="p-3 rounded-xl bg-[var(--color-bg)] border border-[var(--color-border)] text-center">
+                                <p class="text-xs text-[var(--color-text-medium)] mb-1">Bytes</p>
+                                <p id="metricBytes" class="text-xl font-bold text-[var(--color-primary)]">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="lg:col-span-2">
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-lg overflow-hidden h-full flex flex-col">
+                        <div class="px-5 py-4 border-b border-[var(--color-border)] flex items-center justify-between">
+                            <h2 class="text-lg font-bold text-[var(--color-text)]">Generated Text</h2>
+                            <div class="flex gap-2">
+                                <button id="btnCopy"
+                                    class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    Copy
+                                </button>
+                                <button id="btnClear"
+                                    class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-red-400 hover:text-red-500 transition-all">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                        </path>
+                                    </svg>
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-5 flex-1">
+                            <div id="output"
+                                class="relative bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl p-4 min-h-[400px] max-h-[500px] overflow-auto whitespace-pre-wrap text-sm leading-relaxed">
+                                <div id="outputPlaceholder"
+                                    class="absolute inset-0 flex items-center justify-center text-[var(--color-text-medium)] italic">
+                                    Click "Generate Text" to create placeholder content...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="container-custom py-10 border-t border-[var(--color-border)]">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-6 text-center">What is Lorem Ipsum?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div
+                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div class="text-3xl">📜</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Ancient Origins</h3>
+                    <p class="text-xs text-[var(--color-text-medium)]">Derived from Cicero's "de Finibus Bonorum et
+                        Malorum" written in 45 BC</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div class="text-3xl">🖨️</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Industry Standard</h3>
+                    <p class="text-xs text-[var(--color-text-medium)]">Used since the 1500s when printers scrambled type
+                        to make specimen books</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div class="text-3xl">🎨</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Design Focus</h3>
+                    <p class="text-xs text-[var(--color-text-medium)]">Allows designers to focus on layout without being
+                        distracted by content</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad & Social -->
+    <div class="container-custom pb-10">
+        <div class="max-w-3xl mx-auto space-y-6">
+            @await Html.PartialAsync("_AdInContent")
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const classicWords = ["lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua", "enim", "ad", "minim", "veniam", "quis", "nostrud", "exercitation", "ullamco", "laboris", "nisi", "aliquip", "ex", "ea", "commodo", "consequat", "duis", "aute", "irure", "in", "reprehenderit", "voluptate", "velit", "esse", "cillum", "fugiat", "nulla", "pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident", "sunt", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", "est", "laborum"];
+
+        const hipsterWords = ["artisan", "organic", "sustainable", "vegan", "gluten-free", "kale", "quinoa", "kombucha", "craft", "beer", "vinyl", "fixie", "beard", "flannel", "typewriter", "chambray", "asymmetrical", "dreamcatcher", "selvage", "authentic", "brooklyn", "portland", "austin", "shoreditch", "intelligentsia", "pour-over", "cold-brew", "single-origin", "farm-to-table", "locavore", "sriracha", "meditation", "yoga", "chakra", "mindfulness", "hashtag", "selfie", "biodiesel", "messenger", "bag", "tote", "eco-friendly", "reclaimed", "upcycled", "vintage", "retro", "hipster", "ironic", "literally", "actually"];
+
+        const loremStart = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btnGenerate').addEventListener('click', generate);
+            document.getElementById('btnCopy').addEventListener('click', copyToClipboard);
+            document.getElementById('btnClear').addEventListener('click', clearOutput);
+            document.getElementById('btnShort').addEventListener('click', () => applyPreset(1));
+            document.getElementById('btnMedium').addEventListener('click', () => applyPreset(3));
+            document.getElementById('btnLong').addEventListener('click', () => applyPreset(5));
+            document.getElementById('btnExtraLong').addEventListener('click', () => applyPreset(10));
+
+            // Sync amount input when type changes based on current output metrics
+            document.getElementById('selectType').addEventListener('change', syncAmountFromMetrics);
+        });
+
+        function syncAmountFromMetrics() {
+            const type = document.getElementById('selectType').value;
+            const output = document.getElementById('output').textContent || '';
+
+            // Don't sync if no content generated yet
+            if (!output || output.includes('Click "Generate Text"')) return;
+
+            let newAmount = 1;
+            if (type === 'paragraphs') {
+                newAmount = parseInt(document.getElementById('metricParas').textContent.replace(/,/g, '')) || 1;
+            } else if (type === 'words') {
+                newAmount = parseInt(document.getElementById('metricWords').textContent.replace(/,/g, '')) || 1;
+            } else if (type === 'bytes') {
+                newAmount = parseInt(document.getElementById('metricBytes').textContent.replace(/,/g, '')) || 1;
+            }
+
+            document.getElementById('inputAmount').value = newAmount;
+        }
+
+
+        function applyPreset(amount) {
+            document.getElementById('inputAmount').value = amount;
+            document.getElementById('selectType').value = 'paragraphs';
+            generate();
+        }
+
+        function generate() {
+            const type = document.getElementById('selectType').value;
+            const amount = parseInt(document.getElementById('inputAmount').value) || 1;
+            const startWithLorem = document.getElementById('chkStartWithLorem').checked;
+            const useHipster = document.getElementById('chkHipster').checked;
+
+            const words = useHipster ? hipsterWords : classicWords;
+            let result = '';
+
+            if (type === 'paragraphs') {
+                result = generateParagraphs(amount, words, startWithLorem && !useHipster);
+            } else if (type === 'words') {
+                result = generateWords(amount, words, startWithLorem && !useHipster);
+            } else if (type === 'bytes') {
+                result = generateBytes(amount, words, startWithLorem && !useHipster);
+            }
+
+            document.getElementById('output').textContent = result;
+            updateMetrics(result);
+            if (window.toast) window.toast.success('Text generated!');
+        }
+
+        function generateParagraphs(count, words, startWithLorem) {
+            const paragraphs = [];
+            for (let i = 0; i < count; i++) {
+                if (i === 0 && startWithLorem) {
+                    paragraphs.push(loremStart);
+                } else {
+                    const sentences = Math.floor(Math.random() * 4) + 3;
+                    let para = '';
+                    for (let j = 0; j < sentences; j++) {
+                        const sentenceLength = Math.floor(Math.random() * 10) + 8;
+                        para += generateSentence(sentenceLength, words) + ' ';
+                    }
+                    paragraphs.push(para.trim());
+                }
+            }
+            return paragraphs.join('\n\n');
+        }
+
+        function generateWords(count, words, startWithLorem) {
+            const result = [];
+            if (startWithLorem) {
+                const loremWords = loremStart.split(' ').slice(0, Math.min(count, 10));
+                result.push(...loremWords);
+                count -= loremWords.length;
+            }
+            for (let i = 0; i < count; i++) {
+                result.push(words[Math.floor(Math.random() * words.length)]);
+            }
+            return result.join(' ');
+        }
+
+        function generateBytes(count, words, startWithLorem) {
+            let result = '';
+            if (startWithLorem) {
+                result = loremStart + ' ';
+            }
+            while (result.length < count) {
+                const word = words[Math.floor(Math.random() * words.length)];
+                if (result.length + word.length + 1 <= count) {
+                    result += word + ' ';
+                } else {
+                    break;
+                }
+            }
+            return result.trim().substring(0, count);
+        }
+
+        function generateSentence(wordCount, words) {
+            const sentence = [];
+            for (let i = 0; i < wordCount; i++) {
+                sentence.push(words[Math.floor(Math.random() * words.length)]);
+            }
+            const text = sentence.join(' ');
+            return text.charAt(0).toUpperCase() + text.slice(1) + '.';
+        }
+
+        function updateMetrics(text) {
+            const chars = text.length;
+            const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const paras = text.split('\n\n').filter(p => p.trim().length > 0).length;
+            const bytes = new Blob([text]).size;
+
+            document.getElementById('metricChars').textContent = chars.toLocaleString();
+            document.getElementById('metricWords').textContent = wordCount.toLocaleString();
+            document.getElementById('metricParas').textContent = paras.toLocaleString();
+            document.getElementById('metricBytes').textContent = bytes.toLocaleString();
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output').textContent;
+            if (!output || output.includes('Click "Generate Text"')) {
+                if (window.toast) window.toast.warning('Nothing to copy');
+                return;
+            }
+            navigator.clipboard.writeText(output).then(() => {
+                if (window.toast) window.toast.success('Copied to clipboard!');
+            });
+        }
+
+        function clearOutput() {
+            document.getElementById('output').innerHTML = '<div id="outputPlaceholder" class="absolute inset-0 flex items-center justify-center text-[var(--color-text-medium)] italic">Click "Generate Text" to create placeholder content...</div>';
+            updateMetrics('');
+            if (window.toast) window.toast.success('Cleared!');
+        }
+    </script>
+}

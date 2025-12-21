@@ -1,0 +1,456 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Graph Plotter",
+    "applicationCategory": "EducationalApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-chart-line text-primary"></i> Interactive Graph Plotter
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Visualize mathematical functions with interactive graphs
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Control Panel -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Function Input -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    Function Input
+                </h2>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Enter function y = f(x)
+                    </label>
+                    <input type="text" id="functionInput" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary font-mono" placeholder="x^2" value="x^2">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Use x as the variable</p>
+                </div>
+
+                <!-- Quick Functions -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Quick Functions
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setFunction('x^2')" class="quick-func-btn">x²</button>
+                        <button onclick="setFunction('x^3')" class="quick-func-btn">x³</button>
+                        <button onclick="setFunction('sin(x)')" class="quick-func-btn">sin(x)</button>
+                        <button onclick="setFunction('cos(x)')" class="quick-func-btn">cos(x)</button>
+                        <button onclick="setFunction('sqrt(x)')" class="quick-func-btn">√x</button>
+                        <button onclick="setFunction('abs(x)')" class="quick-func-btn">|x|</button>
+                        <button onclick="setFunction('exp(x)')" class="quick-func-btn">e^x</button>
+                        <button onclick="setFunction('log(x)')" class="quick-func-btn">ln(x)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Range Settings -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    Range Settings
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            X Min: <span id="xMinValue">-10</span>
+                        </label>
+                        <input type="range" id="xMin" min="-50" max="0" value="-10" step="1" class="w-full" oninput="updateRangeValue('xMin')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            X Max: <span id="xMaxValue">10</span>
+                        </label>
+                        <input type="range" id="xMax" min="0" max="50" value="10" step="1" class="w-full" oninput="updateRangeValue('xMax')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Y Min: <span id="yMinValue">-10</span>
+                        </label>
+                        <input type="range" id="yMin" min="-50" max="0" value="-10" step="1" class="w-full" oninput="updateRangeValue('yMin')">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Y Max: <span id="yMaxValue">10</span>
+                        </label>
+                        <input type="range" id="yMax" min="0" max="50" value="10" step="1" class="w-full" oninput="updateRangeValue('yMax')">
+                    </div>
+                </div>
+
+                <button onclick="plotGraph()" class="w-full mt-4 bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">
+                    <i class="fas fa-chart-line mr-2"></i> Plot Graph
+                </button>
+
+                <button onclick="resetView()" class="w-full mt-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg">
+                    <i class="fas fa-undo mr-2"></i> Reset View
+                </button>
+            </div>
+
+            <!-- Graph Options -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    Display Options
+                </h2>
+                
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="showGrid" checked class="mr-2 rounded" onchange="plotGraph()">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Show Grid</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="showPoints" class="mr-2 rounded" onchange="plotGraph()">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Show Data Points</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="smoothCurve" checked class="mr-2 rounded" onchange="plotGraph()">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Smooth Curve</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graph Display -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
+                        Graph
+                    </h2>
+                    <button onclick="downloadGraph()" class="text-sm text-primary hover:text-blue-600 font-medium">
+                        <i class="fas fa-download mr-1"></i> Download
+                    </button>
+                </div>
+                
+                <div class="relative" style="height: 500px;">
+                    <canvas id="graphCanvas" role="img" aria-label="Mathematical function graph"></canvas>
+                </div>
+
+                <div id="graphInfo" class="mt-4 p-4 bg-blue-50 dark:bg-gray-700 rounded-lg hidden">
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Graph Information</h3>
+                    <div id="graphDetails" class="text-sm text-gray-600 dark:text-gray-400">
+                        <!-- Graph details will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_SocialSharing")
+        </div>
+    </div>
+
+    <!-- Help Section -->
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            <i class="fas fa-info-circle text-accent mr-2"></i>How to Use
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-300">
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Supported Functions</h3>
+                <ul class="space-y-1 list-disc list-inside">
+                    <li><code>^</code> or <code>**</code> for power (e.g., x^2)</li>
+                    <li><code>sqrt(x)</code> for square root</li>
+                    <li><code>abs(x)</code> for absolute value</li>
+                    <li><code>sin(x), cos(x), tan(x)</code> trigonometric</li>
+                    <li><code>log(x)</code> natural logarithm</li>
+                    <li><code>exp(x)</code> exponential (e^x)</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Examples</h3>
+                <ul class="space-y-1 list-disc list-inside">
+                    <li><code>x^2 - 4*x + 3</code> quadratic function</li>
+                    <li><code>sin(x) + cos(x)</code> trigonometric</li>
+                    <li><code>1/x</code> reciprocal function</li>
+                    <li><code>sqrt(abs(x))</code> combined functions</li>
+                    <li><code>2^x</code> exponential growth</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Math.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+
+<script>
+    let chart = null;
+
+    // Set function from quick buttons
+    function setFunction(func) {
+        document.getElementById('functionInput').value = func;
+        plotGraph();
+    }
+
+    // Update range value displays
+    function updateRangeValue(id) {
+        const value = document.getElementById(id).value;
+        document.getElementById(id + 'Value').textContent = value;
+    }
+
+    // Reset view to defaults
+    function resetView() {
+        document.getElementById('xMin').value = -10;
+        document.getElementById('xMax').value = 10;
+        document.getElementById('yMin').value = -10;
+        document.getElementById('yMax').value = 10;
+        updateRangeValue('xMin');
+        updateRangeValue('xMax');
+        updateRangeValue('yMin');
+        updateRangeValue('yMax');
+        plotGraph();
+    }
+
+    // Plot the graph
+    function plotGraph() {
+        const functionStr = document.getElementById('functionInput').value.trim();
+        
+        if (!functionStr) {
+            alert('Please enter a function');
+            return;
+        }
+
+        try {
+            const xMin = parseFloat(document.getElementById('xMin').value);
+            const xMax = parseFloat(document.getElementById('xMax').value);
+            const yMin = parseFloat(document.getElementById('yMin').value);
+            const yMax = parseFloat(document.getElementById('yMax').value);
+
+            // Generate data points
+            const numPoints = 200;
+            const step = (xMax - xMin) / numPoints;
+            const xValues = [];
+            const yValues = [];
+
+            // Compile function once using math.js
+            const compiledFunc = math.compile(functionStr);
+
+            for (let i = 0; i <= numPoints; i++) {
+                const x = xMin + i * step;
+                try {
+                    const y = compiledFunc.evaluate({ x: x });
+                    
+                    // Only add valid points within y range
+                    if (typeof y === 'number' && !isNaN(y) && isFinite(y) && y >= yMin && y <= yMax) {
+                        xValues.push(x);
+                        yValues.push(y);
+                    } else {
+                        // Add null to create gaps in the graph for discontinuities
+                        xValues.push(x);
+                        yValues.push(null);
+                    }
+                } catch (e) {
+                    // Skip invalid points
+                    xValues.push(x);
+                    yValues.push(null);
+                }
+            }
+
+            // Chart configuration
+            const config = {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'y = ' + functionStr,
+                        data: yValues,
+                        borderColor: '#4A90E2',
+                        backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: document.getElementById('showPoints').checked ? 2 : 0,
+                        pointHoverRadius: 4,
+                        tension: document.getElementById('smoothCurve').checked ? 0.4 : 0,
+                        spanGaps: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'y = ' + context.parsed.y.toFixed(4);
+                                },
+                                title: function(context) {
+                                    return 'x = ' + context[0].parsed.x.toFixed(4);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            title: {
+                                display: true,
+                                text: 'x',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                display: document.getElementById('showGrid').checked,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            min: xMin,
+                            max: xMax
+                        },
+                        y: {
+                            type: 'linear',
+                            title: {
+                                display: true,
+                                text: 'y',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                display: document.getElementById('showGrid').checked,
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            min: yMin,
+                            max: yMax
+                        }
+                    }
+                }
+            };
+
+            // Destroy existing chart if any
+            if (chart) {
+                chart.destroy();
+            }
+
+            // Create new chart
+            const ctx = document.getElementById('graphCanvas').getContext('2d');
+            chart = new Chart(ctx, config);
+
+            // Show graph info
+            document.getElementById('graphInfo').classList.remove('hidden');
+            document.getElementById('graphDetails').innerHTML = `
+                <ul class="space-y-1">
+                    <li><strong>Function:</strong> y = ${functionStr}</li>
+                    <li><strong>Domain:</strong> [${xMin}, ${xMax}]</li>
+                    <li><strong>Range:</strong> [${yMin}, ${yMax}]</li>
+                    <li><strong>Data Points:</strong> ${xValues.filter((_, i) => yValues[i] !== null).length}</li>
+                </ul>
+            `;
+
+        } catch (error) {
+            alert('Error plotting graph: ' + error.message + '\\n\\nPlease check your function syntax.');
+        }
+    }
+
+    // Download graph as image
+    function downloadGraph() {
+        if (!chart) {
+            alert('Please plot a graph first');
+            return;
+        }
+
+        const canvas = document.getElementById('graphCanvas');
+        const url = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'graph_' + Date.now() + '.png';
+        link.href = url;
+        link.click();
+    }
+
+    // Plot default graph on load
+    document.addEventListener('DOMContentLoaded', function() {
+        plotGraph();
+    });
+</script>
+
+<style>
+    .quick-func-btn {
+        padding: 0.5rem;
+        background: #f3f4f6;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        color: #4b5563;
+    }
+    
+    .quick-func-btn:hover {
+        background: #4A90E2;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .dark .quick-func-btn {
+        background: #374151;
+        border-color: #4b5563;
+        color: #d1d5db;
+    }
+    
+    .dark .quick-func-btn:hover {
+        background: #4A90E2;
+        color: white;
+    }
+
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        background: #d1d5db;
+        border-radius: 3px;
+        outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        background: #4A90E2;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        background: #4A90E2;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+    }
+</style>
+}

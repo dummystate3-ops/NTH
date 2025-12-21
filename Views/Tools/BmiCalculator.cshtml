@@ -1,0 +1,202 @@
+@{
+    ViewData["PageTitle"] = "BMI Calculator | NovaTools Hub";
+    ViewData["MetaDescription"] = "Calculate your Body Mass Index and get health insights";
+}
+
+<div class="container-custom section-padding">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="text-gradient">BMI Calculator</span>
+            </h1>
+            <p class="text-xl text-[var(--color-text-medium)]">
+                Calculate your Body Mass Index and understand your health status
+            </p>
+        </div>
+
+        <!-- Calculator Card -->
+        <div class="card">
+            <form id="bmiForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Height -->
+                    <div>
+                        <label class="form-label">Height</label>
+                        <div class="flex gap-3">
+                            <input type="number" id="height" class="form-input flex-1" placeholder="Enter height" step="0.1" required>
+                            <select id="heightUnit" class="form-input w-32">
+                                <option value="cm">cm</option>
+                                <option value="m">m</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Weight -->
+                    <div>
+                        <label class="form-label">Weight</label>
+                        <div class="flex gap-3">
+                            <input type="number" id="weight" class="form-input flex-1" placeholder="Enter weight" step="0.1" required>
+                            <select id="weightUnit" class="form-input w-32">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button type="submit" class="btn btn-primary">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Calculate BMI
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results -->
+            <div id="results" class="mt-8 hidden">
+                <div class="p-6 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] rounded-lg text-white text-center">
+                    <p class="text-sm mb-2">Your BMI</p>
+                    <p class="text-5xl font-bold mb-2" id="bmiValue"></p>
+                    <p class="text-xl" id="bmiCategory"></p>
+                </div>
+
+                <!-- BMI Scale -->
+                <div class="mt-6">
+                    <div class="flex h-8 rounded-lg overflow-hidden">
+                        <div class="flex-1 bg-blue-500" title="Underweight"></div>
+                        <div class="flex-1 bg-green-500" title="Normal"></div>
+                        <div class="flex-1 bg-yellow-500" title="Overweight"></div>
+                        <div class="flex-1 bg-red-500" title="Obese"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-[var(--color-text-medium)] mt-2">
+                        <span>< 18.5</span>
+                        <span>18.5 - 24.9</span>
+                        <span>25 - 29.9</span>
+                        <span>≥ 30</span>
+                    </div>
+                </div>
+
+                <!-- Advice -->
+                <div class="mt-6 p-4 bg-[var(--color-bg)] rounded-lg">
+                    <p class="text-sm text-[var(--color-text-dark)]" id="bmiAdvice"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BMI Categories -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">BMI Categories</h3>
+            <div class="space-y-3">
+                <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded">
+                    <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Underweight</p>
+                        <p class="text-sm text-[var(--color-text-medium)]">BMI less than 18.5</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded">
+                    <div class="w-4 h-4 bg-green-500 rounded"></div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Normal weight</p>
+                        <p class="text-sm text-[var(--color-text-medium)]">BMI 18.5 - 24.9</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded">
+                    <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Overweight</p>
+                        <p class="text-sm text-[var(--color-text-medium)]">BMI 25 - 29.9</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded">
+                    <div class="w-4 h-4 bg-red-500 rounded"></div>
+                    <div class="flex-1">
+                        <p class="font-semibold">Obese</p>
+                        <p class="text-sm text-[var(--color-text-medium)]">BMI 30 or greater</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-3">About BMI</h3>
+            <p class="text-[var(--color-text-medium)] mb-3">
+                Body Mass Index (BMI) is a measure of body fat based on height and weight. While it's a useful screening tool, 
+                it doesn't directly measure body fat percentage and may not be accurate for athletes, elderly people, or those with 
+                certain health conditions.
+            </p>
+            <p class="text-sm text-[var(--color-text-light)]">
+                <strong>Disclaimer:</strong> This calculator is for informational purposes only. Always consult with a healthcare 
+                professional for personalized health advice.
+            </p>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <div class="mt-8">
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+<!-- JSON-LD Schema -->
+<script type="application/ld+json">
+@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
+    "BMI Calculator",
+    "Calculate your Body Mass Index and get health insights based on your height and weight",
+    Url.Action("BmiCalculator", "Tools", null, Context.Request.Scheme) ?? "",
+    "HealthApplication"
+))
+</script>
+
+@section Scripts {
+<script>
+    document.getElementById('bmiForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const height = parseFloat(document.getElementById('height').value);
+        const heightUnit = document.getElementById('heightUnit').value;
+        const weight = parseFloat(document.getElementById('weight').value);
+        const weightUnit = document.getElementById('weightUnit').value;
+
+        if (isNaN(height) || isNaN(weight) || height <= 0 || weight <= 0) {
+            alert('Please enter valid height and weight values');
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tools/CalculateBmi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    height: height,
+                    heightUnit: heightUnit,
+                    weight: weight,
+                    weightUnit: weightUnit
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('bmiValue').textContent = data.bmi;
+                document.getElementById('bmiCategory').textContent = data.category;
+                document.getElementById('bmiAdvice').textContent = data.advice;
+                document.getElementById('results').classList.remove('hidden');
+                
+                // Scroll to results
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                alert(data.error || 'Calculation failed');
+            }
+        } catch (error) {
+            console.error('BMI calculation error:', error);
+            alert('Failed to calculate BMI. Please try again.');
+        }
+    });
+</script>
+}

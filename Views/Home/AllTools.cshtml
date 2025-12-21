@@ -1,0 +1,495 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+<!-- Page Header -->
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">All Tools</h1>
+            <p class="text-xl opacity-90">Browse our complete collection of calculators and tools</p>
+        </div>
+    </div>
+</section>
+
+<!-- Tools List -->
+<section class="section-padding">
+    <div class="container-custom">
+        
+        <!-- Converters -->
+        <div id="converters" class="mb-16">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">??</span>
+                <div>
+                    <h2 class="text-3xl font-bold">Converters</h2>
+                    <p class="text-[var(--color-text-medium)]">Convert units, currencies, and measurements instantly</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a asp-controller="Tools" asp-action="UnitConverter" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Unit Converter</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Convert between length, weight, temperature, and more</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Tools" asp-action="CurrencyConverter" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Currency Converter</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Convert between major world currencies</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Tools" asp-action="BmiCalculator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">BMI Calculator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Calculate your body mass index and health metrics</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Tools" asp-action="AgeCalculator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Age Calculator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Calculate age precisely in years, months, and days</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Tools" asp-action="DateCalculator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Date Calculator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Calculate differences and add/subtract days</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Tools" asp-action="PasswordGenerator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Password Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Create strong, secure passwords instantly</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Tools" asp-action="QrCodeGenerator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">QR Code Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Generate QR codes for text, URLs, and more</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Developer & Content Tools -->
+        <div id="developer" class="mb-16">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">??</span>
+                <div>
+                    <h2 class="text-3xl font-bold">Developer & Content Tools</h2>
+                    <p class="text-[var(--color-text-medium)]">Format data, test patterns, and build content assets</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a asp-controller="Tools" asp-action="JsonFormatter" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">JSON Formatter</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Format, validate, and compare JSON payloads</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+
+                <a asp-controller="Tools" asp-action="RegexTester" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Regex Tester</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Test regex patterns with live matches</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+
+                <a asp-controller="Tools" asp-action="LoremIpsum" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Lorem Ipsum Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Generate placeholder text for layouts and mocks</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+
+                <a asp-controller="Tools" asp-action="ColorPaletteGenerator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Color Palette Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Create palettes, gradients, and exportable swatches</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Math & Education -->
+        <div id="math" class="mb-16">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">??</span>
+                <div>
+                    <h2 class="text-3xl font-bold">Math & Education</h2>
+                    <p class="text-[var(--color-text-medium)]">Advanced calculators for mathematical operations</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a asp-controller="Math" asp-action="EquationSolver" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Equation Solver</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Solve linear, quadratic, and cubic equations with steps</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Math" asp-action="PermutationCombination" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Permutation & Combination</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Calculate permutations and combinations</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Math" asp-action="Cryptography" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Cryptography</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Encrypt and decrypt text with various ciphers</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Math" asp-action="ExpressionEvaluator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Expression Evaluator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Evaluate complex mathematical expressions safely</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Math" asp-action="IndicatorCodes" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Indicator Codes</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Convert between binary, decimal, and hexadecimal</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Math" asp-action="ProblemSolver" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Problem Solver</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Solve common mathematical problems step-by-step</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Math" asp-action="GraphPlotter" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Graph Plotter</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Visualize mathematical functions interactively</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Productivity -->
+        <div id="productivity" class="mb-16">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">?</span>
+                <div>
+                    <h2 class="text-3xl font-bold">Productivity & Utility</h2>
+                    <p class="text-[var(--color-text-medium)]">Tools to boost your productivity and efficiency</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Advance Image Tool</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Crop, resize, compress, watermark, and batch download images</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+
+                <a asp-controller="ImageTools" asp-action="BackgroundRemover" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Background Remover</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Remove backgrounds with AI-powered segmentation</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+
+                <a asp-controller="Tools" asp-action="FaviconGenerator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Favicon Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Create favicon.ico and PWA icons from your logo with safe padding</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+
+                <a asp-controller="Productivity" asp-action="WorldTime" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">World Time Viewer</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">View current time across major world cities</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="TimeZoneConverter" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Time Zone Converter</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Convert time between different time zones</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="Stopwatch" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Stopwatch</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Precision timing with lap support</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="Notes" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Notes</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Quick notepad with auto-save functionality</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="TextToSpeech" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Text-to-Speech</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Convert text to natural-sounding speech</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="TimeTracker" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Time Tracker</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Track time spent on tasks and projects</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="TodoList" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">To-Do List</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Organize and prioritize your daily tasks</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="PomodoroTimer" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Pomodoro Timer</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Boost focus with the Pomodoro Technique</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Productivity" asp-action="KanbanBoard" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Kanban Board</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Visual task management with drag-and-drop</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Business & Finance -->
+        <div id="business" class="mb-16">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">??</span>
+                <div>
+                    <h2 class="text-3xl font-bold">Business & Finance</h2>
+                    <p class="text-[var(--color-text-medium)]">Financial calculators and business planning tools</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a asp-controller="Business" asp-action="ProfitMargin" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Profit Margin Calculator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Calculate profit margins, markup, and optimal pricing</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Business" asp-action="RoiAnalysis" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">ROI Analysis Calculator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Analyze return on investment with trend visualizations</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Business" asp-action="UnbilledHours" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Unbilled Hours Estimator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Track and value unbilled work hours</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Business" asp-action="SavingsComparison" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Product Savings Comparison</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Compare multiple products to find the best value</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Business" asp-action="LoanCalculator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Business Loan Calculator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Calculate loan payments with amortization schedule</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Business" asp-action="AutomationPlanner" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Task Automation Planner</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Estimate ROI and time savings from automation</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Academic & Teacher Tools -->
+        <div id="academic" class="mb-16">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="text-4xl">??</div>
+                <div>
+                    <h2 class="text-3xl font-bold mb-2">Academic & Teacher Tools</h2>
+                    <p class="text-[var(--color-text-medium)]">Educational tools for students and teachers</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a asp-controller="Academic" asp-action="QuizBuilder" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Online Quiz Builder</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Create interactive quizzes and assessments</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Academic" asp-action="Flashcards" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Flashcard Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Create and study with digital flashcards</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Academic" asp-action="GrammarHelper" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Grammar Helper</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Check grammar and improve writing</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Academic" asp-action="FormulaReference" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Formula & Unit Reference</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Essential formulas for math, physics, chemistry</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Academic" asp-action="Whiteboard" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Interactive Whiteboard</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Draw diagrams and collaborate visually</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+                
+                <a asp-controller="Academic" asp-action="MindMap" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Mind Map Creator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Visualize and organize ideas interactively</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Trending & AI Tools -->
+        <div id="trending" class="mb-16">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">??</span>
+                <div>
+                    <h2 class="text-3xl font-bold">Trending & AI Tools</h2>
+                    <p class="text-[var(--color-text-medium)]">AI-powered tools and trending utilities</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a asp-controller="Trending" asp-action="AIWritingAssistant" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">AI Writing Assistant</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Draft content, summarize text, and improve writing with AI</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -&gt;</span>
+                </a>
+                
+                <a asp-controller="Trending" asp-action="RateComparison" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Rate Comparison</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Compare multiple currencies and units side-by-side</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -&gt;</span>
+                </a>
+                
+                <a asp-controller="Trending" asp-action="PollBuilder" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Quick Poll Builder</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Create instant polls and surveys with visual results</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -&gt;</span>
+                </a>
+                
+                <a asp-controller="Trending" asp-action="EncryptionTool" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Encryption Tool</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Encrypt and decrypt text securely in your browser</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -&gt;</span>
+                </a>
+                
+                <a asp-controller="Trending" asp-action="MemeGenerator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Meme Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Create hilarious memes with text overlays</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -&gt;</span>
+                </a>
+                
+                <a asp-controller="Trending" asp-action="RecipeGenerator" class="tool-card group">
+                    <div class="tool-icon">[*]</div>
+                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">AI Recipe Generator</h3>
+                    <p class="text-[var(--color-text-medium)] mb-4">Generate recipes from your ingredients with AI</p>
+                    <span class="text-[var(--color-primary)] font-medium">Try it now -&gt;</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Check if page loaded with a fragment and scroll to it
+        if (window.location.hash) {
+            setTimeout(() => {
+                const target = document.querySelector(window.location.hash);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.tool-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+}
+
+
+
+
+
+
+
+

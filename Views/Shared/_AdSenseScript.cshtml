@@ -1,0 +1,73 @@
+@*
+    Google AdSense Script Initialization
+    
+    SETUP INSTRUCTIONS:
+    1. Apply for Google AdSense at https://www.google.com/adsense
+    2. Get your Publisher ID (format: ca-pub-XXXXXXXXXXXXXXXX)
+    3. Add to appsettings.json:
+       "AdSense": {
+         "PublisherId": "ca-pub-XXXXXXXXXXXXXXXX"
+       }
+    4. This partial checks cookie consent before loading
+*@
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    var publisherId = Configuration["AdSense:PublisherId"];
+    var isProduction = Configuration["Environment"] != "Development";
+}
+
+@if (!string.IsNullOrEmpty(publisherId) && isProduction)
+{
+    <script id="adsense-consent-check">
+        (function() {
+            // Check cookie consent before initializing AdSense
+            const consent = JSON.parse(localStorage.getItem('cookieConsent') || '{}');
+            
+            if (consent.advertising === true) {
+                // User has consented to advertising
+                initializeAdSense();
+            }
+            
+            // Function to initialize Google AdSense
+            function initializeAdSense() {
+                // Load AdSense script
+                var script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=@publisherId';
+                script.crossOrigin = 'anonymous';
+                document.head.appendChild(script);
+                
+                console.log('Google AdSense initialized');
+            }
+            
+            // Make function globally accessible for cookie consent banner
+            window.initializeAdvertising = initializeAdSense;
+        })();
+    </script>
+}
+else if (string.IsNullOrEmpty(publisherId))
+{
+    <!-- Google AdSense Publisher ID not configured -->
+    <script>
+        console.warn('Google AdSense Publisher ID not configured. Add "AdSense:PublisherId" to appsettings.json');
+        // Show ad placeholders instead
+        window.initializeAdvertising = function() {
+            console.log('AdSense (placeholder mode)');
+        };
+    </script>
+}
+else
+{
+    <!-- Google AdSense disabled in Development environment -->
+    <script>
+        console.info('Google AdSense disabled in Development environment - showing placeholders');
+        // Mock AdSense for development testing
+        window.adsbygoogle = [];
+        window.initializeAdvertising = function() {
+            console.log('AdSense (development mock)');
+        };
+    </script>
+}

@@ -1,0 +1,168 @@
+@{
+    ViewBag.PageTitle = "Privacy Policy - NovaTools Hub";
+    ViewBag.MetaDescription = "Learn how NovaTools Hub collects, uses, and protects your personal information. Our commitment to your privacy and data security.";
+}
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<div class="section-padding">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl font-bold mb-6">Privacy Policy</h1>
+            <p class="text-[var(--color-text-medium)] mb-8">Last updated: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">Introduction</h2>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    Welcome to NovaTools Hub ("we," "our," or "us"). We are committed to protecting your privacy and 
+                    ensuring the security of your personal information. This Privacy Policy explains how we collect, use, 
+                    disclose, and safeguard your information when you visit our website.
+                </p>
+                <p class="text-[var(--color-text-medium)]">
+                    By using NovaTools Hub, you agree to the collection and use of information in accordance with this policy.
+                </p>
+            </div>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">Information We Collect</h2>
+                
+                <h3 class="text-xl font-semibold mb-3">Personal Information</h3>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    We may collect personal information that you voluntarily provide when you subscribe to our blog, 
+                    contact us, or participate in surveys.
+                </p>
+                
+                <h3 class="text-xl font-semibold mb-3">Usage Data</h3>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    We automatically collect certain information when you visit our website:
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-[var(--color-text-medium)] mb-4">
+                    <li>IP address and browser type</li>
+                    <li>Device information and operating system</li>
+                    <li>Pages visited and time spent on each page</li>
+                    <li>Referring website and exit pages</li>
+                    <li>Tool usage and interaction patterns</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-3">Cookies and Tracking Technologies</h3>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    We use cookies and similar tracking technologies. You can control cookie preferences through our 
+                    cookie consent banner.
+                </p>
+                <div class="bg-[var(--color-bg)] border-l-4 border-[var(--color-primary)] p-4 rounded mb-4">
+                    <p class="font-semibold mb-2">Cookie Types:</p>
+                    <ul class="list-disc list-inside space-y-1 text-[var(--color-text-medium)] text-sm">
+                        <li><strong>Strictly Necessary:</strong> Essential for site functionality</li>
+                        <li><strong>Analytics:</strong> Google Analytics for usage statistics</li>
+                        <li><strong>Advertising:</strong> Ad personalization and measurement</li>
+                        <li><strong>Personalization:</strong> Theme preferences and settings</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">How We Use Your Information</h2>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    We use the collected information for:
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-[var(--color-text-medium)]">
+                    <li>Providing, maintaining, and improving our tools and services</li>
+                    <li>Personalizing your experience and delivering relevant content</li>
+                    <li>Analyzing usage patterns and optimizing performance</li>
+                    <li>Communicating updates and new features</li>
+                    <li>Detecting and preventing fraud or security issues</li>
+                    <li>Complying with legal obligations</li>
+                    <li>Displaying relevant advertisements (with your consent)</li>
+                </ul>
+            </div>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">Third-Party Services</h2>
+                
+                <h3 class="text-xl font-semibold mb-3">Google Analytics</h3>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    We use Google Analytics to understand how visitors use our site. You can opt-out by installing the 
+                    <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" class="text-[var(--color-primary)] hover:underline">Google Analytics opt-out browser add-on</a>.
+                </p>
+
+                <h3 class="text-xl font-semibold mb-3">Google AdSense</h3>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    We use Google AdSense to display advertisements. You can manage your ad preferences at 
+                    <a href="https://www.google.com/settings/ads" target="_blank" class="text-[var(--color-primary)] hover:underline">Google Ad Settings</a>.
+                </p>
+
+                <h3 class="text-xl font-semibold mb-3">External APIs</h3>
+                <p class="text-[var(--color-text-medium)]">
+                    Some tools use external APIs (currency exchange rates, OpenAI, etc.). Data sent to these services 
+                    is governed by their respective privacy policies.
+                </p>
+            </div>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">Your Rights (GDPR/CCPA)</h2>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    Depending on your location, you may have rights to:
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-[var(--color-text-medium)] mb-4">
+                    <li><strong>Access:</strong> Request a copy of your personal data</li>
+                    <li><strong>Rectification:</strong> Correct inaccurate or incomplete data</li>
+                    <li><strong>Erasure:</strong> Request deletion of your personal data</li>
+                    <li><strong>Restriction:</strong> Limit how we process your data</li>
+                    <li><strong>Portability:</strong> Receive your data in a structured format</li>
+                    <li><strong>Objection:</strong> Object to processing of your data</li>
+                    <li><strong>Withdraw Consent:</strong> Withdraw consent at any time</li>
+                </ul>
+                <p class="text-[var(--color-text-medium)]">
+                    To exercise these rights, contact us at 
+                    <a href="mailto:privacy@NovaToolsHub.com" class="text-[var(--color-primary)] hover:underline">privacy@NovaToolsHub.com</a>.
+                </p>
+            </div>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">Data Security</h2>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    We implement industry-standard security measures:
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-[var(--color-text-medium)]">
+                    <li>HTTPS encryption for all data transmission</li>
+                    <li>Secure server infrastructure</li>
+                    <li>Regular security audits and updates</li>
+                    <li>Access controls and authentication</li>
+                    <li>Encryption of sensitive data at rest</li>
+                </ul>
+            </div>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">Children's Privacy</h2>
+                <p class="text-[var(--color-text-medium)]">
+                    Our website is not intended for children under 13. We do not knowingly collect personal information 
+                    from children. If you believe we have collected information from a child, please contact us immediately.
+                </p>
+            </div>
+
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">Contact Us</h2>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    If you have questions about this Privacy Policy:
+                </p>
+                <div class="bg-[var(--color-bg)] p-4 rounded">
+                    <p class="text-[var(--color-text-medium)]">
+                        <strong>Email:</strong> <a href="mailto:privacy@NovaToolsHub.com" class="text-[var(--color-primary)] hover:underline">privacy@NovaToolsHub.com</a><br>
+                        <strong>Website:</strong> @(Configuration["SiteSettings:BaseUrl"] ?? "https://NovaToolsHub.com")
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-4">Cookie Preferences</h2>
+                <p class="text-[var(--color-text-medium)] mb-4">
+                    You can manage your cookie preferences at any time:
+                </p>
+                <button onclick="openCookieSettings()" class="btn-primary">
+                    Manage Cookie Preferences
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

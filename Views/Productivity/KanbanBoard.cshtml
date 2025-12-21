@@ -1,0 +1,487 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Kanban Board",
+    "applicationCategory": "BusinessApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-columns text-primary"></i> Kanban Board
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Visual task management with drag-and-drop
+        </p>
+    </div>
+
+    <!-- Add Card Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
+        <div class="flex gap-3">
+            <input type="text" id="newCardTitle" placeholder="Add a new card..." class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            <select id="newCardColumn" class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                <option value="todo">To Do</option>
+                <option value="inprogress">In Progress</option>
+                <option value="done">Done</option>
+            </select>
+            <button onclick="addCard()" class="bg-primary hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200">
+                <i class="fas fa-plus mr-2"></i> Add Card
+            </button>
+        </div>
+    </div>
+
+    <!-- Kanban Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <!-- To Do Column -->
+        <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                    <i class="fas fa-circle text-red-500 text-xs mr-2"></i> To Do
+                    <span id="todoCount" class="text-sm text-gray-500 dark:text-gray-400 ml-2">(0)</span>
+                </h2>
+            </div>
+            <div id="todoColumn" class="space-y-3 min-h-64" ondrop="drop(event, 'todo')" ondragover="allowDrop(event)">
+                <!-- Cards will be added here -->
+            </div>
+        </div>
+
+        <!-- In Progress Column -->
+        <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                    <i class="fas fa-circle text-yellow-500 text-xs mr-2"></i> In Progress
+                    <span id="inprogressCount" class="text-sm text-gray-500 dark:text-gray-400 ml-2">(0)</span>
+                </h2>
+            </div>
+            <div id="inprogressColumn" class="space-y-3 min-h-64" ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event)">
+                <!-- Cards will be added here -->
+            </div>
+        </div>
+
+        <!-- Done Column -->
+        <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+                    <i class="fas fa-circle text-green-500 text-xs mr-2"></i> Done
+                    <span id="doneCount" class="text-sm text-gray-500 dark:text-gray-400 ml-2">(0)</span>
+                </h2>
+                <button onclick="clearDone()" class="text-xs text-red-600 hover:text-red-700">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div id="doneColumn" class="space-y-3 min-h-64" ondrop="drop(event, 'done')" ondragover="allowDrop(event)">
+                <!-- Cards will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+            <i class="fas fa-chart-pie text-primary"></i> Board Statistics
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <p class="text-2xl font-bold text-gray-800 dark:text-white" id="totalCards">0</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Total Cards</p>
+            </div>
+            <div class="text-center p-3 bg-red-50 dark:bg-gray-700 rounded-lg">
+                <p class="text-2xl font-bold text-red-600" id="todoStat">0</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">To Do</p>
+            </div>
+            <div class="text-center p-3 bg-yellow-50 dark:bg-gray-700 rounded-lg">
+                <p class="text-2xl font-bold text-yellow-600" id="inprogressStat">0</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">In Progress</p>
+            </div>
+            <div class="text-center p-3 bg-green-50 dark:bg-gray-700 rounded-lg">
+                <p class="text-2xl font-bold text-green-600" id="doneStat">0</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Completed</p>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_SocialSharing")
+</div>
+
+<!-- Edit Card Modal -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            @section Scripts {
+                <script src="~/js/productivity.workspace.js" asp-append-version="true"></script>
+                <script>
+                    const API_BASE = '/api/productivity';
+                    let workspaceId = null;
+                    let cards = [];
+
+                    document.addEventListener('DOMContentLoaded', () => {
+                        initializeKanban();
+
+                        document.getElementById('newCardTitle').addEventListener('keypress', function (e) {
+                            if (e.key === 'Enter') {
+                                addCard();
+                            }
+                        });
+
+                        document.addEventListener('keydown', function (e) {
+                            if (e.key === 'Escape') {
+                                closeEditModal();
+                            }
+                        });
+
+                        ['todoColumn', 'inprogressColumn', 'doneColumn'].forEach(id => {
+                            document.getElementById(id).addEventListener('dragleave', function (ev) {
+                                if (ev.target === this) {
+                                    this.classList.remove('bg-blue-50', 'dark:bg-gray-900');
+                                }
+                            });
+                        });
+                    });
+
+                    async function initializeKanban() {
+                        try {
+                            workspaceId = await ensureWorkspaceId();
+                            await loadCards();
+                        } catch (error) {
+                            console.error('Failed to load kanban board', error);
+                            showNotification(error.message || 'Unable to load Kanban board.', 'error');
+                        }
+                    }
+
+                    async function ensureWorkspaceId() {
+                        if (workspaceId) {
+                            return workspaceId;
+                        }
+
+                        if (!window.ProductivityWorkspace) {
+                            throw new Error('Workspace helper unavailable.');
+                        }
+
+                        workspaceId = await window.ProductivityWorkspace.getId();
+                        return workspaceId;
+                    }
+
+                    async function loadCards() {
+                        try {
+                            const id = await ensureWorkspaceId();
+                            const data = await apiRequest(`${API_BASE}/workspaces/${id}/kanban`);
+                            cards = data.map(normalizeCard);
+                            renderBoard();
+                        } catch (error) {
+                            console.error('Failed to load cards', error);
+                            showNotification(error.message || 'Failed to load board.', 'error');
+                        }
+                    }
+
+                    async function addCard() {
+                        const titleInput = document.getElementById('newCardTitle');
+                        const columnSelect = document.getElementById('newCardColumn');
+                        const title = titleInput.value.trim();
+
+                        if (!title) {
+                            showNotification('Please enter a card title.', 'warning');
+                            return;
+                        }
+
+                        try {
+                            const payload = {
+                                workspaceId: await ensureWorkspaceId(),
+                                title,
+                                column: columnSelect.value
+                            };
+
+                            await apiRequest(`${API_BASE}/workspaces/${workspaceId}/kanban`, {
+                                method: 'POST',
+                                body: JSON.stringify(payload)
+                            });
+
+                            titleInput.value = '';
+                            showNotification('Card added successfully.', 'success');
+                            await loadCards();
+                        } catch (error) {
+                            console.error('Failed to add card', error);
+                            showNotification(error.message || 'Failed to add card.', 'error');
+                        }
+                    }
+
+                    function renderBoard() {
+                        const todoColumn = document.getElementById('todoColumn');
+                        const inprogressColumn = document.getElementById('inprogressColumn');
+                        const doneColumn = document.getElementById('doneColumn');
+
+                        todoColumn.innerHTML = '';
+                        inprogressColumn.innerHTML = '';
+                        doneColumn.innerHTML = '';
+
+                        cards.forEach(card => {
+                            const cardEl = createCardElement(card);
+                            const columnEl = document.getElementById(`${card.column}Column`);
+                            if (columnEl) {
+                                columnEl.appendChild(cardEl);
+                            }
+                        });
+
+                        const todoCnt = cards.filter(c => c.column === 'todo').length;
+                        const inprogressCnt = cards.filter(c => c.column === 'inprogress').length;
+                        const doneCnt = cards.filter(c => c.column === 'done').length;
+
+                        document.getElementById('todoCount').textContent = `(${todoCnt})`;
+                        document.getElementById('inprogressCount').textContent = `(${inprogressCnt})`;
+                        document.getElementById('doneCount').textContent = `(${doneCnt})`;
+
+                        document.getElementById('totalCards').textContent = cards.length;
+                        document.getElementById('todoStat').textContent = todoCnt;
+                        document.getElementById('inprogressStat').textContent = inprogressCnt;
+                        document.getElementById('doneStat').textContent = doneCnt;
+                    }
+
+                    function createCardElement(card) {
+                        const div = document.createElement('div');
+                        div.className = 'bg-white dark:bg-gray-700 rounded-lg p-4 shadow hover:shadow-lg transition-shadow cursor-move';
+                        div.draggable = true;
+                        div.dataset.cardId = card.id;
+                        div.ondragstart = drag;
+
+                        div.innerHTML = `
+                            <div class="flex justify-between items-start gap-2 mb-2">
+                                <p class="text-sm text-gray-800 dark:text-white flex-1">${escapeHtml(card.title)}</p>
+                                <div class="flex gap-1">
+                                    <button onclick="editCard(${card.id})" class="text-primary hover:text-blue-600 text-xs">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteCard(${card.id})" class="text-red-600 hover:text-red-700 text-xs">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                ${new Date(card.createdAt).toLocaleDateString()}
+                            </p>
+                        `;
+
+                        return div;
+                    }
+
+                    function allowDrop(ev) {
+                        ev.preventDefault();
+                        ev.currentTarget.classList.add('bg-blue-50', 'dark:bg-gray-900');
+                    }
+
+                    function drag(ev) {
+                        ev.dataTransfer.setData('cardId', ev.currentTarget.dataset.cardId);
+                    }
+
+                    async function drop(ev, column) {
+                        ev.preventDefault();
+                        ev.currentTarget.classList.remove('bg-blue-50', 'dark:bg-gray-900');
+
+                        const cardId = parseInt(ev.dataTransfer.getData('cardId'), 10);
+                        if (!cardId) return;
+
+                        try {
+                            await apiRequest(`${API_BASE}/kanban/${cardId}/move`, {
+                                method: 'PATCH',
+                                body: JSON.stringify({
+                                    workspaceId: await ensureWorkspaceId(),
+                                    column,
+                                    position: cards.filter(c => c.column === column && c.id !== cardId).length
+                                })
+                            });
+
+                            await loadCards();
+                        } catch (error) {
+                            console.error('Failed to move card', error);
+                            showNotification(error.message || 'Failed to move card.', 'error');
+                        }
+                    }
+
+                    function editCard(id) {
+                        const card = cards.find(c => c.id === id);
+                        if (!card) return;
+
+                        document.getElementById('editCardId').value = id;
+                        document.getElementById('editCardTitle').value = card.title;
+                        document.getElementById('editCardColumn').value = card.column;
+
+                        document.getElementById('editModal').classList.remove('hidden');
+                        document.getElementById('editModal').classList.add('flex');
+                    }
+
+                    function closeEditModal() {
+                        document.getElementById('editModal').classList.add('hidden');
+                        document.getElementById('editModal').classList.remove('flex');
+                    }
+
+                    async function saveEdit() {
+                        const id = parseInt(document.getElementById('editCardId').value, 10);
+                        const title = document.getElementById('editCardTitle').value.trim();
+                        if (!title) {
+                            showNotification('Card title cannot be empty.', 'warning');
+                            return;
+                        }
+
+                        try {
+                            const payload = {
+                                workspaceId: await ensureWorkspaceId(),
+                                title,
+                                column: document.getElementById('editCardColumn').value
+                            };
+
+                            await apiRequest(`${API_BASE}/kanban/${id}`, {
+                                method: 'PUT',
+                                body: JSON.stringify(payload)
+                            });
+
+                            closeEditModal();
+                            showNotification('Card updated.', 'success');
+                            await loadCards();
+                        } catch (error) {
+                            console.error('Failed to update card', error);
+                            showNotification(error.message || 'Failed to update card.', 'error');
+                        }
+                    }
+
+                    async function deleteCard(id) {
+                        if (!confirm('Delete this card?')) return;
+
+                        try {
+                            await apiRequest(`${API_BASE}/kanban/${id}?workspaceId=${await ensureWorkspaceId()}`, {
+                                method: 'DELETE'
+                            });
+
+                            showNotification('Card deleted.', 'success');
+                            await loadCards();
+                        } catch (error) {
+                            console.error('Failed to delete card', error);
+                            showNotification(error.message || 'Failed to delete card.', 'error');
+                        }
+                    }
+
+                    async function clearDone() {
+                        const doneCards = cards.filter(c => c.column === 'done');
+                        if (doneCards.length === 0) {
+                            showNotification('No completed cards to clear.', 'info');
+                            return;
+                        }
+
+                        if (!confirm(`Clear ${doneCards.length} completed card(s)?`)) return;
+
+                        try {
+                            const id = await ensureWorkspaceId();
+                            await Promise.all(doneCards.map(card =>
+                                apiRequest(`${API_BASE}/kanban/${card.id}?workspaceId=${id}`, { method: 'DELETE' })
+                            ));
+
+                            showNotification('Completed cards cleared.', 'success');
+                            await loadCards();
+                        } catch (error) {
+                            console.error('Failed to clear cards', error);
+                            showNotification(error.message || 'Failed to clear cards.', 'error');
+                        }
+                    }
+
+                    function escapeHtml(text) {
+                        const div = document.createElement('div');
+                        div.textContent = text ?? '';
+                        return div.innerHTML;
+                    }
+
+                    async function apiRequest(url, options = {}) {
+                        const method = options.method || 'GET';
+                        const fetchOptions = {
+                            method,
+                            headers: {
+                                'Accept': 'application/json',
+                                ...(method === 'GET' ? {} : { 'Content-Type': 'application/json' }),
+                                ...(options.headers || {})
+                            }
+                        };
+
+                        if (options.body && method !== 'GET' && method !== 'HEAD') {
+                            fetchOptions.body = options.body;
+                        }
+
+                        const response = await fetch(url, fetchOptions);
+                        if (response.status === 204) {
+                            return null;
+                        }
+
+                        if (!response.ok) {
+                            const message = await parseError(response);
+                            throw new Error(message);
+                        }
+
+                        return await response.json();
+                    }
+
+                    async function parseError(response) {
+                        try {
+                            const data = await response.json();
+                            return data.error || data.message || 'Request failed.';
+                        } catch {
+                            return 'Request failed.';
+                        }
+                    }
+
+                    function normalizeCard(dto) {
+                        return {
+                            id: dto.id ?? dto.Id,
+                            title: dto.title ?? dto.Title ?? '',
+                            column: (dto.column ?? dto.Column ?? 'todo').toLowerCase(),
+                            position: dto.position ?? dto.Position ?? 0,
+                            createdAt: dto.createdAt ?? dto.CreatedAt,
+                            updatedAt: dto.updatedAt ?? dto.UpdatedAt
+                        };
+                    }
+                </script>
+            }
+        
+        cards = cards.filter(c => c.column !== 'done');
+        saveCards();
+        renderBoard();
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        loadCards();
+        
+        // Enter key to add card
+        document.getElementById('newCardTitle').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addCard();
+            }
+        });
+        
+        // Close modal on escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEditModal();
+            }
+        });
+    });
+</script>

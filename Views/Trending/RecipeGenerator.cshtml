@@ -1,0 +1,810 @@
+@using System.Linq
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section JsonLd {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": ["SoftwareApplication", "WebApplication"],
+        "name": "AI Recipe Generator - NovaTools Hub",
+        "applicationCategory": "LifestyleApplication",
+        "operatingSystem": "Any",
+        "description": "Generate personalized, chef-style recipes from your ingredients using AI.",
+        "url": "@(Model.CanonicalUrl ?? "https://NovaToolsHub.com/Trending/RecipeGenerator")",
+        "author": {
+            "@@type": "Organization",
+            "name": "NovaTools Hub",
+            "url": "https://NovaToolsHub.com"
+        },
+        "offers": {
+            "@@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+            "@@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "150"
+        },
+        "featureList": [
+            "AI-Powered Recipe Generation",
+            "Dietary Restriction Support",
+            "Cooking Time Optimization",
+            "Nutrition Insights",
+            "Recipe Saving & Sharing"
+        ]
+    }
+    </script>
+}
+
+<!-- Page Header -->
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-6xl mb-4">👨‍🍳</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">AI Recipe Generator</h1>
+            <p class="text-xl opacity-90">Turn your ingredients into delicious recipes</p>
+        </div>
+    </div>
+</section>
+
+<nav class="bg-[var(--color-bg)] border-b border-[var(--color-border)]" aria-label="Breadcrumb">
+    <div class="container-custom py-3">
+        <ol class="flex items-center space-x-2 text-sm text-[var(--color-text-medium)]">
+            <li><a href="/" class="hover:text-[var(--color-primary)] transition">Home</a></li>
+            <li class="flex items-center">
+                <svg class="w-4 h-4 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <a href="/Trending" class="hover:text-[var(--color-primary)] transition">Trending Tools</a>
+            </li>
+            <li class="flex items-center">
+                <svg class="w-4 h-4 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <span class="text-[var(--color-text-dark)] font-medium">AI Recipe Generator</span>
+            </li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Tool Section -->
+<section class="section-padding recipe-generator-page">
+    <div class="container-custom max-w-5xl">
+        <form id="recipeForm">
+            @Html.AntiForgeryToken()
+        </form>
+
+        @await Html.PartialAsync("_ValidationSummary", Enumerable.Empty<string>())
+
+        <div id="recipe-status" class="hidden border-l-4 rounded-lg px-4 py-3 mb-6"></div>
+
+        <!-- Recipe Generator -->
+        <div class="card mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-[var(--color-text-dark)]">What's in Your Kitchen?</h2>
+                    <p class="text-[var(--color-text-medium)]">Enter the ingredients you have. We'll craft a chef-style recipe with AI-backed tips.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" class="pill-button" data-diet="vegetarian">Vegetarian</button>
+                    <button type="button" class="pill-button" data-diet="vegan">Vegan</button>
+                    <button type="button" class="pill-button" data-diet="gluten-free">Gluten-Free</button>
+                    <button type="button" class="pill-button" data-diet="keto">Keto</button>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Ingredients (comma or enter separated)</label>
+                    <textarea id="ingredients" rows="4" class="w-full p-4 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent resize-none" placeholder="E.g., chicken thighs, jasmine rice, tomatoes, spinach, garlic"></textarea>
+                    <p class="text-sm text-[var(--color-text-medium)] mt-1">💡 Enter at least 3 ingredients for best results. Click a preset to add pantry staples:</p>
+                    <div class="flex flex-wrap gap-2 mt-3" id="ingredient-presets">
+                        <button type="button" class="pill-button" data-ingredient="olive oil">+ Olive Oil</button>
+                        <button type="button" class="pill-button" data-ingredient="garlic">+ Garlic</button>
+                        <button type="button" class="pill-button" data-ingredient="onion">+ Onion</button>
+                        <button type="button" class="pill-button" data-ingredient="bell pepper">+ Bell Pepper</button>
+                        <button type="button" class="pill-button" data-ingredient="black beans">+ Black Beans</button>
+                        <button type="button" class="pill-button" data-ingredient="spinach">+ Spinach</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Cuisine Type</label>
+                        <select id="cuisine" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                            <option value="">Any</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Mexican">Mexican</option>
+                            <option value="Mediterranean">Mediterranean</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Asian Fusion">Asian Fusion</option>
+                            <option value="Middle Eastern">Middle Eastern</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Dietary Preference</label>
+                        <select id="dietary" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                            <option value="none">None</option>
+                            <option value="vegetarian">Vegetarian</option>
+                            <option value="vegan">Vegan</option>
+                            <option value="gluten-free">Gluten-Free</option>
+                            <option value="keto">Keto</option>
+                            <option value="low-carb">Low-Carb</option>
+                            <option value="paleo">Paleo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Cooking Time</label>
+                        <select id="cooking-time" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                            <option value="any">Any</option>
+                            <option value="quick">Quick (&lt; 30 min)</option>
+                            <option value="medium">Medium (30-60 min)</option>
+                            <option value="long">Slow (&gt; 60 min)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Servings</label>
+                        <input type="number" id="servings-input" min="1" max="16" value="4" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Allergies / Avoid</label>
+                        <input type="text" id="allergies" maxlength="200" placeholder="E.g., peanuts, dairy" class="w-full p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                    </div>
+                </div>
+
+                <button type="button" id="generate-recipe" class="btn btn-primary w-full">
+                    <span id="recipe-btn-text">👨‍🍳 Generate Recipe</span>
+                    <span id="recipe-loading" class="hidden items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span id="loading-message">Warming up the kitchen...</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Fun Loading Overlay -->
+        <div id="cooking-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl transform transition-all">
+                <div class="text-6xl mb-4 animate-bounce" id="cooking-emoji">👨‍🍳</div>
+                <h3 class="text-2xl font-bold text-[var(--color-text-dark)] mb-2">Our Chef is Cooking!</h3>
+                <p id="cooking-message" class="text-lg text-[var(--color-text-medium)] mb-4">Preheating the AI oven...</p>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div id="cooking-progress" class="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-[var(--color-text-light)]">This usually takes 10-30 seconds</p>
+            </div>
+        </div>
+
+        <!-- Recipe Results -->
+        <div id="recipe-results" class="hidden space-y-6">
+            <div class="card">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                    <div>
+                        <p class="text-sm uppercase tracking-wide text-[var(--color-text-medium)]" id="recipe-tag"></p>
+                        <h2 id="recipe-title" class="text-3xl font-bold text-[var(--color-text-dark)]"></h2>
+                        <p id="recipe-meta" class="text-sm text-[var(--color-text-light)] mt-1"></p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span id="recipe-source" class="px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-sm font-semibold">AI Generated</span>
+                        <button id="save-recipe" class="btn btn-secondary">💾 Save Recipe</button>
+                    </div>
+                </div>
+
+                <div id="recipe-tags" class="flex flex-wrap gap-2 mb-4 hidden"></div>
+
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                    <div class="stat-card">
+                        <div class="text-2xl mb-1">⏱️</div>
+                        <div class="text-sm text-[var(--color-text-medium)]">Prep Time</div>
+                        <div id="prep-time" class="font-bold text-[var(--color-text-dark)]"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-2xl mb-1">🍳</div>
+                        <div class="text-sm text-[var(--color-text-medium)]">Cook Time</div>
+                        <div id="cook-time" class="font-bold text-[var(--color-text-dark)]"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-2xl mb-1">👥</div>
+                        <div class="text-sm text-[var(--color-text-medium)]">Servings</div>
+                        <div id="servings" class="font-bold text-[var(--color-text-dark)]"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-2xl mb-1">🔥</div>
+                        <div class="text-sm text-[var(--color-text-medium)]">Difficulty</div>
+                        <div id="difficulty" class="font-bold text-[var(--color-text-dark)]"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-2xl mb-1">🕒</div>
+                        <div class="text-sm text-[var(--color-text-medium)]">Total Time</div>
+                        <div id="total-time" class="font-bold text-[var(--color-text-dark)]"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold mb-3 text-[var(--color-text-dark)]">📝 Ingredients</h3>
+                        <ul id="recipe-ingredients" class="space-y-2"></ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold mb-3 text-[var(--color-text-dark)]">👨‍🍳 Instructions</h3>
+                        <ol id="recipe-instructions" class="space-y-3"></ol>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div class="lg:col-span-2 p-4 bg-[var(--color-neutral-100)] rounded-lg">
+                        <h3 class="text-lg font-bold text-[var(--color-text-dark)] mb-2">Chef Tips</h3>
+                        <p id="chef-notes" class="text-[var(--color-text-medium)] whitespace-pre-line"></p>
+                        <p id="equipment-notes" class="text-sm text-[var(--color-text-medium)] mt-3 hidden"></p>
+                    </div>
+                    <div class="p-4 bg-[var(--color-neutral-100)] rounded-lg">
+                        <h3 class="text-lg font-bold text-[var(--color-text-dark)] mb-3">📊 Nutrition (per serving)</h3>
+                        <ul class="space-y-1 text-[var(--color-text-medium)]">
+                            <li><strong class="text-[var(--color-text-dark)]" id="calories"></strong> calories</li>
+                            <li><strong class="text-[var(--color-text-dark)]" id="protein"></strong> protein</li>
+                            <li><strong class="text-[var(--color-text-dark)]" id="carbs"></strong> carbs</li>
+                            <li><strong class="text-[var(--color-text-dark)]" id="fat"></strong> fat</li>
+                            <li><strong class="text-[var(--color-text-dark)]" id="fiber"></strong> fiber</li>
+                            <li><strong class="text-[var(--color-text-dark)]" id="sugar"></strong> sugar</li>
+                            <li><strong class="text-[var(--color-text-dark)]" id="sodium"></strong> sodium</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button id="print-recipe" class="btn btn-secondary">🖨️ Print Recipe</button>
+                    <button id="share-recipe" class="btn btn-accent">🔗 Share Recipe</button>
+                    <button id="generate-another" class="btn btn-primary">🔄 Generate Another</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Recipes -->
+        <div id="saved-recipes-section" class="hidden">
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-4 text-[var(--color-text-dark)]">💾 Saved Recipes</h2>
+                <div id="saved-recipes" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg mt-8">
+            <div class="flex items-start gap-4">
+                <span class="text-3xl">🤖</span>
+                <div>
+                    <h3 class="font-bold text-lg text-blue-900 mb-2">Powered by NovaCalc AI</h3>
+                    <p class="text-blue-800">We reuse the Writing Assistant service behind the scenes. When an AI provider key is configured, chef notes come from the same LLM. Without a key, we fall back to a smart rule-based generator so you always get cooking guidance.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <partial name="_SocialShare" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const ingredientField = document.getElementById('ingredients');
+            const cuisineSelect = document.getElementById('cuisine');
+            const dietarySelect = document.getElementById('dietary');
+            const cookingSelect = document.getElementById('cooking-time');
+            const servingsInput = document.getElementById('servings-input');
+            const allergiesInput = document.getElementById('allergies');
+            const generateBtn = document.getElementById('generate-recipe');
+            const btnText = document.getElementById('recipe-btn-text');
+            const loadingText = document.getElementById('recipe-loading');
+            const resultsSection = document.getElementById('recipe-results');
+            const savedSection = document.getElementById('saved-recipes-section');
+            const savedContainer = document.getElementById('saved-recipes');
+            const statusBox = document.getElementById('recipe-status');
+            const validationSummary = document.querySelector('[data-validation-summary]');
+            const validationList = validationSummary ? validationSummary.querySelector('[data-validation-summary-list]') : null;
+            const validationDismiss = validationSummary ? validationSummary.querySelector('[data-validation-dismiss]') : null;
+            const tokenField = document.querySelector('#recipeForm input[name="__RequestVerificationToken"]');
+            const antiforgeryToken = tokenField ? tokenField.value : null;
+            const dietButtons = Array.from(document.querySelectorAll('[data-diet]'));
+            const ingredientButtons = Array.from(document.querySelectorAll('[data-ingredient]'));
+            const cookingOverlay = document.getElementById('cooking-overlay');
+            const cookingMessage = document.getElementById('cooking-message');
+            const cookingEmoji = document.getElementById('cooking-emoji');
+            const cookingProgress = document.getElementById('cooking-progress');
+            const loadingMessageEl = document.getElementById('loading-message');
+
+            // Fun cooking messages that rotate during loading
+            const cookingMessages = [
+                { emoji: '👨‍🍳', text: "Preheating the AI oven..." },
+                { emoji: '🔪', text: "Chopping up your ingredients..." },
+                { emoji: '🧅', text: "Shedding tears over onions..." },
+                { emoji: '🍳', text: "Cracking eggs of creativity..." },
+                { emoji: '🌶️', text: "Adding a pinch of spice..." },
+                { emoji: '🧂', text: "Seasoning to perfection..." },
+                { emoji: '🥘', text: "Stirring the pot of ideas..." },
+                { emoji: '📖', text: "Consulting grandma's cookbook..." },
+                { emoji: '🔥', text: "Turning up the heat..." },
+                { emoji: '👃', text: "Smells delicious already!" },
+                { emoji: '🎨', text: "Plating with artistic flair..." },
+                { emoji: '✨', text: "Adding the secret ingredient..." },
+                { emoji: '🍽️', text: "Almost ready to serve..." },
+                { emoji: '😋', text: "Making sure it's finger-licking good..." },
+                { emoji: '🏆', text: "This is going to be amazing!" }
+            ];
+
+            let messageInterval = null;
+            let progressInterval = null;
+
+            let savedRecipes = [];
+            try {
+                savedRecipes = JSON.parse(localStorage.getItem('savedRecipes') || '[]');
+            } catch {
+                savedRecipes = [];
+            }
+            savedRecipes = savedRecipes.map(normalizeRecipe).filter(Boolean);
+
+            let currentRecipe = null;
+
+            function parseIngredients() {
+                const raw = (ingredientField.value || '').split(/\n|,/);
+                return raw.map(item => item.trim()).filter(Boolean);
+            }
+
+            function clearErrors() {
+                if (validationSummary) validationSummary.classList.add('hidden');
+                if (validationList) validationList.innerHTML = '';
+            }
+
+            function showErrors(errors) {
+                if (!validationSummary || !validationList) return;
+                validationList.innerHTML = '';
+                errors.filter(Boolean).forEach(message => {
+                    const li = document.createElement('li');
+                    li.textContent = message;
+                    validationList.appendChild(li);
+                });
+                validationSummary.classList.remove('hidden');
+                validationSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function setStatus(message, type) {
+                if (!statusBox) return;
+                const palette = {
+                    success: 'border-green-500 bg-green-50 text-green-800',
+                    error: 'border-red-500 bg-red-50 text-red-800',
+                    info: 'border-blue-500 bg-blue-50 text-blue-800'
+                };
+                statusBox.className = `border-l-4 rounded-lg px-4 py-3 mb-6 ${palette[type] || palette.info}`;
+                statusBox.textContent = message;
+                statusBox.classList.remove('hidden');
+            }
+
+            function hideStatus() {
+                if (statusBox) {
+                    statusBox.classList.add('hidden');
+                    statusBox.textContent = '';
+                }
+            }
+
+            function setLoading(isLoading) {
+                if (!generateBtn) return;
+                generateBtn.disabled = isLoading;
+                
+                if (isLoading) {
+                    // Update button
+                    btnText.classList.add('hidden');
+                    loadingText.classList.remove('hidden');
+                    loadingText.classList.add('flex');
+                    
+                    // Show overlay
+                    if (cookingOverlay) {
+                        cookingOverlay.classList.remove('hidden');
+                        cookingOverlay.classList.add('flex');
+                    }
+                    
+                    // Start rotating messages
+                    let msgIndex = 0;
+                    let progress = 0;
+                    
+                    const updateMessage = () => {
+                        const msg = cookingMessages[msgIndex % cookingMessages.length];
+                        if (cookingMessage) cookingMessage.textContent = msg.text;
+                        if (cookingEmoji) cookingEmoji.textContent = msg.emoji;
+                        if (loadingMessageEl) loadingMessageEl.textContent = msg.text;
+                        msgIndex++;
+                    };
+                    
+                    updateMessage(); // Show first message immediately
+                    messageInterval = setInterval(updateMessage, 2500);
+                    
+                    // Animate progress bar (fake progress for UX)
+                    progressInterval = setInterval(() => {
+                        progress += Math.random() * 8 + 2;
+                        if (progress > 90) progress = 90; // Never reach 100 until done
+                        if (cookingProgress) cookingProgress.style.width = progress + '%';
+                    }, 500);
+                    
+                } else {
+                    // Update button
+                    btnText.classList.remove('hidden');
+                    loadingText.classList.add('hidden');
+                    loadingText.classList.remove('flex');
+                    
+                    // Complete progress and hide overlay
+                    if (cookingProgress) cookingProgress.style.width = '100%';
+                    
+                    // Clear intervals
+                    if (messageInterval) clearInterval(messageInterval);
+                    if (progressInterval) clearInterval(progressInterval);
+                    messageInterval = null;
+                    progressInterval = null;
+                    
+                    // Hide overlay with slight delay for smooth UX
+                    setTimeout(() => {
+                        if (cookingOverlay) {
+                            cookingOverlay.classList.add('hidden');
+                            cookingOverlay.classList.remove('flex');
+                        }
+                        if (cookingProgress) cookingProgress.style.width = '0%';
+                    }, 500);
+                }
+            }
+
+            function parseMinutes(value, fallback) {
+                if (value == null) return fallback;
+                const parsed = parseInt(value, 10);
+                if (!Number.isNaN(parsed)) return parsed;
+                const fromText = parseInt(String(value).replace(/[^0-9]/g, ''), 10);
+                return Number.isNaN(fromText) ? fallback : fromText;
+            }
+
+            function normalizeRecipe(recipe) {
+                if (!recipe) return null;
+                const nutrition = recipe.nutrition || recipe.Nutrition || {};
+                const identifier = recipe.recipeId || recipe.RecipeId || recipe.id || recipe.Id || Date.now();
+                const steps = recipe.steps || recipe.Steps || recipe.instructions || recipe.Instructions || [];
+                const cookMinutes = parseMinutes(recipe.cookMinutes ?? recipe.CookMinutes ?? recipe.cookTime ?? recipe.CookTime, 30);
+                const prepMinutes = parseMinutes(recipe.prepMinutes ?? recipe.PrepMinutes ?? recipe.prepTime ?? recipe.PrepTime, 15);
+                const totalMinutes = parseMinutes(recipe.totalMinutes ?? recipe.TotalMinutes, prepMinutes + cookMinutes);
+                const rawTags = recipe.tags ?? recipe.Tags ?? [];
+                const tags = (Array.isArray(rawTags) ? rawTags : typeof rawTags === 'string' ? rawTags.split(/[,|]/) : [])
+                    .map(tag => tag == null ? '' : String(tag).trim())
+                    .filter(Boolean);
+                const generatedAt = recipe.generatedAt || recipe.GeneratedAt || new Date().toISOString();
+                return {
+                    id: identifier.toString(),
+                    title: recipe.title || recipe.Title || 'Chef Special',
+                    ingredients: recipe.ingredients || recipe.Ingredients || [],
+                    steps,
+                    servings: recipe.servings || recipe.Servings || 4,
+                    dietaryPreference: recipe.dietaryPreference || recipe.DietaryPreference || 'none',
+                    cuisine: recipe.cuisine || recipe.Cuisine || 'Chef\'s Choice',
+                    prepMinutes,
+                    cookMinutes,
+                    totalMinutes,
+                    difficulty: recipe.difficulty || recipe.Difficulty || 'Easy',
+                    notes: recipe.notes || recipe.Notes || '',
+                    equipmentNotes: recipe.equipmentNotes || recipe.EquipmentNotes || '',
+                    imagePrompt: recipe.imagePrompt || recipe.ImagePrompt || '',
+                    isFallback: Boolean(recipe.isFallbackRecipe ?? recipe.IsFallbackRecipe),
+                    tags,
+                    generatedAt,
+                    nutrition: {
+                        calories: parseInt(nutrition.calories ?? nutrition.Calories ?? 350, 10) || 350,
+                        proteinGrams: parseInt(nutrition.proteinGrams ?? nutrition.ProteinGrams ?? 18, 10) || 18,
+                        carbsGrams: parseInt(nutrition.carbsGrams ?? nutrition.CarbsGrams ?? 35, 10) || 35,
+                        fatGrams: parseInt(nutrition.fatGrams ?? nutrition.FatGrams ?? 12, 10) || 12,
+                        fiberGrams: parseInt(nutrition.fiberGrams ?? nutrition.FiberGrams ?? 4, 10) || 4,
+                        sugarGrams: parseInt(nutrition.sugarGrams ?? nutrition.SugarGrams ?? 6, 10) || 6,
+                        sodiumMilligrams: parseInt(nutrition.sodiumMilligrams ?? nutrition.SodiumMilligrams ?? 450, 10) || 450
+                    }
+                };
+            }
+
+            function renderList(items, targetId, ordered) {
+                const target = document.getElementById(targetId);
+                if (!target) return;
+                target.innerHTML = '';
+                items.forEach((item, index) => {
+                    if (ordered) {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-start space-x-3';
+                        li.innerHTML = `<span class="flex-shrink-0 w-6 h-6 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center text-sm">${index + 1}</span><span>${item}</span>`;
+                        target.appendChild(li);
+                    } else {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-start';
+                        li.innerHTML = `<span class="mr-2">•</span><span>${item}</span>`;
+                        target.appendChild(li);
+                    }
+                });
+            }
+
+            function renderTags(tags) {
+                const container = document.getElementById('recipe-tags');
+                if (!container) return;
+                container.innerHTML = '';
+                if (!tags || !tags.length) {
+                    container.classList.add('hidden');
+                    return;
+                }
+                container.classList.remove('hidden');
+                tags.forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'px-3 py-1 rounded-full bg-[var(--color-neutral-100)] text-sm font-medium text-[var(--color-text-medium)]';
+                    span.textContent = tag;
+                    container.appendChild(span);
+                });
+            }
+
+            function formatTimestamp(value) {
+                if (!value) return 'just now';
+                try {
+                    const date = new Date(value);
+                    if (isNaN(date.getTime())) return 'just now';
+                    return date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+                } catch {
+                    return 'just now';
+                }
+            }
+
+            function displayRecipe(recipePayload) {
+                const recipe = normalizeRecipe(recipePayload);
+                if (!recipe) return;
+
+                document.getElementById('recipe-tag').textContent = `${recipe.cuisine} • ${recipe.dietaryPreference === 'none' ? 'Any diet' : recipe.dietaryPreference}`;
+                document.getElementById('recipe-title').textContent = recipe.title;
+                document.getElementById('prep-time').textContent = `${recipe.prepMinutes} mins`;
+                document.getElementById('cook-time').textContent = `${recipe.cookMinutes} mins`;
+                document.getElementById('total-time').textContent = `${recipe.totalMinutes || recipe.prepMinutes + recipe.cookMinutes} mins`;
+                document.getElementById('servings').textContent = `${recipe.servings}`;
+                document.getElementById('difficulty').textContent = recipe.difficulty;
+
+                const metaEl = document.getElementById('recipe-meta');
+                if (metaEl) {
+                    const parts = [`Generated ${formatTimestamp(recipe.generatedAt)}`];
+                    if (recipe.isFallback) parts.push('smart fallback mode');
+                    metaEl.textContent = parts.join(' • ');
+                }
+
+                const sourceChip = document.getElementById('recipe-source');
+                if (sourceChip) {
+                    sourceChip.textContent = recipe.isFallback ? 'Fallback Chef Mode' : 'AI Generated';
+                    sourceChip.className = `px-3 py-1 rounded-full text-sm font-semibold ${recipe.isFallback ? 'bg-amber-100 text-amber-700' : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'}`;
+                }
+
+                renderTags(recipe.tags);
+
+                renderList(recipe.ingredients, 'recipe-ingredients', false);
+                renderList(recipe.steps, 'recipe-instructions', true);
+
+                document.getElementById('calories').textContent = `${recipe.nutrition.calories}`;
+                document.getElementById('protein').textContent = `${recipe.nutrition.proteinGrams} g`; 
+                document.getElementById('carbs').textContent = `${recipe.nutrition.carbsGrams} g`;
+                document.getElementById('fat').textContent = `${recipe.nutrition.fatGrams} g`;
+                document.getElementById('fiber').textContent = `${recipe.nutrition.fiberGrams} g`;
+                document.getElementById('sugar').textContent = `${recipe.nutrition.sugarGrams} g`;
+                document.getElementById('sodium').textContent = `${recipe.nutrition.sodiumMilligrams} mg`;
+                document.getElementById('chef-notes').textContent = recipe.notes || 'Finish with bright herbs or citrus to wake up the flavors.';
+                const equipmentEl = document.getElementById('equipment-notes');
+                if (equipmentEl) {
+                    if (recipe.equipmentNotes) {
+                        equipmentEl.textContent = `Equipment: ${recipe.equipmentNotes}`;
+                        equipmentEl.classList.remove('hidden');
+                    } else {
+                        equipmentEl.textContent = '';
+                        equipmentEl.classList.add('hidden');
+                    }
+                }
+
+                resultsSection.classList.remove('hidden');
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                currentRecipe = recipe;
+                window.currentRecipe = recipe;
+            }
+
+            function displaySavedRecipes() {
+                if (!savedSection || !savedContainer) return;
+                if (!savedRecipes.length) {
+                    savedSection.classList.add('hidden');
+                    return;
+                }
+
+                savedSection.classList.remove('hidden');
+                savedContainer.innerHTML = savedRecipes.map(recipe => `
+                    <div class="p-4 bg-[var(--color-neutral-100)] rounded-lg flex flex-col gap-3">
+                        <div>
+                            <h4 class="font-bold text-[var(--color-text-dark)]">${recipe.title}</h4>
+                            <p class="text-sm text-[var(--color-text-medium)]">${recipe.cuisine} • ${recipe.difficulty}</p>
+                        </div>
+                        <div class="text-sm text-[var(--color-text-medium)] flex items-center gap-4">
+                            <span>⏱️ ${recipe.cookMinutes}m</span>
+                            <span>👥 ${recipe.servings}</span>
+                        </div>
+                        <button type="button" class="btn btn-outline w-full" data-recipe-id="${recipe.id}">View Recipe</button>
+                    </div>`).join('');
+
+                savedContainer.querySelectorAll('[data-recipe-id]').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const id = button.getAttribute('data-recipe-id');
+                        const recipe = savedRecipes.find(r => r.id === id);
+                        if (recipe) {
+                            displayRecipe(recipe);
+                        }
+                    });
+                });
+            }
+
+            async function handleGenerate() {
+                clearErrors();
+                hideStatus();
+
+                const ingredients = parseIngredients();
+                const errors = [];
+                if (ingredients.length < 3) {
+                    errors.push('Please enter at least 3 ingredients.');
+                }
+
+                const servings = parseInt(servingsInput.value, 10);
+                if (isNaN(servings) || servings < 1 || servings > 16) {
+                    errors.push('Servings must be between 1 and 16.');
+                }
+
+                if (errors.length) {
+                    showErrors(errors);
+                    return;
+                }
+
+                const formData = new FormData();
+                ingredients.forEach((ingredient, index) => formData.append(`Ingredients[${index}]`, ingredient));
+                formData.append('DietaryPreference', dietarySelect.value || 'none');
+                formData.append('Servings', servings.toString());
+                formData.append('Cuisine', cuisineSelect.value || '');
+                formData.append('Allergies', allergiesInput.value || '');
+                formData.append('CookingTimePreference', cookingSelect.value || 'any');
+                if (antiforgeryToken) {
+                    formData.append('__RequestVerificationToken', antiforgeryToken);
+                }
+
+                setLoading(true);
+
+                try {
+                    const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                    if (antiforgeryToken) {
+                        headers['RequestVerificationToken'] = antiforgeryToken;
+                    }
+
+                    const response = await fetch('/Trending/GenerateRecipe', {
+                        method: 'POST',
+                        body: formData,
+                        headers,
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        let errorMessage = `Server responded with ${response.status}.`;
+                        try {
+                            const problem = await response.json();
+                            if (problem?.error) {
+                                errorMessage = problem.error;
+                            }
+                        } catch {
+                            // ignore JSON parse errors
+                        }
+
+                        showErrors([errorMessage]);
+                        return;
+                    }
+
+                    const json = await response.json();
+                    if (!json.success) {
+                        showErrors([json.error || 'Unable to generate a recipe right now.']);
+                        return;
+                    }
+
+                    displayRecipe(json.recipe);
+                    setStatus('Recipe ready! Scroll down to view full details.', 'success');
+                }
+                catch (error) {
+                    console.error(error);
+                    showErrors(['Something went wrong while generating your recipe. Please try again.']);
+                }
+                finally {
+                    setLoading(false);
+                }
+            }
+
+            function saveCurrentRecipe() {
+                if (!currentRecipe) return;
+                const exists = savedRecipes.some(r => r.id === currentRecipe.id);
+                if (exists) {
+                    setStatus('Recipe already saved in your collection.', 'info');
+                    return;
+                }
+
+                savedRecipes.push(currentRecipe);
+                localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+                setStatus('Recipe saved! Find it under Saved Recipes.', 'success');
+                displaySavedRecipes();
+            }
+
+            function shareRecipe() {
+                if (!currentRecipe) return;
+                const url = window.location.href.split('#')[0];
+                const text = `Check out this ${currentRecipe.title} recipe (${currentRecipe.cuisine}) from NovaTools Hub!`;
+                if (navigator.share) {
+                    navigator.share({
+                        title: currentRecipe.title,
+                        text,
+                        url
+                    }).catch(() => setStatus('Share cancelled.', 'info'));
+                } else {
+                    navigator.clipboard.writeText(`${text} ${url}`).then(() => setStatus('Share text copied to clipboard!', 'success'));
+                }
+            }
+
+            function syncDietPreset() {
+                if (!dietButtons.length) return;
+                dietButtons.forEach(button => {
+                    const dietValue = button.getAttribute('data-diet');
+                    const isActive = dietValue === dietarySelect.value;
+                    button.classList.toggle('is-active', isActive);
+                    button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+            }
+
+            function handlePresetClicks() {
+                ingredientButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const ingredient = button.getAttribute('data-ingredient');
+                        if (!ingredient) return;
+                        const list = parseIngredients();
+                        list.push(ingredient);
+                        ingredientField.value = list.join(', ');
+                    });
+                });
+
+                dietButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const diet = button.getAttribute('data-diet');
+                        if (!diet) return;
+                        dietarySelect.value = diet;
+                        syncDietPreset();
+                        setStatus(`Dietary preference set to ${diet}.`, 'info');
+                    });
+                });
+            }
+
+            generateBtn?.addEventListener('click', handleGenerate);
+            document.getElementById('save-recipe')?.addEventListener('click', saveCurrentRecipe);
+            document.getElementById('share-recipe')?.addEventListener('click', shareRecipe);
+            document.getElementById('print-recipe')?.addEventListener('click', () => window.print());
+            document.getElementById('generate-another')?.addEventListener('click', () => {
+                resultsSection.classList.add('hidden');
+                currentRecipe = null;
+                hideStatus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            handlePresetClicks();
+            syncDietPreset();
+            dietarySelect?.addEventListener('change', syncDietPreset);
+            validationDismiss?.addEventListener('click', () => clearErrors());
+            displaySavedRecipes();
+        })();
+    </script>
+}
+

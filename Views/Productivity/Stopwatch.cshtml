@@ -1,0 +1,269 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Online Stopwatch",
+    "applicationCategory": "UtilityApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-stopwatch text-primary"></i> Stopwatch
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Precision timing with lap support
+        </p>
+    </div>
+
+    <!-- Stopwatch Display -->
+    <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-lg p-8 mb-6">
+        <div class="text-center">
+            <div id="display" class="text-7xl md:text-8xl font-bold text-gray-800 dark:text-white mb-6 font-mono">
+                00:00:00.00
+            </div>
+            
+            <!-- Control Buttons -->
+            <div class="flex justify-center space-x-4">
+                <button id="startBtn" onclick="start()" class="bg-secondary hover:bg-green-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105">
+                    <i class="fas fa-play mr-2"></i> Start
+                </button>
+                <button id="stopBtn" onclick="stop()" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105 hidden">
+                    <i class="fas fa-pause mr-2"></i> Stop
+                </button>
+                <button id="lapBtn" onclick="recordLap()" class="bg-primary hover:bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105 hidden">
+                    <i class="fas fa-flag mr-2"></i> Lap
+                </button>
+                <button id="resetBtn" onclick="reset()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-200">
+                    <i class="fas fa-redo mr-2"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lap Times -->
+    <div id="lapSection" class="hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">
+                    <i class="fas fa-list text-primary"></i> Lap Times
+                </h2>
+                <button onclick="clearLaps()" class="text-sm text-red-600 hover:text-red-700 font-medium">
+                    <i class="fas fa-trash mr-1"></i> Clear All
+                </button>
+            </div>
+            
+            <div id="lapsList" class="space-y-2 max-h-96 overflow-y-auto">
+                <!-- Laps will be displayed here -->
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_SocialSharing")
+    </div>
+
+    <!-- Statistics -->
+    <div id="statsSection" class="hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-chart-bar text-primary"></i> Statistics
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 dark:bg-gray-700 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Fastest Lap</p>
+                    <p id="fastestLap" class="text-xl font-bold text-primary">--</p>
+                </div>
+                <div class="bg-green-50 dark:bg-gray-700 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Slowest Lap</p>
+                    <p id="slowestLap" class="text-xl font-bold text-red-600">--</p>
+                </div>
+                <div class="bg-purple-50 dark:bg-gray-700 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 dark:text-gray-300">Average Lap</p>
+                    <p id="avgLap" class="text-xl font-bold text-accent">--</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            How to Use the Stopwatch
+        </h2>
+        <div class="space-y-3 text-gray-600 dark:text-gray-300">
+            <p><strong>Start:</strong> Click the Start button to begin timing.</p>
+            <p><strong>Lap:</strong> Record intermediate times without stopping the timer. Perfect for tracking multiple rounds or intervals.</p>
+            <p><strong>Stop:</strong> Pause the timer to review your time. Click Start again to continue.</p>
+            <p><strong>Reset:</strong> Clear the timer and all lap times to start fresh.</p>
+            <p><strong>Precision:</strong> Accurate to 1/100th of a second (10 milliseconds).</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let startTime = 0;
+    let elapsedTime = 0;
+    let timerInterval = null;
+    let isRunning = false;
+    let laps = [];
+    let lastLapTime = 0;
+
+    // Format time as HH:MM:SS.CS
+    function formatTime(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        const centiseconds = Math.floor((ms % 1000) / 10);
+        
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
+    }
+
+    // Update display
+    function updateDisplay() {
+        const currentTime = Date.now() - startTime + elapsedTime;
+        document.getElementById('display').textContent = formatTime(currentTime);
+    }
+
+    // Start timer
+    function start() {
+        if (!isRunning) {
+            startTime = Date.now();
+            isRunning = true;
+            timerInterval = setInterval(updateDisplay, 10);
+            
+            // Update button visibility
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('stopBtn').classList.remove('hidden');
+            document.getElementById('lapBtn').classList.remove('hidden');
+        }
+    }
+
+    // Stop timer
+    function stop() {
+        if (isRunning) {
+            isRunning = false;
+            elapsedTime += Date.now() - startTime;
+            clearInterval(timerInterval);
+            
+            // Update button visibility
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('stopBtn').classList.add('hidden');
+            document.getElementById('lapBtn').classList.add('hidden');
+        }
+    }
+
+    // Reset timer
+    function reset() {
+        stop();
+        startTime = 0;
+        elapsedTime = 0;
+        isRunning = false;
+        laps = [];
+        lastLapTime = 0;
+        
+        document.getElementById('display').textContent = '00:00:00.00';
+        document.getElementById('lapSection').classList.add('hidden');
+        document.getElementById('statsSection').classList.add('hidden');
+        document.getElementById('startBtn').classList.remove('hidden');
+        document.getElementById('stopBtn').classList.add('hidden');
+        document.getElementById('lapBtn').classList.add('hidden');
+    }
+
+    // Record lap
+    function recordLap() {
+        if (!isRunning) return;
+        
+        const currentTime = Date.now() - startTime + elapsedTime;
+        const lapTime = currentTime - lastLapTime;
+        lastLapTime = currentTime;
+        
+        laps.push({
+            number: laps.length + 1,
+            time: currentTime,
+            lapTime: lapTime
+        });
+        
+        updateLapDisplay();
+        updateStatistics();
+        
+        // Show lap section
+        document.getElementById('lapSection').classList.remove('hidden');
+        document.getElementById('statsSection').classList.remove('hidden');
+    }
+
+    // Update lap display
+    function updateLapDisplay() {
+        const lapsList = document.getElementById('lapsList');
+        lapsList.innerHTML = laps.map((lap, index) => {
+            const isLast = index === laps.length - 1;
+            return `
+                <div class="flex justify-between items-center p-3 ${isLast ? 'bg-primary/10' : 'bg-gray-50 dark:bg-gray-700'} rounded-lg">
+                    <span class="font-semibold text-gray-800 dark:text-white">Lap ${lap.number}</span>
+                    <div class="text-right">
+                        <div class="font-mono text-lg font-bold text-primary">${formatTime(lap.lapTime)}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Total: ${formatTime(lap.time)}</div>
+                    </div>
+                </div>
+            `;
+        }).reverse().join('');
+    }
+
+    // Update statistics
+    function updateStatistics() {
+        if (laps.length === 0) return;
+        
+        const lapTimes = laps.map(lap => lap.lapTime);
+        const fastest = Math.min(...lapTimes);
+        const slowest = Math.max(...lapTimes);
+        const average = lapTimes.reduce((a, b) => a + b, 0) / lapTimes.length;
+        
+        document.getElementById('fastestLap').textContent = formatTime(fastest);
+        document.getElementById('slowestLap').textContent = formatTime(slowest);
+        document.getElementById('avgLap').textContent = formatTime(average);
+    }
+
+    // Clear all laps
+    function clearLaps() {
+        if (confirm('Clear all lap times?')) {
+            laps = [];
+            lastLapTime = 0;
+            document.getElementById('lapSection').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+        }
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            if (isRunning) {
+                stop();
+            } else {
+                start();
+            }
+        } else if (e.code === 'KeyL' && isRunning) {
+            e.preventDefault();
+            recordLap();
+        } else if (e.code === 'KeyR') {
+            e.preventDefault();
+            reset();
+        }
+    });
+</script>

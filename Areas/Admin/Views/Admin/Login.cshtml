@@ -1,0 +1,71 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - NovaToolsHub</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card { background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #1f2937; }
+        .form-input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 1rem; }
+        .form-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.375rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full">
+            <div class="card">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold">Admin Login</h1>
+                    <p class="text-[var(--color-text-medium)] mt-2">Sign in to manage blog posts</p>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                        @ViewBag.Error
+                    </div>
+                }
+
+                <form method="post" asp-action="Login" asp-controller="Admin" asp-area="Admin">
+                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                    
+                    <div class="mb-4">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" name="username" class="form-input" required autofocus />
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-full">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <a href="/" class="text-[var(--color-primary)] hover:underline">
+                        ← Back to Home
+                    </a>
+                </div>
+
+                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-300 rounded text-sm">
+                    <strong>⚠️ Security Warning:</strong> This is a basic authentication implementation for demonstration purposes. 
+                    For production, use ASP.NET Core Identity, OAuth, or JWT authentication.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

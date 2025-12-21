@@ -1,0 +1,760 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["PageTitle"] = "Color Palette Generator | NovaTools Hub";
+    ViewData["MetaDescription"] = "Generate harmonious color schemes, gradients, and export-ready palettes in seconds.";
+}
+
+<!-- Page Container -->
+<div class="min-h-screen bg-[var(--color-bg)]">
+
+    <!-- Header Section -->
+    <div class="container-custom py-8 lg:py-10">
+        <div class="max-w-4xl mx-auto text-center space-y-4">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-sm font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                    </path>
+                </svg>
+                Design Tools
+            </div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                Color <span class="text-gradient">Palette</span> Generator
+            </h1>
+            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                Craft designer-friendly palettes with complementary, analogous, triadic, and monochromatic harmonies.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tool Workspace -->
+    <div class="container-custom pb-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Controls Sidebar -->
+                <div class="lg:col-span-4 xl:col-span-3 space-y-4">
+                    <!-- Base Color Card -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-[var(--color-text-medium)]">Base Color
+                                </p>
+                                <h2 class="text-2xl font-bold font-mono" id="selectedHex">#4F46E5</h2>
+                            </div>
+                            <button id="randomizeColor"
+                                class="p-2 rounded-lg bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"
+                                title="Randomize">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <input type="color" id="baseColor" value="#4f46e5"
+                                class="w-16 h-16 rounded-xl cursor-pointer border-2 border-[var(--color-border)] shadow-inner">
+                            <div class="flex-1 space-y-2">
+                                <label class="text-xs font-medium text-[var(--color-text-medium)]">Harmony</label>
+                                <select id="paletteScheme"
+                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none">
+                                    <option value="analogous">Analogous</option>
+                                    <option value="complementary">Complementary</option>
+                                    <option value="split">Split Complementary</option>
+                                    <option value="triadic">Triadic</option>
+                                    <option value="tetradic">Tetradic</option>
+                                    <option value="monochromatic">Monochromatic</option>
+                                    <option value="shades">Shades & Tints</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adjustments Card -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg space-y-4">
+                        <div>
+                            <label
+                                class="flex justify-between text-xs font-medium text-[var(--color-text-medium)] mb-2">
+                                Palette Size
+                                <span id="paletteSizeValue" class="font-bold text-[var(--color-text)]">5 colors</span>
+                            </label>
+                            <input type="range" id="paletteSize"
+                                class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]"
+                                min="3" max="8" value="5">
+                        </div>
+                        <div>
+                            <label
+                                class="flex justify-between text-xs font-medium text-[var(--color-text-medium)] mb-2">
+                                Saturation Boost
+                                <span id="vibrancyValue" class="font-bold text-[var(--color-text)]">0</span>
+                            </label>
+                            <input type="range" id="vibrancy"
+                                class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]"
+                                min="-30" max="30" value="0">
+                        </div>
+                        <div>
+                            <label
+                                class="flex justify-between text-xs font-medium text-[var(--color-text-medium)] mb-2">
+                                Warmth Shift
+                                <span id="temperatureValue" class="font-bold text-[var(--color-text)]">0°</span>
+                            </label>
+                            <input type="range" id="temperature"
+                                class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]"
+                                min="-40" max="40" value="0">
+                        </div>
+                        <div class="pt-2 space-y-2">
+                            <label
+                                class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer hover:bg-[var(--color-border)]/50 transition-colors">
+                                <input type="checkbox" id="includeNeutrals"
+                                    class="w-4 h-4 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                                    checked>
+                                <span class="text-sm">Append neutral</span>
+                            </label>
+                            <label
+                                class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer hover:bg-[var(--color-border)]/50 transition-colors">
+                                <input type="checkbox" id="contrastBoost"
+                                    class="w-4 h-4 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]">
+                                <span class="text-sm">Boost contrast</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Export Card -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg space-y-3">
+                        <h3 class="text-sm font-bold text-[var(--color-text)]">Export</h3>
+                        <button id="copyPalette"
+                            class="w-full py-2.5 bg-[var(--color-primary)] hover:opacity-90 text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Copy CSS Variables
+                        </button>
+                        <button id="downloadPalette"
+                            class="w-full py-2.5 bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] text-[var(--color-text)] font-medium rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download JSON
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="lg:col-span-8 xl:col-span-9 space-y-6">
+                    <!-- Palette Preview -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-lg overflow-hidden">
+                        <div class="px-5 py-4 border-b border-[var(--color-border)] flex items-center justify-between">
+                            <h2 class="text-lg font-bold text-[var(--color-text)]">Palette Preview</h2>
+                            <span class="text-xs text-[var(--color-text-medium)]" id="harmonySummary">Analogous
+                                harmony</span>
+                        </div>
+                        <div class="p-5">
+                            <div id="paletteGrid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+                        </div>
+                    </div>
+
+                    <!-- Gradient & CSS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div
+                            class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                            <h3 class="text-sm font-bold text-[var(--color-text)] mb-3">Gradient Preview</h3>
+                            <div id="gradientPreview"
+                                class="h-24 rounded-xl shadow-inner border border-[var(--color-border)]"></div>
+                            <p class="text-xs text-[var(--color-text-medium)] mt-2">Perfect for hero sections and
+                                charts.</p>
+                        </div>
+                        <div
+                            class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                            <h3 class="text-sm font-bold text-[var(--color-text)] mb-3">CSS Variables</h3>
+                            <pre class="bg-[var(--color-bg)] text-xs rounded-lg p-3 overflow-x-auto font-mono border border-[var(--color-border)]"
+                                id="cssVariables">--color-1: #4F46E5;</pre>
+                        </div>
+                    </div>
+
+                    <!-- UI Preview & History -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div
+                            class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-bold text-[var(--color-text)]">UI Preview</h3>
+                                <button id="shufflePreview"
+                                    class="text-xs text-[var(--color-primary)] hover:underline">Shuffle</button>
+                            </div>
+                            <div id="uiPreview" class="space-y-3">
+                                <div
+                                    class="rounded-xl p-5 shadow-inner border border-[var(--color-border)] preview-card">
+                                    <p class="text-xs uppercase tracking-wide mb-2 opacity-70">Hero Card</p>
+                                    <h4 class="text-lg font-bold mb-1">Design Sprint</h4>
+                                    <p class="text-xs opacity-80 mb-4">Preview your palette in action.</p>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class="px-3 py-1.5 rounded-full text-xs font-semibold preview-button-primary">Primary</button>
+                                        <button
+                                            class="px-3 py-1.5 rounded-full text-xs font-semibold border preview-button-secondary">Secondary</button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap gap-2" id="previewBadges"></div>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-sm font-bold text-[var(--color-text)]">Palette History</h3>
+                                <button id="clearHistory"
+                                    class="text-xs text-[var(--color-text-medium)] hover:text-red-500">Clear</button>
+                            </div>
+                            <div id="paletteHistory"
+                                class="space-y-3 text-sm text-[var(--color-text-medium)] max-h-64 overflow-y-auto">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accessibility -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                        <h3 class="text-sm font-bold text-[var(--color-text)] mb-3">Accessibility & Usage</h3>
+                        <p class="text-sm text-[var(--color-text-medium)] mb-4" id="schemeDescription">Analogous
+                            palettes favor subtle gradients and brand backgrounds.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4
+                                    class="text-xs font-bold uppercase tracking-wide text-[var(--color-text-medium)] mb-2">
+                                    Contrast Insights</h4>
+                                <div id="paletteAccessibility" class="space-y-1 text-sm"></div>
+                            </div>
+                            <div>
+                                <h4
+                                    class="text-xs font-bold uppercase tracking-wide text-[var(--color-text-medium)] mb-2">
+                                    Recommended Use Cases</h4>
+                                <ul id="paletteUseCases" class="list-disc pl-4 text-sm space-y-1"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Sharing -->
+    <div class="container-custom pb-12 border-t border-[var(--color-border)] pt-8">
+        <div class="max-w-3xl mx-auto">
+            @await Html.PartialAsync("_SocialSharing")
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.JsonLdSchema is string schema && !string.IsNullOrWhiteSpace(schema))
+{
+    <script type="application/ld+json">@Html.Raw(schema)</script>
+}
+
+@section Scripts {
+    <script>
+        const paletteState = {
+            baseColor: '#4f46e5',
+            scheme: 'analogous',
+            count: 5,
+            vibrancy: 0,
+            temperature: 0,
+            includeNeutrals: true,
+            contrastBoost: false
+        };
+
+        const schemeDescriptions = {
+            analogous: 'Analogous palettes stay within a narrow hue range, perfect for gradients and calm dashboards.',
+            complementary: 'Complementary palettes pair opposite hues for maximum contrast and CTA clarity.',
+            split: 'Split complementary palettes keep contrast while softening extreme opposites.',
+            triadic: 'Triadic palettes balance three evenly-spaced hues for lively interfaces and illustrations.',
+            tetradic: 'Tetradic palettes offer four hues for complex UI systems and categorical data.',
+            monochromatic: 'Monochromatic palettes vary lightness and saturation for minimalist or data-heavy views.',
+            shades: 'Shade palettes explore tints, tones, and shades of a single hue for typography and backgrounds.'
+        };
+
+        const schemeUseCases = {
+            analogous: ['Hero gradients', 'Charts with smooth transitions', 'Background layers'],
+            complementary: ['Call-to-action pairs', 'Alert vs. success states', 'Brand + accent combos'],
+            split: ['Marketing cards', 'Data viz with emphasis', 'Dark/light theme bridges'],
+            triadic: ['Category chips', 'Illustrations', 'Infographics'],
+            tetradic: ['Complex UI themes', 'Tagging systems', 'Multi-series charts'],
+            monochromatic: ['Dashboards', 'Typography scales', 'Skeleton screens'],
+            shades: ['Buttons states', 'Surface elevations', 'Outline vs fill items']
+        };
+
+        let currentPalette = [];
+        let paletteHistory = [];
+        let previewShuffleSeed = 0;
+        let isRestoringHistory = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            wirePaletteControls();
+            loadPaletteHistory();
+            refreshPalette();
+        });
+
+        function wirePaletteControls() {
+            const baseInput = document.getElementById('baseColor');
+            const schemeSelect = document.getElementById('paletteScheme');
+            const sizeSlider = document.getElementById('paletteSize');
+            const vibrancySlider = document.getElementById('vibrancy');
+            const tempSlider = document.getElementById('temperature');
+
+            baseInput.addEventListener('input', (e) => {
+                paletteState.baseColor = e.target.value;
+                document.getElementById('selectedHex').textContent = e.target.value.toUpperCase();
+                refreshPalette();
+            });
+
+            schemeSelect.addEventListener('change', (e) => {
+                paletteState.scheme = e.target.value;
+                refreshPalette();
+            });
+
+            sizeSlider.addEventListener('input', (e) => {
+                paletteState.count = Number(e.target.value);
+                document.getElementById('paletteSizeValue').textContent = `${paletteState.count} colors`;
+                refreshPalette();
+            });
+
+            vibrancySlider.addEventListener('input', (e) => {
+                paletteState.vibrancy = Number(e.target.value);
+                document.getElementById('vibrancyValue').textContent = e.target.value;
+                refreshPalette();
+            });
+
+            tempSlider.addEventListener('input', (e) => {
+                paletteState.temperature = Number(e.target.value);
+                document.getElementById('temperatureValue').textContent = `${e.target.value}°`;
+                refreshPalette();
+            });
+
+            document.getElementById('includeNeutrals').addEventListener('change', (e) => {
+                paletteState.includeNeutrals = e.target.checked;
+                refreshPalette();
+            });
+
+            document.getElementById('contrastBoost').addEventListener('change', (e) => {
+                paletteState.contrastBoost = e.target.checked;
+                refreshPalette();
+            });
+
+            document.getElementById('randomizeColor').addEventListener('click', () => {
+                const randomHex = getRandomHex();
+                paletteState.baseColor = randomHex;
+                baseInput.value = randomHex;
+                document.getElementById('selectedHex').textContent = randomHex.toUpperCase();
+                refreshPalette();
+                if (window.toast) window.toast.success('New random color!');
+            });
+
+            document.getElementById('copyPalette').addEventListener('click', copyPaletteToClipboard);
+            document.getElementById('downloadPalette').addEventListener('click', downloadPaletteJson);
+
+            document.getElementById('shufflePreview')?.addEventListener('click', () => {
+                previewShuffleSeed++;
+                renderUiPreview();
+            });
+
+            document.getElementById('clearHistory')?.addEventListener('click', () => {
+                clearPaletteHistory();
+                if (window.toast) window.toast.success('History cleared');
+            });
+        }
+
+        function refreshPalette() {
+            currentPalette = buildPalette(paletteState);
+            renderPalette(currentPalette);
+            renderMetadata(currentPalette);
+            if (!isRestoringHistory) {
+                savePaletteSnapshot();
+            } else {
+                isRestoringHistory = false;
+            }
+        }
+
+        function buildPalette(state) {
+            const baseHsl = hexToHsl(state.baseColor);
+            const adjustedBase = {
+                h: normalizeHue(baseHsl.h + state.temperature),
+                s: clamp(baseHsl.s + state.vibrancy * 0.5, 6, 96),
+                l: clamp(baseHsl.l + (state.contrastBoost ? 5 : 0), 5, 92)
+            };
+
+            let palette = [];
+            switch (state.scheme) {
+                case 'complementary': palette = generateComplementary(adjustedBase, state.count); break;
+                case 'split': palette = generateSplitComplementary(adjustedBase, state.count); break;
+                case 'triadic': palette = generateTriadic(adjustedBase, state.count); break;
+                case 'tetradic': palette = generateTetradic(adjustedBase, state.count); break;
+                case 'monochromatic': palette = generateMonochromatic(adjustedBase, state.count); break;
+                case 'shades': palette = generateShades(adjustedBase, state.count); break;
+                default: palette = generateAnalogous(adjustedBase, state.count);
+            }
+
+            if (state.includeNeutrals) {
+                palette.push({ h: adjustedBase.h, s: 10, l: 94, role: 'Neutral' });
+            }
+
+            return palette.map((color, index) => enrichColor(color, index));
+        }
+
+        function generateAnalogous(base, count) {
+            const spread = Math.max(12, 60 / Math.max(1, count - 1));
+            const start = -spread * Math.floor((count - 1) / 2);
+            return Array.from({ length: count }, (_, idx) => ({
+                h: normalizeHue(base.h + start + idx * spread),
+                s: clamp(base.s + (idx - (count - 1) / 2) * 2, 6, 98),
+                l: clamp(base.l + (idx - (count - 1) / 2) * 1.5, 5, 95)
+            }));
+        }
+
+        function generateComplementary(base, count) {
+            const half = Math.max(1, Math.ceil(count / 2));
+            const compHue = normalizeHue(base.h + 180);
+            const primary = Array.from({ length: half }, (_, idx) => ({
+                h: normalizeHue(base.h + (idx - (half - 1) / 2) * 10),
+                s: base.s,
+                l: clamp(base.l + (idx - (half - 1) / 2) * 2, 5, 95)
+            }));
+            const remaining = count - half;
+            const secondary = Array.from({ length: remaining }, (_, idx) => ({
+                h: normalizeHue(compHue + (idx - (remaining - 1) / 2) * 10),
+                s: clamp(base.s - 5, 5, 95),
+                l: clamp(base.l + (idx - (remaining - 1) / 2) * 2, 5, 95)
+            }));
+            return [...primary, ...secondary];
+        }
+
+        function generateSplitComplementary(base, count) { return spreadByOffsets(base, [0, 150, -150], count); }
+        function generateTriadic(base, count) { return spreadByOffsets(base, [0, 120, -120], count); }
+        function generateTetradic(base, count) { return spreadByOffsets(base, [0, 90, 180, 270], count); }
+
+        function generateMonochromatic(base, count) {
+            return Array.from({ length: count }, (_, idx) => ({
+                h: base.h,
+                s: clamp(base.s + (idx - (count - 1) / 2) * 4, 5, 95),
+                l: clamp(base.l + (idx - (count - 1) / 2) * 7, 8, 97)
+            }));
+        }
+
+        function generateShades(base, count) {
+            return Array.from({ length: count }, (_, idx) => ({
+                h: base.h,
+                s: clamp(base.s - idx * 4, 5, 90),
+                l: clamp(95 - idx * (70 / Math.max(1, count - 1)), 6, 96)
+            }));
+        }
+
+        function spreadByOffsets(base, offsets, count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                const offset = offsets[i % offsets.length];
+                const iteration = Math.floor(i / offsets.length);
+                colors.push({
+                    h: normalizeHue(base.h + offset + iteration * 6),
+                    s: clamp(base.s - iteration * 4, 5, 95),
+                    l: clamp(base.l + iteration * 3, 5, 96)
+                });
+            }
+            return colors;
+        }
+
+        function enrichColor(color, index) {
+            const hex = hslToHex(color.h, color.s, color.l);
+            const rgb = hexToRgb(hex);
+            const luminance = calculateLuminance(hex);
+            return {
+                hex,
+                rgbText: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+                hslText: `hsl(${Math.round(color.h)}, ${Math.round(color.s)}%, ${Math.round(color.l)}%)`,
+                role: color.role ?? getRoleLabel(index),
+                textColor: luminance > 0.55 ? '#1f2937' : '#ffffff',
+                luminance
+            };
+        }
+
+        function getRoleLabel(index) {
+            if (index === 0) return 'Primary';
+            if (index === 1) return 'Secondary';
+            if (index === 2) return 'Accent';
+            return `Accent ${index + 1}`;
+        }
+
+        function renderPalette(palette) {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = palette.map(color => `
+                <div class="rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+                    <div class="h-24 w-full cursor-pointer" style="background:${color.hex}" onclick="copySingleColor(event)" data-hex="${color.hex}"></div>
+                    <div class="p-3 space-y-1.5 bg-[var(--color-surface)]">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-semibold text-[var(--color-text)]">${color.role}</span>
+                            <button class="text-[var(--color-primary)] hover:underline opacity-0 group-hover:opacity-100 transition-opacity" data-hex="${color.hex}" onclick="copySingleColor(event)">Copy</button>
+                        </div>
+                        <div class="text-sm font-mono font-bold text-[var(--color-text)]">${color.hex}</div>
+                        <div class="text-[10px] text-[var(--color-text-medium)]">${color.rgbText}</div>
+                        <div class="flex gap-1 mt-2">
+                            <button class="px-2 py-0.5 rounded text-[10px] bg-[var(--color-bg)] hover:bg-[var(--color-border)] transition-colors" data-value="${color.hex}" onclick="copyColorValue(event)">HEX</button>
+                            <button class="px-2 py-0.5 rounded text-[10px] bg-[var(--color-bg)] hover:bg-[var(--color-border)] transition-colors" data-value="${color.rgbText}" onclick="copyColorValue(event)">RGB</button>
+                            <button class="px-2 py-0.5 rounded text-[10px] bg-[var(--color-bg)] hover:bg-[var(--color-border)] transition-colors" data-value="${color.hslText}" onclick="copyColorValue(event)">HSL</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMetadata(palette) {
+            document.getElementById('gradientPreview').style.background = palette.length ? `linear-gradient(90deg, ${palette.map(c => c.hex).join(', ')})` : 'var(--color-bg)';
+            document.getElementById('cssVariables').textContent = palette.map((color, idx) => `--color-${idx + 1}: ${color.hex};`).join('\n');
+            document.getElementById('harmonySummary').textContent = schemeDescriptions[paletteState.scheme];
+            document.getElementById('schemeDescription').textContent = schemeDescriptions[paletteState.scheme];
+
+            const useCases = schemeUseCases[paletteState.scheme] || [];
+            document.getElementById('paletteUseCases').innerHTML = useCases.map(use => `<li>${use}</li>`).join('');
+
+            const accessibility = document.getElementById('paletteAccessibility');
+            const darkest = palette.reduce((prev, curr) => curr.luminance < prev.luminance ? curr : prev, palette[0]);
+            const lightest = palette.reduce((prev, curr) => curr.luminance > prev.luminance ? curr : prev, palette[0]);
+            const contrast = getContrastRatio(darkest.hex, lightest.hex).toFixed(2);
+            accessibility.innerHTML = `
+                <p>Contrast: <span class="font-semibold">${darkest.hex}</span> ↔ <span class="font-semibold">${lightest.hex}</span> (${contrast}:1)</p>
+                <p>Text: <span class="font-semibold">${lightest.luminance > 0.7 ? darkest.hex : lightest.hex}</span></p>
+            `;
+
+            renderUiPreview();
+        }
+
+        function copyPaletteToClipboard() {
+            if (!currentPalette.length) return;
+            const cssVariables = currentPalette.map((color, idx) => `--color-${idx + 1}: ${color.hex};`).join('\n');
+            navigator.clipboard?.writeText(cssVariables).then(() => {
+                if (window.toast) window.toast.success('CSS variables copied!');
+            });
+        }
+
+        function downloadPaletteJson() {
+            if (!currentPalette.length) return;
+            const payload = currentPalette.map(color => ({ hex: color.hex, rgb: color.rgbText, hsl: color.hslText, role: color.role }));
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'palette.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            if (window.toast) window.toast.success('JSON downloaded!');
+        }
+
+        function copySingleColor(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const hex = event.currentTarget.getAttribute('data-hex');
+            navigator.clipboard?.writeText(hex).then(() => {
+                if (window.toast) window.toast.success(`${hex} copied!`);
+            });
+        }
+
+        function copyColorValue(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const value = event.currentTarget.getAttribute('data-value');
+            navigator.clipboard?.writeText(value).then(() => {
+                if (window.toast) window.toast.success('Copied!');
+            });
+        }
+
+        function renderUiPreview() {
+            const previewCard = document.querySelector('#uiPreview .preview-card');
+            if (!previewCard || !currentPalette.length) return;
+
+            const previewPalette = rotatePalette([...currentPalette], previewShuffleSeed);
+            const primary = previewPalette[0];
+            const secondary = previewPalette[1] || primary;
+            const accent = previewPalette[2] || primary;
+
+            previewCard.style.background = `linear-gradient(135deg, ${adjustLightness(primary.hex, 10)}, ${accent.hex})`;
+            previewCard.style.color = primary.luminance < 0.6 ? '#f8fafc' : '#0f172a';
+
+            const primaryBtn = previewCard.querySelector('.preview-button-primary');
+            const secondaryBtn = previewCard.querySelector('.preview-button-secondary');
+            if (primaryBtn) {
+                primaryBtn.style.background = primary.hex;
+                primaryBtn.style.color = primary.luminance > 0.6 ? '#0f172a' : '#ffffff';
+            }
+            if (secondaryBtn) {
+                secondaryBtn.style.background = 'transparent';
+                secondaryBtn.style.color = primary.luminance < 0.6 ? '#f8fafc' : '#0f172a';
+                secondaryBtn.style.borderColor = primary.luminance < 0.6 ? '#f8fafc' : '#0f172a';
+            }
+
+            const badges = document.getElementById('previewBadges');
+            if (badges) {
+                badges.innerHTML = previewPalette.slice(0, 4).map((color, i) => `
+                    <span class="px-2 py-1 rounded-full text-[10px] font-semibold" style="background:${color.hex}; color:${color.luminance > 0.6 ? '#0f172a' : '#fff'}">Tag ${i + 1}</span>
+                `).join('');
+            }
+        }
+
+        function rotatePalette(palette, seed) {
+            if (!palette.length) return palette;
+            const offset = seed % palette.length;
+            return offset === 0 ? palette : [...palette.slice(offset), ...palette.slice(0, offset)];
+        }
+
+        function adjustLightness(hex, delta) {
+            const { h, s, l } = hexToHsl(hex);
+            return hslToHex(h, s, clamp(l + delta, 0, 100));
+        }
+
+        function savePaletteSnapshot() {
+            if (!currentPalette.length) return;
+            const colorsKey = currentPalette.map(c => c.hex).join(',');
+            const existingIndex = paletteHistory.findIndex(entry => entry.colors.join(',') === colorsKey);
+            if (existingIndex === 0) return;
+
+            if (existingIndex > 0) {
+                const [existing] = paletteHistory.splice(existingIndex, 1);
+                paletteHistory.unshift(existing);
+            } else {
+                paletteHistory.unshift({ id: Date.now(), colors: currentPalette.map(c => c.hex), state: { ...paletteState }, timestamp: new Date().toISOString() });
+                paletteHistory = paletteHistory.slice(0, 6);
+            }
+
+            localStorage.setItem('colorPaletteHistory', JSON.stringify(paletteHistory));
+            renderPaletteHistory();
+        }
+
+        function loadPaletteHistory() {
+            try {
+                const stored = localStorage.getItem('colorPaletteHistory');
+                paletteHistory = stored ? JSON.parse(stored) : [];
+                renderPaletteHistory();
+            } catch { paletteHistory = []; }
+        }
+
+        function clearPaletteHistory() {
+            paletteHistory = [];
+            localStorage.removeItem('colorPaletteHistory');
+            renderPaletteHistory();
+        }
+
+        function renderPaletteHistory() {
+            const container = document.getElementById('paletteHistory');
+            if (!container) return;
+
+            if (!paletteHistory.length) {
+                container.innerHTML = '<p class="text-sm text-[var(--color-text-medium)]">No saved palettes yet.</p>';
+                return;
+            }
+
+            container.innerHTML = paletteHistory.map(entry => {
+                const schemeLabel = (entry.state?.scheme || 'analogous').replace(/^[a-z]/, c => c.toUpperCase());
+                return `
+                    <div class="border border-[var(--color-border)] rounded-xl p-3 hover:border-[var(--color-primary)] transition-colors">
+                        <div class="flex items-center justify-between text-xs mb-2">
+                            <span>${schemeLabel} • ${entry.colors.length} colors</span>
+                            <button class="text-[var(--color-primary)] hover:underline" data-id="${entry.id}" onclick="applyPaletteSnapshot(event)">Use</button>
+                        </div>
+                        <div class="flex gap-1">${entry.colors.map(color => `<span class="w-6 h-6 rounded-lg border border-[var(--color-border)]" style="background:${color}"></span>`).join('')}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function applyPaletteSnapshot(event) {
+            const id = Number(event.currentTarget.getAttribute('data-id'));
+            const snapshot = paletteHistory.find(entry => entry.id === id);
+            if (!snapshot) return;
+            isRestoringHistory = true;
+            const state = snapshot.state || paletteState;
+            paletteState.baseColor = state.baseColor || snapshot.colors[0];
+            paletteState.scheme = state.scheme || paletteState.scheme;
+            paletteState.count = state.count || snapshot.colors.length;
+            paletteState.vibrancy = state.vibrancy ?? 0;
+            paletteState.temperature = state.temperature ?? 0;
+            paletteState.includeNeutrals = state.includeNeutrals ?? true;
+            paletteState.contrastBoost = state.contrastBoost ?? false;
+            syncControlsWithState();
+            refreshPalette();
+            if (window.toast) window.toast.success('Palette restored!');
+        }
+
+        function syncControlsWithState() {
+            document.getElementById('baseColor').value = paletteState.baseColor;
+            document.getElementById('selectedHex').textContent = paletteState.baseColor.toUpperCase();
+            document.getElementById('paletteScheme').value = paletteState.scheme;
+            document.getElementById('paletteSize').value = paletteState.count;
+            document.getElementById('vibrancy').value = paletteState.vibrancy;
+            document.getElementById('temperature').value = paletteState.temperature;
+            document.getElementById('includeNeutrals').checked = paletteState.includeNeutrals;
+            document.getElementById('contrastBoost').checked = paletteState.contrastBoost;
+            document.getElementById('paletteSizeValue').textContent = `${paletteState.count} colors`;
+            document.getElementById('vibrancyValue').textContent = paletteState.vibrancy;
+            document.getElementById('temperatureValue').textContent = `${paletteState.temperature}°`;
+        }
+
+        function getRandomHex() {
+            const cryptoObj = window.crypto || window.msCrypto;
+            if (cryptoObj) return '#' + Array.from(cryptoObj.getRandomValues(new Uint8Array(3))).map(b => b.toString(16).padStart(2, '0')).join('');
+            return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
+        }
+
+        function hexToRgb(hex) {
+            const s = hex.replace('#', '');
+            return { r: parseInt(s.substring(0, 2), 16), g: parseInt(s.substring(2, 4), 16), b: parseInt(s.substring(4, 6), 16) };
+        }
+
+        function hexToHsl(hex) {
+            const { r, g, b } = hexToRgb(hex);
+            const rNorm = r / 255, gNorm = g / 255, bNorm = b / 255;
+            const max = Math.max(rNorm, gNorm, bNorm), min = Math.min(rNorm, gNorm, bNorm);
+            let h = 0, s = 0;
+            const l = (max + min) / 2;
+            if (max !== min) {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case rNorm: h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0); break;
+                    case gNorm: h = (bNorm - rNorm) / d + 2; break;
+                    default: h = (rNorm - gNorm) / d + 4;
+                }
+                h /= 6;
+            }
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
+        function hslToHex(h, s, l) {
+            s /= 100; l /= 100;
+            const k = n => (n + h / 30) % 12;
+            const a = s * Math.min(l, 1 - l);
+            const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+            const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
+            return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+        }
+
+        function normalizeHue(value) { return (value % 360 + 360) % 360; }
+        function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+
+        function calculateLuminance(hex) {
+            const { r, g, b } = hexToRgb(hex);
+            const srgb = [r, g, b].map(v => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); });
+            return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+        }
+
+        function getContrastRatio(hex1, hex2) {
+            const lum1 = calculateLuminance(hex1), lum2 = calculateLuminance(hex2);
+            return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+        }
+
+        window.copySingleColor = copySingleColor;
+        window.copyColorValue = copyColorValue;
+        window.applyPaletteSnapshot = applyPaletteSnapshot;
+    </script>
+}

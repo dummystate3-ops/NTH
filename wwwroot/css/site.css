@@ -1,0 +1,277 @@
+/* Import Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for Aurora Tech Design System */
+:root {
+    /* Color palette */
+    --color-primary: #4A90E2;
+    --color-primary-hover: #3A7BC8;
+    --color-secondary: #50E3C2;
+    --color-secondary-hover: #40D3B2;
+    --color-accent: #9B59B6;
+    --color-accent-hover: #8B49A6;
+
+    /* Neutral colors */
+    --color-bg: #F5F7FA;
+    --color-surface: #FFFFFF;
+    --color-border: #E1E8ED;
+    --color-text-dark: #2C3E50;
+    --color-text-medium: #5A6C7D;
+    --color-text-light: #8B9BA8;
+
+    /* Semantic colors */
+    --color-success: #50E3C2;
+    --color-warning: #F39C12;
+    --color-error: #E74C3C;
+    --color-info: #4A90E2;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+}
+
+/* Dark mode color scheme */
+.dark {
+    --color-bg: #1A202C;
+    --color-surface: #2D3748;
+    --color-border: #4A5568;
+    --color-text-dark: #F7FAFC;
+    --color-text-medium: #E2E8F0;
+    --color-text-light: #CBD5E0;
+}
+
+/* Base styles */
+@layer base {
+    body {
+        @apply font-sans bg-[var(--color-bg)] text-[var(--color-text-dark)] transition-colors duration-300;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold text-[var(--color-text-dark)];
+    }
+
+    h1 {
+        @apply text-4xl md:text-5xl;
+    }
+
+    h2 {
+        @apply text-3xl md:text-4xl;
+    }
+
+    h3 {
+        @apply text-2xl md:text-3xl;
+    }
+
+    h4 {
+        @apply text-xl md:text-2xl;
+    }
+
+    h5 {
+        @apply text-lg md:text-xl;
+    }
+
+    h6 {
+        @apply text-base md:text-lg;
+    }
+
+    a {
+        @apply text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors;
+    }
+}
+
+/* Component styles */
+@layer components {
+
+    /* Buttons */
+    .btn {
+        @apply px-6 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center justify-center gap-2 transform active:scale-95 border border-transparent;
+    }
+
+    .btn-primary {
+        @apply bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-hover)] text-white shadow-md hover:shadow-lg hover:brightness-110 active:shadow-sm;
+    }
+
+    .btn-secondary {
+        @apply bg-[var(--color-secondary)] text-white hover:bg-[var(--color-secondary-hover)] shadow-md hover:shadow-lg active:shadow-sm;
+    }
+
+    .btn-accent {
+        @apply bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] shadow-md hover:shadow-lg active:shadow-sm;
+    }
+
+    .btn-danger {
+        @apply bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:text-red-700 hover:border-red-300 shadow-sm hover:shadow-md;
+    }
+
+    .btn-outline {
+        @apply border-2 border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white hover:shadow-md;
+    }
+
+    .pill-button {
+        @apply inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border)] bg-[var(--color-neutral-100)] text-sm font-medium text-[var(--color-text-medium)] shadow-sm transition-all hover:bg-[var(--color-primary)] hover:text-white hover:border-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)];
+    }
+
+    .pill-button.is-active {
+        @apply bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-md;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-[var(--color-surface)] rounded-xl shadow-[var(--shadow-md)] p-6 border border-[var(--color-border)] transition-shadow hover:shadow-[var(--shadow-lg)];
+    }
+
+    .card-hover {
+        @apply cursor-pointer transform hover:-translate-y-1 transition-transform duration-200;
+    }
+
+    /* Forms */
+    .form-input {
+        @apply w-full px-4 py-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-dark)] focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-[var(--color-text-medium)] mb-2;
+    }
+
+    .form-error {
+        @apply text-[var(--color-error)] text-sm mt-1;
+    }
+
+    /* Navigation */
+    .nav-link {
+        @apply px-4 py-2 text-[var(--color-text-medium)] hover:text-[var(--color-primary)] transition-colors;
+    }
+
+    .nav-link-active {
+        @apply text-[var(--color-primary)] font-medium;
+    }
+
+    /* Container */
+    .container-custom {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    /* Tool card specific */
+    .tool-card {
+        @apply card card-hover;
+    }
+
+    .tool-icon {
+        @apply w-12 h-12 flex items-center justify-center rounded-lg bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white text-2xl mb-4 transition-transform;
+    }
+
+    .group:hover .tool-icon {
+        @apply scale-110;
+    }
+
+    .validation-summary {
+        @apply bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-800 shadow-sm;
+    }
+
+    .badge-coming-soon {
+        @apply inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold uppercase tracking-wide rounded-full bg-[var(--color-warning)] bg-opacity-10 text-[var(--color-warning)] border border-[var(--color-warning)] shadow-sm;
+    }
+
+    .recipe-generator-page .card {
+        @apply cursor-auto shadow-[var(--shadow-md)];
+    }
+
+    .recipe-generator-page .card:hover {
+        @apply shadow-[var(--shadow-md)];
+    }
+
+    .rate-comparison-page .card {
+        @apply cursor-auto shadow-[var(--shadow-md)];
+    }
+
+    .rate-comparison-page .card:hover {
+        @apply shadow-[var(--shadow-md)];
+    }
+}
+
+/* Utility classes */
+@layer utilities {
+    .text-gradient {
+        @apply bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] bg-clip-text text-transparent;
+    }
+
+    .bg-gradient-primary {
+        @apply bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)];
+    }
+
+    .section-padding {
+        @apply py-12 md:py-20;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-hover);
+}
+
+/* Loading animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading {
+    animation: spin 1s linear infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}

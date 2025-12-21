@@ -1,0 +1,428 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section Head {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "SoftwareApplication",
+        "name": "Task Automation ROI Planner",
+        "applicationCategory": "BusinessApplication",
+        "description": "Estimate time savings and ROI from automating business tasks"
+    }
+    </script>
+}
+
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">🤖</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Task Automation ROI Planner</h1>
+            <p class="text-xl opacity-90">Calculate time savings and ROI from automating your business tasks</p>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container-custom max-w-6xl">
+        
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <div class="text-sm text-blue-900 dark:text-blue-100">
+                    <strong>Plan smarter:</strong> Identify which tasks to automate first based on ROI and time savings potential.
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2 card">
+                <h2 class="text-2xl font-bold mb-6">Add Automation Opportunity</h2>
+                
+                <div class="mb-6">
+                    <label for="currency" class="block text-sm font-medium mb-2">Currency</label>
+                    <select id="currency" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800">
+                        <option value="USD" data-symbol="$">USD - US Dollar ($)</option>
+                        <option value="PKR" data-symbol="₨">PKR - Pakistani Rupee (₨)</option>
+                        <option value="INR" data-symbol="₹">INR - Indian Rupee (₹)</option>
+                        <option value="SAR" data-symbol="﷼">SAR - Saudi Riyal (﷼)</option>
+                        <option value="AED" data-symbol="د.إ">AED - UAE Dirham (د.إ)</option>
+                        <option value="EUR" data-symbol="€">EUR - Euro (€)</option>
+                        <option value="GBP" data-symbol="£">GBP - British Pound (£)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="md:col-span-2">
+                        <label for="taskName" class="block text-sm font-medium mb-2">Task Name</label>
+                        <input type="text" id="taskName" 
+                               class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800"
+                               placeholder="e.g., Data Entry, Invoice Processing">
+                    </div>
+
+                    <div>
+                        <label for="hoursPerWeek" class="block text-sm font-medium mb-2">Current Time (hours/week)</label>
+                        <input type="number" id="hoursPerWeek" step="0.5" min="0" 
+                               class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800"
+                               placeholder="10">
+                    </div>
+
+                    <div>
+                        <label for="hourlyRate" class="block text-sm font-medium mb-2">Hourly Rate</label>
+                        <div class="relative">
+                            <span id="rateSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" id="hourlyRate" step="1" min="0" 
+                                   class="w-full pl-8 px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800"
+                                   placeholder="50">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="timeSaved" class="block text-sm font-medium mb-2">Time Saved (%)</label>
+                        <div class="relative">
+                            <input type="number" id="timeSaved" step="5" min="0" max="100" 
+                                   class="w-full pr-8 px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800"
+                                   placeholder="80">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">%</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="automationCost" class="block text-sm font-medium mb-2">Automation Cost</label>
+                        <div class="relative">
+                            <span id="costSymbol" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                            <input type="number" id="automationCost" step="100" min="0" 
+                                   class="w-full pl-8 px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800"
+                                   placeholder="2000">
+                        </div>
+                        <p class="text-xs text-[var(--color-text-light)] mt-1">One-time setup + annual costs</p>
+                    </div>
+
+                    <div>
+                        <label for="implementationTime" class="block text-sm font-medium mb-2">Implementation Time (hours)</label>
+                        <input type="number" id="implementationTime" step="1" min="0" 
+                               class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800"
+                               placeholder="20">
+                    </div>
+                </div>
+
+                <button onclick="addTask()" class="btn btn-primary w-full md:w-auto">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Add Task
+                </button>
+
+                <div class="mt-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold">Automation Opportunities</h3>
+                        <button onclick="sortTasks()" class="text-sm text-[var(--color-primary)] hover:underline">Sort by ROI</button>
+                    </div>
+                    <div id="tasksList" class="space-y-3"></div>
+                    <div id="emptyList" class="text-center py-8 text-[var(--color-text-medium)]">
+                        No tasks added yet. Add your first automation opportunity above.
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="card">
+                    <h2 class="text-xl font-bold mb-4">Total Impact</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                            <div class="text-sm text-green-600 dark:text-green-400 mb-1">Annual Savings</div>
+                            <div id="totalSavings" class="text-3xl font-bold text-green-700 dark:text-green-300">$0</div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div class="text-sm text-blue-600 dark:text-blue-400 mb-1">Hours Saved/Year</div>
+                            <div id="totalHours" class="text-3xl font-bold text-blue-700 dark:text-blue-300">0</div>
+                        </div>
+
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-[var(--color-text-medium)]">Total Investment</span>
+                                <span id="totalCost" class="font-semibold">$0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[var(--color-text-medium)]">Average ROI</span>
+                                <span id="avgROI" class="font-semibold text-green-600 dark:text-green-400">0%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-[var(--color-text-medium)]">Avg Payback</span>
+                                <span id="avgPayback" class="font-semibold">0 months</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="exportPlan()" class="btn btn-outline w-full mt-4">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Export Plan
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-lg font-bold mb-3">💡 Quick Tips</h3>
+                    <ul class="text-sm space-y-2 text-[var(--color-text-medium)]">
+                        <li>✓ Start with high-volume, repetitive tasks</li>
+                        <li>✓ Consider implementation complexity</li>
+                        <li>✓ Factor in training and maintenance</li>
+                        <li>✓ Prioritize quick wins for momentum</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="chartContainer" class="hidden card mt-8">
+            <h3 class="text-xl font-bold mb-4">ROI Comparison</h3>
+            <div class="relative" style="height: 400px;">
+                <canvas id="roiChart"></canvas>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('automationTasks') || '[]');
+        let roiChart = null;
+        let currencySymbol = '$';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTasks();
+            updateSummary();
+        });
+
+        document.getElementById('currency').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            currencySymbol = selectedOption.getAttribute('data-symbol');
+            document.getElementById('rateSymbol').textContent = currencySymbol;
+            document.getElementById('costSymbol').textContent = currencySymbol;
+            renderTasks();
+            updateSummary();
+        });
+
+        function addTask() {
+            const name = document.getElementById('taskName').value.trim();
+            const hoursPerWeek = parseFloat(document.getElementById('hoursPerWeek').value);
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+            const timeSaved = parseFloat(document.getElementById('timeSaved').value);
+            const cost = parseFloat(document.getElementById('automationCost').value);
+            const implTime = parseFloat(document.getElementById('implementationTime').value) || 0;
+
+            if (!name || !hoursPerWeek || !hourlyRate || !timeSaved || !cost) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            const hoursSavedWeek = hoursPerWeek * (timeSaved / 100);
+            const hoursSavedYear = hoursSavedWeek * 52;
+            const annualSavings = hoursSavedYear * hourlyRate;
+            const roi = ((annualSavings - cost) / cost) * 100;
+            const paybackMonths = (cost / (annualSavings / 12));
+
+            tasks.push({
+                id: Date.now(),
+                name,
+                hoursPerWeek,
+                hourlyRate,
+                timeSaved,
+                cost,
+                implTime,
+                hoursSavedYear,
+                annualSavings,
+                roi,
+                paybackMonths
+            });
+
+            saveTasks();
+            renderTasks();
+            updateSummary();
+
+            document.getElementById('taskName').value = '';
+            document.getElementById('hoursPerWeek').value = '';
+            document.getElementById('timeSaved').value = '';
+            document.getElementById('automationCost').value = '';
+            document.getElementById('implementationTime').value = '';
+        }
+
+        function deleteTask(id) {
+            if (confirm('Delete this automation opportunity?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                saveTasks();
+                renderTasks();
+                updateSummary();
+            }
+        }
+
+        function sortTasks() {
+            tasks.sort((a, b) => b.roi - a.roi);
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('tasksList');
+            const empty = document.getElementById('emptyList');
+
+            if (tasks.length === 0) {
+                list.classList.add('hidden');
+                empty.classList.remove('hidden');
+                document.getElementById('chartContainer').classList.add('hidden');
+                return;
+            }
+
+            list.classList.remove('hidden');
+            empty.classList.add('hidden');
+            document.getElementById('chartContainer').classList.remove('hidden');
+
+            list.innerHTML = tasks.map(t => {
+                const roiColor = t.roi > 100 ? 'green' : t.roi > 50 ? 'blue' : 'yellow';
+                return `
+                <div class="border border-[var(--color-border)] rounded-lg p-4 bg-[var(--color-surface)] hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex-1">
+                            <div class="font-semibold text-lg">${t.name}</div>
+                            <div class="text-sm text-[var(--color-text-medium)]">${t.hoursPerWeek} hrs/week → ${t.hoursSavedYear.toFixed(0)} hrs/year saved</div>
+                        </div>
+                        <button onclick="deleteTask(${t.id})" class="text-red-600 hover:text-red-700 ml-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <div class="text-xs text-[var(--color-text-light)]">Annual Savings</div>
+                            <div class="font-semibold text-green-600 dark:text-green-400">${currencySymbol}${t.annualSavings.toFixed(0)}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-[var(--color-text-light)]">ROI</div>
+                            <div class="font-semibold text-${roiColor}-600 dark:text-${roiColor}-400">${t.roi.toFixed(0)}%</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-[var(--color-text-light)]">Payback</div>
+                            <div class="font-semibold">${t.paybackMonths.toFixed(1)} mo</div>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+
+            drawChart();
+        }
+
+        function updateSummary() {
+            const totalSavings = tasks.reduce((sum, t) => sum + t.annualSavings, 0);
+            const totalHours = tasks.reduce((sum, t) => sum + t.hoursSavedYear, 0);
+            const totalCost = tasks.reduce((sum, t) => sum + t.cost, 0);
+            const avgROI = tasks.length > 0 ? tasks.reduce((sum, t) => sum + t.roi, 0) / tasks.length : 0;
+            const avgPayback = tasks.length > 0 ? tasks.reduce((sum, t) => sum + t.paybackMonths, 0) / tasks.length : 0;
+
+            document.getElementById('totalSavings').textContent = `${currencySymbol}${totalSavings.toFixed(0)}`;
+            document.getElementById('totalHours').textContent = totalHours.toFixed(0);
+            document.getElementById('totalCost').textContent = `${currencySymbol}${totalCost.toFixed(0)}`;
+            document.getElementById('avgROI').textContent = `${avgROI.toFixed(0)}%`;
+            document.getElementById('avgPayback').textContent = `${avgPayback.toFixed(1)} months`;
+        }
+
+        function drawChart() {
+            if (tasks.length === 0) return;
+
+            const ctx = document.getElementById('roiChart').getContext('2d');
+            if (roiChart) roiChart.destroy();
+
+            const isDark = document.documentElement.classList.contains('dark');
+
+            roiChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: tasks.map(t => t.name),
+                    datasets: [{
+                        label: 'ROI (%)',
+                        data: tasks.map(t => t.roi),
+                        backgroundColor: '#4A90E2',
+                        borderColor: '#4A90E2',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `ROI: ${ctx.parsed.x.toFixed(0)}%`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: isDark ? '#E5E7EB' : '#374151',
+                                callback: v => v + '%'
+                            },
+                            grid: { color: isDark ? '#374151' : '#E5E7EB' }
+                        },
+                        y: {
+                            ticks: { color: isDark ? '#E5E7EB' : '#374151' },
+                            grid: { color: isDark ? '#374151' : '#E5E7EB' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function saveTasks() {
+            localStorage.setItem('automationTasks', JSON.stringify(tasks));
+        }
+
+        function exportPlan() {
+            if (tasks.length === 0) {
+                alert('No tasks to export');
+                return;
+            }
+
+            const csv = [
+                ['Task', 'Hours/Week', 'Hourly Rate', 'Time Saved %', 'Hours Saved/Year', 'Annual Savings', 'Cost', 'ROI %', 'Payback (months)'],
+                ...tasks.map(t => [
+                    t.name,
+                    t.hoursPerWeek,
+                    t.hourlyRate,
+                    t.timeSaved,
+                    t.hoursSavedYear.toFixed(0),
+                    t.annualSavings.toFixed(2),
+                    t.cost,
+                    t.roi.toFixed(0),
+                    t.paybackMonths.toFixed(1)
+                ])
+            ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'automation-roi-plan.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+}

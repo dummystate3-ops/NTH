@@ -1,0 +1,401 @@
+@using System.Linq
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section JsonLd {
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "SoftwareApplication",
+        "name": "Currency & Rate Comparison Tool",
+        "applicationCategory": "FinanceApplication",
+        "offers": {
+            "@@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "Compare multiple currencies and units side-by-side with real-time exchange rates."
+    }
+    </script>
+}
+
+<!-- Page Header -->
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-6xl mb-4">💱</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Rate Comparison Tool</h1>
+            <p class="text-xl opacity-90">Compare multiple currencies side-by-side with live rates</p>
+        </div>
+    </div>
+</section>
+
+<!-- Tool Section -->
+<section class="section-padding rate-comparison-page">
+    <div class="container-custom max-w-5xl">
+        <form id="rateForm">
+            @Html.AntiForgeryToken()
+        </form>
+
+        @await Html.PartialAsync("_ValidationSummary", Enumerable.Empty<string>())
+
+        <div id="rate-status" class="hidden border-l-4 rounded-lg px-4 py-3 mb-6"></div>
+
+        <!-- Currency Comparison -->
+        <div class="card mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-[var(--color-text-dark)]">Compare Currencies</h2>
+                    <p class="text-[var(--color-text-medium)]">Select a base currency, pick comparison targets, and enter an amount for each.</p>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Base Currency</label>
+                <select id="base-currency" class="w-full md:w-64 p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                    <option value="USD" selected>USD – US Dollar</option>
+                    <option value="EUR">EUR – Euro</option>
+                    <option value="GBP">GBP – British Pound</option>
+                    <option value="JPY">JPY – Japanese Yen</option>
+                    <option value="CAD">CAD – Canadian Dollar</option>
+                    <option value="AUD">AUD – Australian Dollar</option>
+                    <option value="INR">INR – Indian Rupee</option>
+                    <option value="CNY">CNY – Chinese Yuan</option>
+                    <option value="CHF">CHF – Swiss Franc</option>
+                    <option value="PKR">PKR – Pakistani Rupee</option>
+                    <option value="SAR">SAR – Saudi Riyal</option>
+                    <option value="AED">AED – UAE Dirham</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2 text-[var(--color-text-dark)]">Add Comparison Rows</label>
+                <div id="comparison-rows" class="space-y-3"></div>
+                <button type="button" id="add-row" class="btn btn-outline mt-4">+ Add Row</button>
+            </div>
+
+            <button type="button" id="compare-rates" class="btn btn-primary w-full mt-4">
+                <span id="compare-btn-text">💱 Compare Rates</span>
+                <span id="compare-loading" class="hidden">⏳ Fetching rates…</span>
+            </button>
+        </div>
+
+        <!-- Comparison Results -->
+        <div id="results-section" class="hidden space-y-6">
+            <div class="card">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                    <div>
+                        <p class="text-sm uppercase tracking-wide text-[var(--color-text-medium)]" id="results-meta"></p>
+                        <h3 class="text-2xl font-bold text-[var(--color-text-dark)]">Comparison Results</h3>
+                    </div>
+                    <button id="copy-results" class="btn btn-secondary">📋 Copy Table</button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-[var(--color-border)]">
+                                <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-dark)]">Currency</th>
+                                <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-dark)]">Rate</th>
+                                <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-dark)]">Converted</th>
+                                <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-dark)]">24h</th>
+                                <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-dark)]">7d</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button id="download-csv" class="btn btn-secondary">⬇️ Download CSV</button>
+                    <button id="reset-form" class="btn btn-outline">🔄 Start Over</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Notice -->
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg mt-8">
+            <p class="text-blue-800">
+                <strong>📈 Rate Info:</strong> Rates are fetched from our backend service. When a live provider is unavailable, fallback mock rates are used. Historical changes (24h/7d) are illustrative.
+            </p>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <partial name="_SocialShare" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const baseCurrencySelect = document.getElementById('base-currency');
+            const rowsContainer = document.getElementById('comparison-rows');
+            const addRowBtn = document.getElementById('add-row');
+            const compareBtn = document.getElementById('compare-rates');
+            const btnText = document.getElementById('compare-btn-text');
+            const loadingText = document.getElementById('compare-loading');
+            const resultsSection = document.getElementById('results-section');
+            const resultsBody = document.getElementById('results-body');
+            const resultsMeta = document.getElementById('results-meta');
+            const statusBox = document.getElementById('rate-status');
+            const validationSummary = document.querySelector('[data-validation-summary]');
+            const validationList = validationSummary ? validationSummary.querySelector('[data-validation-summary-list]') : null;
+            const validationDismiss = validationSummary ? validationSummary.querySelector('[data-validation-dismiss]') : null;
+            const tokenField = document.querySelector('#rateForm input[name="__RequestVerificationToken"]');
+            const antiforgeryToken = tokenField ? tokenField.value : null;
+
+            const currencies = [
+                { code: 'USD', name: 'US Dollar' },
+                { code: 'EUR', name: 'Euro' },
+                { code: 'GBP', name: 'British Pound' },
+                { code: 'JPY', name: 'Japanese Yen' },
+                { code: 'CAD', name: 'Canadian Dollar' },
+                { code: 'AUD', name: 'Australian Dollar' },
+                { code: 'INR', name: 'Indian Rupee' },
+                { code: 'CNY', name: 'Chinese Yuan' },
+                { code: 'CHF', name: 'Swiss Franc' },
+                { code: 'PKR', name: 'Pakistani Rupee' },
+                { code: 'SAR', name: 'Saudi Riyal' },
+                { code: 'AED', name: 'UAE Dirham' },
+                { code: 'NZD', name: 'New Zealand Dollar' },
+                { code: 'SGD', name: 'Singapore Dollar' },
+                { code: 'HKD', name: 'Hong Kong Dollar' },
+                { code: 'SEK', name: 'Swedish Krona' },
+                { code: 'NOK', name: 'Norwegian Krone' },
+                { code: 'MXN', name: 'Mexican Peso' },
+                { code: 'ZAR', name: 'South African Rand' },
+                { code: 'BRL', name: 'Brazilian Real' },
+                { code: 'KRW', name: 'South Korean Won' },
+                { code: 'RUB', name: 'Russian Ruble' },
+                { code: 'TRY', name: 'Turkish Lira' }
+            ];
+
+            let rowIndex = 0;
+            let lastResponse = null;
+
+            function createRow(prefillCurrency = '', prefillAmount = 1) {
+                const id = rowIndex++;
+                const row = document.createElement('div');
+                row.className = 'flex flex-col sm:flex-row gap-3 items-start sm:items-center';
+                row.dataset.rowId = id;
+
+                const selectHtml = currencies.map(c => `<option value="${c.code}" ${c.code === prefillCurrency ? 'selected' : ''}>${c.code} – ${c.name}</option>`).join('');
+                row.innerHTML = `
+                    <select data-currency class="flex-1 p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]">
+                        ${selectHtml}
+                    </select>
+                    <input type="number" data-amount value="${prefillAmount}" min="0.0001" step="0.0001" class="w-32 p-3 border border-[var(--color-neutral-300)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)]" placeholder="Amount">
+                    <button type="button" data-remove class="p-3 text-red-500 hover:text-red-700" aria-label="Remove row">✕</button>
+                `;
+                row.querySelector('[data-remove]').addEventListener('click', () => row.remove());
+                rowsContainer.appendChild(row);
+            }
+
+            function collectFormData() {
+                const base = baseCurrencySelect.value;
+                const rows = Array.from(rowsContainer.querySelectorAll('[data-row-id]'));
+                const targets = rows.map(row => ({
+                    currency: row.querySelector('[data-currency]').value,
+                    amount: parseFloat(row.querySelector('[data-amount]').value) || 1
+                }));
+                return { base, targets };
+            }
+
+            function clearErrors() {
+                if (validationSummary) validationSummary.classList.add('hidden');
+                if (validationList) validationList.innerHTML = '';
+            }
+
+            function showErrors(errors) {
+                if (!validationSummary || !validationList) return;
+                validationList.innerHTML = '';
+                errors.filter(Boolean).forEach(message => {
+                    const li = document.createElement('li');
+                    li.textContent = message;
+                    validationList.appendChild(li);
+                });
+                validationSummary.classList.remove('hidden');
+                validationSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function setStatus(message, type) {
+                if (!statusBox) return;
+                const palette = {
+                    success: 'border-green-500 bg-green-50 text-green-800',
+                    error: 'border-red-500 bg-red-50 text-red-800',
+                    info: 'border-blue-500 bg-blue-50 text-blue-800'
+                };
+                statusBox.className = `border-l-4 rounded-lg px-4 py-3 mb-6 ${palette[type] || palette.info}`;
+                statusBox.textContent = message;
+                statusBox.classList.remove('hidden');
+            }
+
+            function hideStatus() {
+                if (statusBox) {
+                    statusBox.classList.add('hidden');
+                    statusBox.textContent = '';
+                }
+            }
+
+            function setLoading(isLoading) {
+                if (!compareBtn) return;
+                compareBtn.disabled = isLoading;
+                if (isLoading) {
+                    btnText.classList.add('hidden');
+                    loadingText.classList.remove('hidden');
+                } else {
+                    btnText.classList.remove('hidden');
+                    loadingText.classList.add('hidden');
+                }
+            }
+
+            function formatDelta(value) {
+                if (value == null) return '–';
+                const sign = value >= 0 ? '+' : '';
+                const color = value >= 0 ? 'text-green-600' : 'text-red-600';
+                return `<span class="${color}">${sign}${value.toFixed(2)}%</span>`;
+            }
+
+            function renderResults(data) {
+                lastResponse = data;
+                resultsMeta.textContent = `Base: ${data.baseCurrency} • ${data.usedFallbackRates ? 'Fallback rates' : 'Live rates'} • ${new Date(data.retrievedAtUtc).toLocaleTimeString()}`;
+                resultsBody.innerHTML = '';
+                data.rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'border-b border-[var(--color-border)]';
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-medium text-[var(--color-text-dark)]">${row.currency}</td>
+                        <td class="py-3 px-4 text-[var(--color-text-medium)]">${row.rate.toFixed(6)}</td>
+                        <td class="py-3 px-4 font-semibold text-[var(--color-primary)]">${row.convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</td>
+                        <td class="py-3 px-4">${formatDelta(row.change24h)}</td>
+                        <td class="py-3 px-4">${formatDelta(row.change7d)}</td>
+                    `;
+                    resultsBody.appendChild(tr);
+                });
+                resultsSection.classList.remove('hidden');
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            async function handleCompare() {
+                clearErrors();
+                hideStatus();
+
+                const { base, targets } = collectFormData();
+                if (!targets.length) {
+                    showErrors(['Add at least one comparison row.']);
+                    return;
+                }
+
+                if (targets.length > 10) {
+                    showErrors(['Maximum 10 rows allowed.']);
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('BaseCurrency', base);
+                targets.forEach((t, idx) => {
+                    formData.append(`Targets[${idx}].Currency`, t.currency);
+                    formData.append(`Targets[${idx}].Amount`, t.amount.toString());
+                });
+                if (antiforgeryToken) {
+                    formData.append('__RequestVerificationToken', antiforgeryToken);
+                }
+
+                setLoading(true);
+
+                try {
+                    const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                    if (antiforgeryToken) headers['RequestVerificationToken'] = antiforgeryToken;
+
+                    const response = await fetch('/Trending/CompareRates', {
+                        method: 'POST',
+                        body: formData,
+                        headers,
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        let errorMessage = `Server responded with ${response.status}.`;
+                        try {
+                            const problem = await response.json();
+                            if (problem?.error) errorMessage = problem.error;
+                        } catch { }
+                        showErrors([errorMessage]);
+                        return;
+                    }
+
+                    const json = await response.json();
+                    if (!json.success) {
+                        showErrors([json.error || 'Unable to compare rates right now.']);
+                        return;
+                    }
+
+                    renderResults(json.data);
+                    setStatus('Comparison complete!', 'success');
+                } catch (error) {
+                    console.error(error);
+                    showErrors(['Something went wrong while comparing rates. Please try again.']);
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            function copyResults() {
+                if (!lastResponse) return;
+                const lines = [`Base: ${lastResponse.baseCurrency}`, 'Currency\tRate\tConverted\t24h\t7d'];
+                lastResponse.rows.forEach(row => {
+                    lines.push(`${row.currency}\t${row.rate}\t${row.convertedAmount}\t${row.change24h ?? '-'}%\t${row.change7d ?? '-'}%`);
+                });
+                navigator.clipboard.writeText(lines.join('\n')).then(() => setStatus('Copied to clipboard!', 'success'));
+            }
+
+            function downloadCSV() {
+                if (!lastResponse) return;
+                const rows = [['Currency', 'Rate', 'Converted', '24h %', '7d %']];
+                lastResponse.rows.forEach(row => {
+                    rows.push([row.currency, row.rate, row.convertedAmount, row.change24h ?? '', row.change7d ?? '']);
+                });
+                const csv = rows.map(r => r.join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `rate-comparison-${Date.now()}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            function resetForm() {
+                rowsContainer.innerHTML = '';
+                createRow('EUR', 1);
+                createRow('GBP', 1);
+                resultsSection.classList.add('hidden');
+                hideStatus();
+                clearErrors();
+                lastResponse = null;
+            }
+
+            addRowBtn.addEventListener('click', () => createRow());
+            compareBtn.addEventListener('click', handleCompare);
+            document.getElementById('copy-results')?.addEventListener('click', copyResults);
+            document.getElementById('download-csv')?.addEventListener('click', downloadCSV);
+            document.getElementById('reset-form')?.addEventListener('click', resetForm);
+            validationDismiss?.addEventListener('click', clearErrors);
+
+            // Initialize with two rows
+            createRow('EUR', 1);
+            createRow('GBP', 1);
+        })();
+    </script>
+}
+

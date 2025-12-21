@@ -1,0 +1,2317 @@
+@model NovaToolsHub.Models.ViewModels.AdvancedImageResizerViewModel
+
+@{
+    ViewBag.Title = "Advance Image Tool - NovaTools Hub";
+    ViewData["MetaDescription"] = "Advance Image Tool: crop, resize, compress, watermark, and batch process images with flexible per-tab controls.";
+}
+
+<div class="min-h-screen bg-[var(--color-bg)]">
+    <div id="toolStatus" class="sr-only" role="status" aria-live="polite"></div>
+
+    <!-- Header Section -->
+    <div class="container-custom py-6 lg:py-8">
+        <div class="max-w-4xl mx-auto text-center space-y-4">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-sm font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+                Image Tools
+            </div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                Advance <span class="text-gradient">Image Tool</span>
+            </h1>
+            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                Resize, crop, compress, watermark, and batch process images with independent tab controls.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tool Workspace -->
+    <div class="container-custom pb-8">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Mode Toggle -->
+            <div class="flex justify-center mb-4 md:mb-6">
+                <div
+                    class="inline-flex p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl w-full max-w-xs sm:w-auto">
+                    <button type="button" id="singleModeBtn" onclick="setMode('single')"
+                        class="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium rounded-lg bg-[var(--color-primary)] text-white transition-all">
+                        Single
+                    </button>
+                    <button type="button" id="batchModeBtn" onclick="setMode('batch')"
+                        class="flex-1 sm:flex-none px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium rounded-lg text-[var(--color-text-medium)] hover:text-[var(--color-text)] transition-all">
+                        Batch (50)
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+
+                <!-- Left Panel: Upload and Preview -->
+                <div class="lg:col-span-1 space-y-4">
+                    <!-- Upload Zone -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-lg overflow-hidden">
+                        <div class="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-5 py-3">
+                            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                </svg>
+                                Upload
+                            </h2>
+                        </div>
+                        <div class="p-4">
+                            <div id="dropZone"
+                                class="border-2 border-dashed border-[var(--color-border)] rounded-xl p-8 text-center transition-all hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 cursor-pointer">
+                                <div id="dropZoneContent">
+                                    <svg class="mx-auto h-12 w-12 text-[var(--color-text-medium)]/50 mb-3"
+                                        stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                        <path
+                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <label for="fileInput" class="cursor-pointer">
+                                        <span class="text-[var(--color-primary)] font-medium">Click to upload</span>
+                                        <span class="text-[var(--color-text-medium)]"> or drag and drop</span>
+                                    </label>
+                                    <input id="fileInput" name="UploadedFile" type="file" class="sr-only"
+                                        accept="image/*">
+                                    <p class="text-xs text-[var(--color-text-medium)] mt-2">PNG, JPG, GIF, WEBP, BMP up
+                                        to 10MB each (max 50 files / ~500MB per batch)</p>
+                                </div>
+                                <div id="filePreview" class="hidden">
+                                    <div class="flex items-center gap-3">
+                                        <svg class="h-10 w-10 text-emerald-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <div class="text-left">
+                                            <p class="text-sm font-semibold text-[var(--color-text)]" id="fileName"></p>
+                                            <p class="text-xs text-[var(--color-text-medium)]" id="fileSize"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="batchFilesList" class="hidden mt-4 space-y-2 max-h-40 overflow-y-auto"></div>
+                        </div>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-4 shadow-lg">
+                        <h3 class="text-sm font-bold text-[var(--color-text)] mb-3">Preview</h3>
+                        <div
+                            class="relative bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl overflow-hidden min-h-[200px] flex items-center justify-center">
+                            <img id="imagePreview" class="max-w-full max-h-[300px] hidden" alt="Preview">
+                            <p id="previewPlaceholder" class="text-sm text-[var(--color-text-medium)]">Upload an image
+                                to preview</p>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="resetTool()"
+                        class="w-full py-2.5 text-sm font-semibold rounded-xl border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-primary)] transition-all">
+                        Clear &amp; Start Fresh
+                    </button>
+                </div>
+
+                <!-- Right Panel: Settings Tabs -->
+                <div class="lg:col-span-2">
+                    <div
+                        class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-lg overflow-hidden">
+
+                        <!-- Tab Navigation -->
+                        <div class="border-b border-[var(--color-border)] px-2 sm:px-4 pt-3 sm:pt-4">
+                            <div class="flex gap-0.5 sm:gap-1 overflow-x-auto pb-0 -mb-px scrollbar-hide" id="tabNav">
+                                <button type="button" data-tab="resize"
+                                    class="tab-btn active flex-shrink-0 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-[var(--color-primary)] text-[var(--color-primary)] bg-[var(--color-bg)]">Resize</button>
+                                <button type="button" data-tab="crop"
+                                    class="tab-btn flex-shrink-0 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-[var(--color-text-medium)] hover:text-[var(--color-text)]">Crop</button>
+                                <button type="button" data-tab="compress"
+                                    class="tab-btn flex-shrink-0 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-[var(--color-text-medium)] hover:text-[var(--color-text)]">Compress</button>
+                                <button type="button" data-tab="effects"
+                                    class="tab-btn flex-shrink-0 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-[var(--color-text-medium)] hover:text-[var(--color-text)]">Effects</button>
+                                <button type="button" data-tab="watermark"
+                                    class="tab-btn flex-shrink-0 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-t-lg border-b-2 border-transparent text-[var(--color-text-medium)] hover:text-[var(--color-text)]">Watermark</button>
+                            </div>
+                        </div>
+
+                        <form id="imageProcessingForm">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="IsBatchMode" id="isBatchMode" value="false">
+
+                            <div class="p-5">
+                                <!-- Resize Tab -->
+                                <div id="tab-resize" class="tab-content">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <p class="text-sm font-semibold text-[var(--color-text)]">Resize</p>
+                                            <p class="text-xs text-[var(--color-text-medium)]">Turn on only if you want
+                                                to scale dimensions.</p>
+                                        </div>
+                                        <label class="flex items-center gap-2 text-sm">
+                                            <input type="checkbox" id="applyResize" name="ApplyResize" value="true"
+                                                checked class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                            <span class="text-[var(--color-text-medium)]">Apply</span>
+                                        </label>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="md:col-span-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)] mb-2 block">Quick
+                                                Presets</label>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button type="button" onclick="setResizePreset(1920, 1080)"
+                                                    class="px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-all">1920x1080</button>
+                                                <button type="button" onclick="setResizePreset(1280, 720)"
+                                                    class="px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-all">1280x720</button>
+                                                <button type="button" onclick="setResizePreset(1080, 1080)"
+                                                    class="px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-all">1080x1080</button>
+                                                <button type="button" onclick="setResizePreset(800, 600)"
+                                                    class="px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] transition-all">800x600</button>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Width
+                                                (px)</label>
+                                            <input type="number" id="targetWidth" name="TargetWidth"
+                                                class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none"
+                                                placeholder="Auto">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Height
+                                                (px)</label>
+                                            <input type="number" id="targetHeight" name="TargetHeight"
+                                                class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none"
+                                                placeholder="Auto">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Scale
+                                                %: <span id="resizePercentageValue"
+                                                    class="text-[var(--color-primary)]">100%</span></label>
+                                            <input type="range" id="resizePercentage" name="ResizePercentage" min="10"
+                                                max="500" value="100" step="5"
+                                                class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]">
+                                        </div>
+                                        <div class="flex items-center">
+                                            <label
+                                                class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer w-full">
+                                                <input type="checkbox" id="maintainAspectRatio"
+                                                    name="MaintainAspectRatio" checked
+                                                    class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <span class="text-sm">Maintain aspect ratio</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Crop Tab -->
+                                <div id="tab-crop" class="tab-content hidden">
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-semibold text-[var(--color-text)]">Crop</p>
+                                                <p class="text-xs text-[var(--color-text-medium)]">Enable cropping to
+                                                    use presets or custom box.</p>
+                                            </div>
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="checkbox" id="applyCrop" name="ApplyCrop" value="true"
+                                                    class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <span class="text-[var(--color-text-medium)]">Apply</span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)] mb-2 block">Aspect
+                                                Ratio Presets</label>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button type="button" onclick="setCropPreset('none', this)"
+                                                    class="crop-preset-btn active px-3 py-1.5 text-xs rounded-lg border-2 border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-[var(--color-primary)]">Free</button>
+                                                <button type="button" onclick="setCropPreset('1:1', this)"
+                                                    class="crop-preset-btn px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)]">1:1</button>
+                                                <button type="button" onclick="setCropPreset('4:3', this)"
+                                                    class="crop-preset-btn px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)]">4:3</button>
+                                                <button type="button" onclick="setCropPreset('16:9', this)"
+                                                    class="crop-preset-btn px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)]">16:9</button>
+                                                <button type="button" onclick="setCropPreset('3:2', this)"
+                                                    class="crop-preset-btn px-3 py-1.5 text-xs rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)]">3:2</button>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="cropPreset" name="CropPreset" value="none">
+                                        <div id="cropContainer"
+                                            class="bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl overflow-hidden relative"
+                                            style="height: 280px;">
+                                            <img id="cropperImage" alt="Crop preview"
+                                                style="display: none; max-width: 100%;">
+                                            <div id="cropperPlaceholder"
+                                                class="absolute inset-0 flex items-center justify-center">
+                                                <p class="text-sm text-[var(--color-text-medium)]">Upload an image to
+                                                    crop. In batch mode, this crop is applied to all selected images.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-4 gap-2">
+                                            <div class="space-y-1">
+                                                <label class="text-xs text-[var(--color-text-medium)]">X</label>
+                                                <input type="number" id="cropX" name="CropX"
+                                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg py-2 px-2 text-xs"
+                                                    placeholder="0">
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="text-xs text-[var(--color-text-medium)]">Y</label>
+                                                <input type="number" id="cropY" name="CropY"
+                                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg py-2 px-2 text-xs"
+                                                    placeholder="0">
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="text-xs text-[var(--color-text-medium)]">Width</label>
+                                                <input type="number" id="cropWidth" name="CropWidth"
+                                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg py-2 px-2 text-xs"
+                                                    placeholder="Auto">
+                                            </div>
+                                            <div class="space-y-1">
+                                                <label class="text-xs text-[var(--color-text-medium)]">Height</label>
+                                                <input type="number" id="cropHeight" name="CropHeight"
+                                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg py-2 px-2 text-xs"
+                                                    placeholder="Auto">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Compress Tab -->
+                                <div id="tab-compress" class="tab-content hidden">
+                                    <div class="space-y-5">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-semibold text-[var(--color-text)]">Compression
+                                                    &amp; Format</p>
+                                                <p class="text-xs text-[var(--color-text-medium)]">Off by default to
+                                                    keep original quality.</p>
+                                            </div>
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="checkbox" id="applyCompression" name="ApplyCompression"
+                                                    value="true" class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <span class="text-[var(--color-text-medium)]">Apply</span>
+                                            </label>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Quality:
+                                                <span id="qualityValue"
+                                                    class="text-[var(--color-primary)]">85%</span></label>
+                                            <input type="range" id="quality" name="Quality" min="0" max="100" value="85"
+                                                step="5"
+                                                class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]">
+                                            <div class="flex justify-between text-xs text-[var(--color-text-medium)]">
+                                                <span>Low (smaller file)</span>
+                                                <span>High (better quality)</span>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Output
+                                                Format</label>
+                                            <select id="outputFormat" name="OutputFormat"
+                                                class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none">
+                                                <option value="original">Keep original</option>
+                                                <option value="jpeg">JPEG</option>
+                                                <option value="png">PNG</option>
+                                                <option value="webp">WebP</option>
+                                                <option value="gif">GIF</option>
+                                            </select>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Target
+                                                File Size (KB)</label>
+                                            <input type="number" id="targetFileSizeKb" name="TargetFileSizeKb"
+                                                class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none"
+                                                placeholder="Leave empty for no target">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Filename
+                                                Pattern</label>
+                                            <input type="text" id="filenamePattern" name="FilenamePattern"
+                                                class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none"
+                                                placeholder="{original}_processed">
+                                            <p class="text-xs text-[var(--color-text-medium)]">Variables: {original},
+                                                {name}, {fullname}, {date}, {time}, {width}, {height}</p>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <label
+                                                class="flex items-center gap-3 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer w-full hover:bg-[var(--color-border)]/30 transition-colors">
+                                                <input type="checkbox" id="preserveMetadata" name="PreserveMetadata"
+                                                    value="true" class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <div>
+                                                    <span
+                                                        class="text-sm font-medium block text-[var(--color-text)]">Preserve
+                                                        Metadata</span>
+                                                    <span class="text-xs text-[var(--color-text-medium)]">Keep EXIF,
+                                                        GPS, and camera info (Larger file size, less private)</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Effects Tab -->
+                                <div id="tab-effects" class="tab-content hidden">
+                                    <div class="space-y-5">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-semibold text-[var(--color-text)]">Effects</p>
+                                                <p class="text-xs text-[var(--color-text-medium)]">Enable to rotate,
+                                                    flip, or add filters.</p>
+                                            </div>
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="checkbox" id="applyEffects" name="ApplyEffects"
+                                                    value="true" class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <span class="text-[var(--color-text-medium)]">Apply</span>
+                                            </label>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Filters</label>
+                                            <div class="flex flex-wrap gap-3">
+                                                <label
+                                                    class="flex items-center gap-2 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer hover:bg-[var(--color-border)]/30">
+                                                    <input type="checkbox" id="applyGrayscale" name="ApplyGrayscale"
+                                                        value="true"
+                                                        class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                    <span class="text-sm">Grayscale</span>
+                                                </label>
+                                                <label
+                                                    class="flex items-center gap-2 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer hover:bg-[var(--color-border)]/30">
+                                                    <input type="checkbox" id="applySepia" name="ApplySepia"
+                                                        value="true"
+                                                        class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                    <span class="text-sm">Sepia</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Brightness:
+                                                    <span id="brightnessValue"
+                                                        class="text-[var(--color-primary)]">1.0</span></label>
+                                                <input type="range" id="brightness" name="Brightness" min="0.1"
+                                                    max="3.0" value="1.0" step="0.1"
+                                                    class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Contrast:
+                                                    <span id="contrastValue"
+                                                        class="text-[var(--color-primary)]">1.0</span></label>
+                                                <input type="range" id="contrast" name="Contrast" min="0.1" max="3.0"
+                                                    value="1.0" step="0.1"
+                                                    class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]">
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Rotation</label>
+                                            <div class="flex gap-2">
+                                                <button type="button" onclick="setRotation(0)"
+                                                    class="rotation-btn active flex-1 py-2 rounded-lg border-2 border-[var(--color-primary)] bg-[var(--color-primary)]/10 text-sm font-medium"
+                                                    data-rotation="0">0</button>
+                                                <button type="button" onclick="setRotation(90)"
+                                                    class="rotation-btn flex-1 py-2 rounded-lg border border-[var(--color-border)] text-sm"
+                                                    data-rotation="90">90</button>
+                                                <button type="button" onclick="setRotation(180)"
+                                                    class="rotation-btn flex-1 py-2 rounded-lg border border-[var(--color-border)] text-sm"
+                                                    data-rotation="180">180</button>
+                                                <button type="button" onclick="setRotation(270)"
+                                                    class="rotation-btn flex-1 py-2 rounded-lg border border-[var(--color-border)] text-sm"
+                                                    data-rotation="270">270</button>
+                                            </div>
+                                            <input type="hidden" id="rotationDegrees" name="RotationDegrees" value="0">
+                                        </div>
+                                        <div class="flex gap-4">
+                                            <label
+                                                class="flex items-center gap-2 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer flex-1">
+                                                <input type="checkbox" id="flipHorizontal" name="FlipHorizontal"
+                                                    value="true" class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <span class="text-sm">Flip Horizontal</span>
+                                            </label>
+                                            <label
+                                                class="flex items-center gap-2 p-3 bg-[var(--color-bg)] rounded-xl cursor-pointer flex-1">
+                                                <input type="checkbox" id="flipVertical" name="FlipVertical"
+                                                    value="true" class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <span class="text-sm">Flip Vertical</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Watermark Tab -->
+                                <div id="tab-watermark" class="tab-content hidden">
+                                    <div class="space-y-5">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-semibold text-[var(--color-text)]">Watermark</p>
+                                                <p class="text-xs text-[var(--color-text-medium)]">Add text or image
+                                                    watermark when enabled.</p>
+                                            </div>
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="checkbox" id="applyWatermark" name="ApplyWatermark"
+                                                    value="true" class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                                <span class="text-[var(--color-text-medium)]">Apply</span>
+                                            </label>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Watermark
+                                                Text</label>
+                                            <input type="text" id="watermarkText" name="WatermarkText"
+                                                class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 focus:border-[var(--color-primary)] outline-none"
+                                                placeholder="Your Name">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Position</label>
+                                                <select id="watermarkPosition" name="WatermarkPosition"
+                                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2.5 px-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/30 outline-none">
+                                                    <option value="BottomRight">Bottom Right</option>
+                                                    <option value="BottomLeft">Bottom Left</option>
+                                                    <option value="TopRight">Top Right</option>
+                                                    <option value="TopLeft">Top Left</option>
+                                                    <option value="Center">Center</option>
+                                                </select>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Opacity:
+                                                    <span id="opacityValue"
+                                                        class="text-[var(--color-primary)]">50%</span></label>
+                                                <input type="range" id="watermarkOpacity" name="WatermarkOpacity"
+                                                    min="0" max="1" value="0.5" step="0.1"
+                                                    class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]">
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-4">
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Font</label>
+                                                <select id="watermarkFontFamily" name="WatermarkFontFamily"
+                                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2 px-2 text-sm outline-none">
+                                                    <option value="Arial">Arial</option>
+                                                    <option value="Times New Roman">Times New Roman</option>
+                                                    <option value="Verdana">Verdana</option>
+                                                </select>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Size</label>
+                                                <input type="number" id="watermarkFontSize" name="WatermarkFontSize"
+                                                    value="32" min="8" max="200"
+                                                    class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2 px-2 text-sm outline-none">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label
+                                                    class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Color</label>
+                                                <input type="color" id="watermarkColor" name="WatermarkColor"
+                                                    value="#FFFFFF"
+                                                    class="w-full h-10 rounded-xl border border-[var(--color-border)] cursor-pointer">
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label
+                                                class="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-medium)]">Or
+                                                Upload Watermark Image</label>
+                                            <input type="file" id="watermarkImageFile" name="WatermarkImageFile"
+                                                accept="image/*"
+                                                class="w-full bg-[var(--color-bg)] border border-[var(--color-border)] rounded-xl py-2 px-3 text-sm file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-white file:text-xs">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Process Button -->
+                            <div class="p-5 border-t border-[var(--color-border)]">
+                                <button type="button" id="processBtn" onclick="processImage()"
+                                    class="w-full md:w-auto btn btn-primary">
+                                    <svg id="processIcon" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    <span id="processText">Process Image</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div id="resultSection" class="hidden mt-6">
+                <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-[var(--color-text)]">Processed Image</h3>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="downloadImage()" class="btn btn-primary text-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Download
+                            </button>
+                            <a id="serverDownloadLink" href="#" target="_blank"
+                                class="hidden btn bg-white border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-sm shadow-sm hover:shadow-md text-[var(--color-text-medium)]">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M12 6a9 9 0 100 18 9 9 0 000-18z" />
+                                </svg>
+                                Download link
+                            </a>
+                            <button type="button" onclick="processAnother()"
+                                class="btn bg-white border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-sm shadow-sm hover:shadow-md text-[var(--color-text-medium)]">
+                                Process Another
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-xs text-[var(--color-text-medium)] mb-2">Result</p>
+                            <img id="resultImage" class="max-w-full rounded-xl border border-[var(--color-border)]"
+                                alt="Processed result">
+                        </div>
+                        <div class="bg-[var(--color-bg)] rounded-xl p-4 border border-[var(--color-border)]">
+                            <p class="text-xs text-[var(--color-text-medium)] mb-3">Image Info</p>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between"><span
+                                        class="text-[var(--color-text-medium)]">Dimensions:</span><span
+                                        id="resultDimensions" class="font-medium"></span></div>
+                                <div class="flex justify-between"><span class="text-[var(--color-text-medium)]">Original
+                                        Size:</span><span id="resultOriginalSize" class="font-medium"></span></div>
+                                <div class="flex justify-between"><span class="text-[var(--color-text-medium)]">New
+                                        Size:</span><span id="resultNewSize"
+                                        class="font-medium text-emerald-500"></span></div>
+                                <div class="flex justify-between"><span
+                                        class="text-[var(--color-text-medium)]">Reduction:</span><span
+                                        id="resultReduction" class="font-medium text-emerald-500"></span></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-xs mt-3">
+                                <div class="text-[var(--color-text-medium)]">Format: <span id="resultFormat"
+                                        class="font-medium"></span></div>
+                                <div class="text-[var(--color-text-medium)]">Type: <span id="resultType"
+                                        class="font-medium"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Result Section -->
+            <div id="batchResultSection" class="hidden mt-6">
+                <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-[var(--color-text)]">Batch Processed</h3>
+                            <p class="text-sm text-[var(--color-text-medium)]" id="batchSummaryText"></p>
+                            <p class="text-xs text-[var(--color-text-medium)]">Files are stored temporarily (auto-delete
+                                after ~30 minutes). You can delete them immediately below.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                            <label
+                                class="flex items-center gap-2 text-sm text-[var(--color-text-medium)] cursor-pointer">
+                                <input type="checkbox" id="autoDeleteCheckbox"
+                                    class="w-4 h-4 rounded text-[var(--color-primary)]">
+                                <span>Auto-delete files after download</span>
+                            </label>
+                            <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                                <a id="batchDownloadLink" href="#" download class="hidden btn btn-primary text-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    Download ZIP
+                                </a>
+                                <button type="button" id="batchDeleteBtn" onclick="deleteBatchFiles()"
+                                    class="hidden btn btn-danger text-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                    Delete Batch Files
+                                </button>
+                                <button type="button" onclick="processAnother()"
+                                    class="btn bg-white border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-sm shadow-sm hover:shadow-md text-[var(--color-text-medium)]">
+                                    Process Another
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="batchFileList"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-[var(--color-text-medium)]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="container-custom py-10 border-t border-[var(--color-border)]">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-6 text-center">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div
+                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-10 h-10 mx-auto rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-lg">
+                        1</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Upload</h3>
+                    <p class="text-xs text-[var(--color-text-medium)]">Drag and drop or click to upload your image (PNG,
+                        JPG, WEBP, GIF)</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-10 h-10 mx-auto rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-lg">
+                        2</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Configure</h3>
+                    <p class="text-xs text-[var(--color-text-medium)]">Choose resize, crop, compression, effects and
+                        watermark settings</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-10 h-10 mx-auto rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-lg">
+                        3</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Download</h3>
+                    <p class="text-xs text-[var(--color-text-medium)]">Process and download your optimized image
+                        instantly</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Sharing -->
+    <div class="container-custom pb-10">
+        <div class="max-w-3xl mx-auto">
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hide scrollbar for tab navigation on mobile */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* Cropper container responsive sizing */
+    @@media (min-width: 640px) {
+        #cropContainer {
+            height: 300px !important;
+        }
+    }
+
+    @@media (min-width: 1024px) {
+        #cropContainer {
+            height: 350px !important;
+        }
+    }
+
+    /* Ensure cropper canvas fills container */
+    .cropper-container {
+        max-width: 100% !important;
+    }
+
+    /* Loading skeleton animation for better perceived performance */
+    .skeleton {
+        background: linear-gradient(90deg, var(--color-border) 25%, var(--color-surface) 50%, var(--color-border) 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 0.5rem;
+    }
+
+    @@keyframes skeleton-loading {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .skeleton-text {
+        height: 1em;
+        margin-bottom: 0.5em;
+    }
+
+    .skeleton-image {
+        height: 200px;
+        width: 100%;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script>
+        "use strict";
+
+        let currentMode = 'single';
+        let cropper = null;
+        let uploadedFile = null;
+        let batchFiles = [];
+        let processedImageUrl = null;
+        let processedDownloadKey = null;
+        let batchZipUrl = null;
+        let processedFormat = 'png';
+        let cropModified = false;
+        let currentBatchId = null;
+
+        const CONFIG = {
+            MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+            MAX_BATCH_FILES: 50,
+            MAX_BATCH_TOTAL: 500 * 1024 * 1024, // 500MB
+            MAX_IMAGE_DIMENSION: 10000,
+            LARGE_IMAGE_THRESHOLD: 5 * 1024 * 1024, // 5MB - optimize preview for larger images
+            ALLOWED_FILE_TYPES: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'],
+            API_ENDPOINTS: {
+                SINGLE_PROCESS: '/ImageTools/ProcessAjax',
+                BATCH_PROCESS: '/ImageTools/ProcessBatch',
+                DOWNLOAD: '/ImageTools/Download',
+                BATCH_DOWNLOAD: '/Tools/Image/DownloadBatch',
+                DELETE_BATCH: '/ImageTools/DeleteBatch'
+            },
+            TIMEOUTS: {
+                SINGLE_PROCESS: 30000,  // 30s for single image
+                BATCH_PROCESS: 120000,  // 120s for large batches
+                VALIDATION: 5000,       // 5s for image validation
+                DOWNLOAD: 60000         // 60s for download
+            }
+        };
+
+        const ERROR_CODES = {
+            FILE_TOO_LARGE: 'FILE_001',
+            INVALID_FORMAT: 'FILE_002',
+            FILE_CORRUPT: 'FILE_003',
+            BATCH_SIZE_LIMIT: 'FILE_004',
+            NO_VALID_FILES: 'FILE_005',
+            IMAGE_TOO_LARGE: 'FILE_006',
+            FILE_MISSING: 'FILE_007',
+            PROCESSING_TIMEOUT: 'PROC_001',
+            PROCESSING_FAILED: 'PROC_002',
+            SERVER_ERROR: 'SRV_001',
+            NO_BATCH_ID: 'SRV_002',
+            DELETE_FAILED: 'SRV_003',
+            TOKEN_MISSING: 'SEC_001',
+            NETWORK_ERROR: 'NET_001',
+            NET_OFFLINE: 'NET_002'
+        };
+
+        const ERROR_MESSAGES = {
+            [ERROR_CODES.FILE_TOO_LARGE]: 'File exceeds 10MB limit. Try compressing it first.',
+            [ERROR_CODES.INVALID_FORMAT]: 'Unsupported file format. Please use PNG, JPG, WEBP, GIF, or BMP.',
+            [ERROR_CODES.FILE_CORRUPT]: 'Invalid or corrupted image. Please choose a different file.',
+            [ERROR_CODES.BATCH_SIZE_LIMIT]: 'Batch size limit reached (500MB). Please split into smaller batches.',
+            [ERROR_CODES.NO_VALID_FILES]: 'No valid files to process.',
+            [ERROR_CODES.IMAGE_TOO_LARGE]: 'Image dimensions exceed the maximum allowed size.',
+            [ERROR_CODES.FILE_MISSING]: 'Please select at least one image file.',
+            [ERROR_CODES.PROCESSING_TIMEOUT]: 'Request timed out. Please try again or use fewer files.',
+            [ERROR_CODES.PROCESSING_FAILED]: 'Processing failed. Please try again.',
+            [ERROR_CODES.SERVER_ERROR]: 'Server error. Please try again in a moment.',
+            [ERROR_CODES.NO_BATCH_ID]: 'No batch ID returned from the server.',
+            [ERROR_CODES.DELETE_FAILED]: 'Failed to delete batch files.',
+            [ERROR_CODES.TOKEN_MISSING]: 'Unable to verify request token.',
+            [ERROR_CODES.NETWORK_ERROR]: 'Network error. Please check your connection.',
+            [ERROR_CODES.NET_OFFLINE]: 'You appear to be offline. Please check your internet connection.'
+        };
+
+        // Legacy support references (optional, can just replace usages)
+        const MAX_FILE_SIZE = CONFIG.MAX_FILE_SIZE;
+        const MAX_BATCH_FILES = CONFIG.MAX_BATCH_FILES;
+        const MAX_BATCH_TOTAL = CONFIG.MAX_BATCH_TOTAL;
+
+        class EventManager {
+            constructor() {
+                this.handlers = new Map();
+            }
+
+            /**
+             * Check if a handler with the given key exists.
+             * @@param {string} key - The handler key to check.
+             * @@returns {boolean} True if the handler exists.
+             */
+            has(key) {
+                return this.handlers.has(key);
+            }
+
+            add(element, event, handler, key) {
+                if (!element) return;
+                const entryKey = key || `${event}-${handler.name || 'anon'}-${element.id || ''}`;
+                const existing = this.handlers.get(entryKey);
+                if (existing) {
+                    existing.element.removeEventListener(existing.event, existing.handler);
+                }
+                element.addEventListener(event, handler);
+                this.handlers.set(entryKey, { element, event, handler });
+            }
+
+            clear() {
+                for (const { element, event, handler } of this.handlers.values()) {
+                    element.removeEventListener(event, handler);
+                }
+                this.handlers.clear();
+            }
+        }
+
+        const eventManager = new EventManager();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabNavigation();
+            initFileHandlers();
+            initSliders();
+            initApplyToggles();
+            initKeyboardShortcuts();
+            initAriaLabeling();
+        });
+
+        eventManager.add(window, 'beforeunload', () => cleanupResources({ includeListeners: true }), 'window-beforeunload');
+
+        function initTabNavigation() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const tabList = document.getElementById('tabNav');
+
+            if (tabList && !tabList.getAttribute('role')) {
+                tabList.setAttribute('role', 'tablist');
+            }
+
+            tabs.forEach((btn, index) => {
+                btn.setAttribute('role', 'tab');
+                btn.setAttribute('aria-selected', btn.classList.contains('active'));
+                btn.setAttribute('aria-controls', 'tab-' + btn.dataset.tab);
+
+                if (!btn.id) {
+                    btn.id = 'tab-btn-' + btn.dataset.tab;
+                }
+
+                const panel = document.getElementById('tab-' + btn.dataset.tab);
+                if (panel) {
+                    if (!panel.getAttribute('aria-labelledby')) {
+                        panel.setAttribute('aria-labelledby', btn.id);
+                    }
+                    if (!panel.getAttribute('role')) {
+                        panel.setAttribute('role', 'tabpanel');
+                    }
+                    panel.setAttribute('tabindex', panel.classList.contains('hidden') ? '-1' : '0');
+                    panel.setAttribute('aria-hidden', panel.classList.contains('hidden') ? 'true' : 'false');
+                }
+
+                const clickHandler = () => {
+                    const tab = btn.dataset.tab;
+                    tabs.forEach(b => {
+                        b.classList.remove('active', 'border-[var(--color-primary)]', 'text-[var(--color-primary)]', 'bg-[var(--color-bg)]');
+                        b.classList.add('border-transparent', 'text-[var(--color-text-medium)]');
+                        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+                    });
+                    btn.classList.add('active', 'border-[var(--color-primary)]', 'text-[var(--color-primary)]', 'bg-[var(--color-bg)]');
+                    btn.classList.remove('border-transparent', 'text-[var(--color-text-medium)]');
+
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                    document.getElementById('tab-' + tab).classList.remove('hidden');
+
+                    tabs.forEach(b => {
+                        const panel = document.getElementById('tab-' + b.dataset.tab);
+                        if (panel) {
+                            const isHidden = panel.classList.contains('hidden');
+                            panel.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
+                            panel.setAttribute('tabindex', isHidden ? '-1' : '0');
+                        }
+                    });
+
+                    if (tab === 'crop' && cropper) {
+                        setTimeout(() => { cropper.resize(); }, 100);
+                    }
+                };
+
+                eventManager.add(btn, 'click', clickHandler, `tab-click-${btn.dataset.tab}`);
+
+                // Phase 3 Accessibility: Keyboard navigation
+                const keydownHandler = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        clickHandler();
+                    }
+                    if (e.key === 'ArrowRight') {
+                        const next = tabs[index + 1] || tabs[0];
+                        next.focus();
+                        // Optional: auto-activate? Let's keep it manual activation for now, standard tab behavior often auto-activates but this is fine.
+                    }
+                    if (e.key === 'ArrowLeft') {
+                        const prev = tabs[index - 1] || tabs[tabs.length - 1];
+                        prev.focus();
+                    }
+                    if (e.key === 'Home') {
+                        e.preventDefault();
+                        tabs[0].focus();
+                    }
+                    if (e.key === 'End') {
+                        e.preventDefault();
+                        tabs[tabs.length - 1].focus();
+                    }
+                };
+                eventManager.add(btn, 'keydown', keydownHandler, `tab-keydown-${btn.dataset.tab}`);
+            });
+        }
+
+        function initFileHandlers() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+
+            if (dropZone) {
+                dropZone.setAttribute('role', 'button');
+                dropZone.setAttribute('tabindex', '0');
+                dropZone.setAttribute('aria-label', 'Upload images');
+            }
+
+            const clickHandler = () => fileInput.click();
+            eventManager.add(dropZone, 'click', clickHandler, 'dropZone-click');
+            eventManager.add(dropZone, 'keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    fileInput.click();
+                }
+            }, 'dropZone-keydown');
+
+            const preventDefaults = (e) => { e.preventDefault(); e.stopPropagation(); };
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                eventManager.add(dropZone, eventName, preventDefaults, `dropZone-${eventName}-prevent`);
+            });
+
+            const dragOverHandler = () => dropZone.classList.add('border-[var(--color-primary)]', 'bg-[var(--color-primary)]/5');
+            const dragLeaveHandler = () => dropZone.classList.remove('border-[var(--color-primary)]', 'bg-[var(--color-primary)]/5');
+            eventManager.add(dropZone, 'dragover', dragOverHandler, 'dropZone-dragover');
+            eventManager.add(dropZone, 'dragleave', dragLeaveHandler, 'dropZone-dragleave');
+
+            const dropHandler = (e) => {
+                dropZone.classList.remove('border-[var(--color-primary)]', 'bg-[var(--color-primary)]/5');
+                handleFiles(e.dataTransfer.files);
+            };
+            eventManager.add(dropZone, 'drop', dropHandler, 'dropZone-drop');
+
+            const fileChangeHandler = (e) => handleFiles(e.target.files);
+            eventManager.add(fileInput, 'change', fileChangeHandler, 'fileInput-change');
+        }
+
+        function initKeyboardShortcuts() {
+            const shortcutHandler = (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                    e.preventDefault();
+                    processImage();
+                    return;
+                }
+
+                if (e.key === 'Escape') {
+                    resetTool();
+                    return;
+                }
+
+                if (e.target.closest('#tabNav') && e.key >= '1' && e.key <= '5') {
+                    const tabIndex = parseInt(e.key) - 1;
+                    const tabs = document.querySelectorAll('.tab-btn');
+                    if (tabs[tabIndex]) {
+                        tabs[tabIndex].click();
+                        tabs[tabIndex].focus();
+                    }
+                }
+            };
+            eventManager.add(document, 'keydown', shortcutHandler, 'document-keydown-shortcuts');
+        }
+
+        function initAriaLabeling() {
+            const controls = document.querySelectorAll('#imageProcessingForm input, #imageProcessingForm select, #imageProcessingForm textarea');
+            controls.forEach((control, index) => {
+                if (control.hasAttribute('aria-label') || control.hasAttribute('aria-labelledby')) {
+                    return;
+                }
+                if (control.closest('label')) {
+                    return;
+                }
+                const container = control.closest('.space-y-2') || control.parentElement;
+                if (!container) return;
+                const label = container.querySelector('label');
+                if (!label) return;
+                if (!label.id) {
+                    const baseId = control.id ? control.id : `field-${index}`;
+                    label.id = `${baseId}-label`;
+                }
+                control.setAttribute('aria-labelledby', label.id);
+            });
+        }
+
+        function showError(code, fallbackMessage = '') {
+            const baseMessage = (fallbackMessage && fallbackMessage.trim() !== '')
+                ? fallbackMessage
+                : (ERROR_MESSAGES[code] || 'An unexpected error occurred.');
+            const message = code ? `${baseMessage} (${code})` : baseMessage;
+            if (window.toast) window.toast.error(message);
+            // Use assertive priority for errors (urgent for screen readers)
+            announceStatus(baseMessage, 'assertive');
+        }
+
+        /**
+         * Announces a status message to screen readers.
+         * @@param {string} message - The message to announce.
+         * @@param {string} priority - 'polite' (default) or 'assertive' for urgent messages.
+         */
+        function announceStatus(message, priority = 'polite') {
+            const statusEl = document.getElementById('toolStatus');
+            if (!statusEl) return;
+
+            // Update ARIA live attribute for urgent messages (errors)
+            if (priority === 'assertive') {
+                statusEl.setAttribute('aria-live', 'assertive');
+            } else {
+                statusEl.setAttribute('aria-live', 'polite');
+            }
+
+            statusEl.textContent = '';
+            setTimeout(() => {
+                statusEl.textContent = message;
+                // Reset to polite after assertive announcement
+                if (priority === 'assertive') {
+                    setTimeout(() => statusEl.setAttribute('aria-live', 'polite'), 100);
+                }
+            }, 10);
+        }
+
+        /**
+         * Announces a status message and focuses the specified element.
+         * Improves accessibility by managing focus for modal operations.
+         * @@param {HTMLElement} element - The element to focus.
+         * @@param {string} message - The message to announce.
+         */
+        function announceAndFocus(element, message) {
+            announceStatus(message);
+            if (element && typeof element.focus === 'function') {
+                element.focus();
+            }
+        }
+
+        /**
+         * Handles file selection for both single and batch modes.
+         * Validates files and initiates preview or batch listing.
+         * @@param {FileList} files - The list of files selected by user.
+         */
+        async function handleFiles(files) {
+            if (currentMode === 'single' && files.length > 0) {
+                if (files[0].size > MAX_FILE_SIZE) {
+                    showError(ERROR_CODES.FILE_TOO_LARGE);
+                    return;
+                }
+
+                // Phase 1 Audit: Check file validity
+                const validation = await isValidImageFile(files[0]);
+                if (!validation.valid) {
+                    const code = validation.error && validation.error.startsWith('Unsupported file type')
+                        ? ERROR_CODES.INVALID_FORMAT
+                        : (validation.error && validation.error.includes('dimensions'))
+                            ? ERROR_CODES.IMAGE_TOO_LARGE
+                            : ERROR_CODES.FILE_CORRUPT;
+                    showError(code, validation.error);
+                    return;
+                }
+
+                uploadedFile = files[0];
+                showFilePreview(uploadedFile);
+                loadImagePreview(uploadedFile);
+                document.getElementById('resultSection').classList.add('hidden');
+                document.getElementById('batchResultSection').classList.add('hidden');
+            } else if (currentMode === 'batch') {
+                const incoming = Array.from(files);
+                const validFiles = [];
+                let totalBytes = 0;
+
+                for (const f of incoming) {
+                    if (validFiles.length >= MAX_BATCH_FILES) {
+                        if (window.toast) window.toast.warning(`Maximum ${MAX_BATCH_FILES} files allowed in batch mode.`);
+                        break;
+                    }
+                    if (f.size > MAX_FILE_SIZE) {
+                        showError(ERROR_CODES.FILE_TOO_LARGE, `"${f.name}" exceeds 10MB limit and was skipped.`);
+                        continue;
+                    }
+
+                    // Phase 1 Audit: Check file validity
+                    const validation = await isValidImageFile(f);
+                    if (!validation.valid) {
+                        const code = validation.error && validation.error.startsWith('Unsupported file type')
+                            ? ERROR_CODES.INVALID_FORMAT
+                            : (validation.error && validation.error.includes('dimensions'))
+                                ? ERROR_CODES.IMAGE_TOO_LARGE
+                                : ERROR_CODES.FILE_CORRUPT;
+                        showError(code, `"${f.name}": ${validation.error}`);
+                        continue;
+                    }
+
+                    if (totalBytes + f.size > MAX_BATCH_TOTAL) {
+                        showError(ERROR_CODES.BATCH_SIZE_LIMIT);
+                        break;
+                    }
+                    totalBytes += f.size;
+                    validFiles.push(f);
+                }
+
+                if (validFiles.length === 0) {
+                    showError(ERROR_CODES.NO_VALID_FILES);
+                    return;
+                }
+                batchFiles = validFiles;
+                showBatchFiles();
+                // Load first file into preview/cropper so crop values can be set for batch
+                loadImagePreview(validFiles[0]);
+                if (window.toast) window.toast.info('Crop will apply to all selected batch images.');
+                document.getElementById('resultSection').classList.add('hidden');
+                document.getElementById('batchResultSection').classList.add('hidden');
+            }
+        }
+
+        function showFilePreview(file) {
+            document.getElementById('dropZoneContent').classList.add('hidden');
+            document.getElementById('filePreview').classList.remove('hidden');
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatSize(file.size);
+        }
+
+        /**
+         * Loads image preview with optimization for large files (>5MB).
+         * Uses downscaled preview for performance when file exceeds threshold.
+         * @@param {File} file - The image file to preview.
+         */
+        function loadImagePreview(file) {
+            // Performance optimization: downscale large images for preview
+            if (file.size > CONFIG.LARGE_IMAGE_THRESHOLD) {
+                loadDownscaledPreview(file);
+            } else {
+                loadFullPreview(file);
+            }
+        }
+
+        /**
+         * Creates a downscaled preview for large images to improve performance.
+         * @@param {File} file - The large image file.
+         */
+        function loadDownscaledPreview(file) {
+            const objectUrl = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                // Calculate scaled dimensions (max 1200px on longest side)
+                const maxDim = 1200;
+                let width = img.width;
+                let height = img.height;
+                if (width > height && width > maxDim) {
+                    height = Math.round((height * maxDim) / width);
+                    width = maxDim;
+                } else if (height > maxDim) {
+                    width = Math.round((width * maxDim) / height);
+                    height = maxDim;
+                }
+
+                // Create downscaled canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                URL.revokeObjectURL(objectUrl);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                applyPreviewToElements(dataUrl);
+            };
+            img.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                // Fallback to full preview on error
+                loadFullPreview(file);
+            };
+            img.src = objectUrl;
+        }
+
+        /**
+         * Loads full resolution preview for smaller images.
+         * @@param {File} file - The image file.
+         */
+        function loadFullPreview(file) {
+            const reader = new FileReader();
+            reader.onload = e => applyPreviewToElements(e.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * Applies the preview data URL to preview elements and initializes cropper.
+         * @@param {string} dataUrl - The image data URL.
+         */
+        function applyPreviewToElements(dataUrl) {
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('previewPlaceholder');
+            const cropperImage = document.getElementById('cropperImage');
+            const cropperPlaceholder = document.getElementById('cropperPlaceholder');
+
+            preview.src = dataUrl;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+
+            cropperImage.src = dataUrl;
+            cropperImage.style.display = 'block';
+            cropperPlaceholder.classList.add('hidden');
+
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+
+            // Wait a tick for DOM to update, then initialize cropper
+            setTimeout(() => {
+                cropper = new Cropper(cropperImage, {
+                    viewMode: 1,
+                    dragMode: 'move',
+                    aspectRatio: NaN,
+                    autoCropArea: 0.8,
+                    responsive: true,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: true,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
+                    background: false,
+                    modal: true,
+                    minContainerWidth: 100,
+                    minContainerHeight: 100
+                });
+
+                eventManager.add(cropperImage, 'cropend', markCropChange, 'cropperImage-cropend');
+            }, 50);
+        }
+
+        function showBatchFiles() {
+            const list = document.getElementById('batchFilesList');
+            list.innerHTML = batchFiles.map((f, i) =>
+                '<div class="flex items-center justify-between p-2 bg-[var(--color-bg)] rounded-lg text-sm">' +
+                '<span class="truncate">' + f.name + '</span>' +
+                '<button onclick="removeBatchFile(' + i + ')" class="text-red-500 hover:text-red-700">X</button>' +
+                '</div>'
+            ).join('');
+            if (batchFiles.length > 0) {
+                list.classList.remove('hidden');
+            } else {
+                list.classList.add('hidden');
+            }
+        }
+
+        function removeBatchFile(index) {
+            batchFiles.splice(index, 1);
+            showBatchFiles();
+        }
+
+
+        /**
+         * Creates a debounced function that delays invoking func until after wait milliseconds.
+         * @@param {Function} func - The function to debounce.
+         * @@param {number} wait - The number of milliseconds to delay.
+         * @@returns {Function} The debounced function.
+         */
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function initSliders() {
+            const sliders = [
+                { id: 'resizePercentage', display: 'resizePercentageValue', suffix: '%' },
+                { id: 'quality', display: 'qualityValue', suffix: '%' },
+                { id: 'brightness', display: 'brightnessValue', suffix: '' },
+                { id: 'contrast', display: 'contrastValue', suffix: '' },
+                { id: 'watermarkOpacity', display: 'opacityValue', suffix: '%', multiplier: 100 }
+            ];
+
+            // Create a single debounced update function shared across sliders
+            const debouncedUpdatePreview = debounce(updateClientPreview, 150);
+
+            sliders.forEach(s => {
+                const slider = document.getElementById(s.id);
+                const display = document.getElementById(s.display);
+                if (slider && display) {
+                    const inputHandler = () => {
+                        const val = s.multiplier ? Math.round(slider.value * s.multiplier) : slider.value;
+                        display.textContent = val + s.suffix;
+
+                        // Update client-side preview for supported effects
+                        if (['brightness', 'contrast'].includes(s.id)) {
+                            // Use debounced update
+                            debouncedUpdatePreview();
+                        }
+                    };
+                    eventManager.add(slider, 'input', inputHandler, `slider-${s.id}-input`);
+                }
+            });
+
+            // Add listeners for checkbox effects to trigger instant preview
+            ['applyGrayscale', 'applySepia', 'flipHorizontal', 'flipVertical'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) eventManager.add(el, 'change', updateClientPreview, `effect-${id}-change`);
+            });
+        }
+
+        function initApplyToggles() {
+            const autoEnableMap = [
+                { ids: ['targetWidth', 'targetHeight', 'resizePercentage'], toggle: 'applyResize' },
+                { ids: ['cropX', 'cropY', 'cropWidth', 'cropHeight'], toggle: 'applyCrop' },
+                { ids: ['quality', 'targetFileSizeKb'], toggle: 'applyCompression' },
+                { ids: ['outputFormat'], toggle: 'applyCompression', event: 'change' },
+                { ids: ['brightness', 'contrast'], toggle: 'applyEffects' },
+                { ids: ['applyGrayscale', 'applySepia', 'flipHorizontal', 'flipVertical'], toggle: 'applyEffects', event: 'change' },
+                { ids: ['watermarkText', 'watermarkPosition', 'watermarkOpacity', 'watermarkFontFamily', 'watermarkFontSize', 'watermarkColor'], toggle: 'applyWatermark', event: 'input' },
+                { ids: ['watermarkImageFile'], toggle: 'applyWatermark', event: 'change' },
+                // Bind Flip inputs to client preview
+                { ids: ['flipHorizontal', 'flipVertical'], toggle: 'applyEffects', event: 'change', callback: updateClientPreview }
+            ];
+
+            autoEnableMap.forEach(map => {
+                map.ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        const evt = map.event || 'input';
+                        const toggleHandler = () => ensureToggle(map.toggle);
+                        eventManager.add(el, evt, toggleHandler, `autoEnable-${id}-${evt}`);
+                    }
+                });
+            });
+        }
+
+        function ensureToggle(toggleId) {
+            const toggle = document.getElementById(toggleId);
+            if (toggle) {
+                toggle.checked = true;
+            }
+        }
+
+        function markCropChange() {
+            cropModified = true;
+            ensureToggle('applyCrop');
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('isBatchMode').value = mode === 'batch';
+
+            const singleBtn = document.getElementById('singleModeBtn');
+            const batchBtn = document.getElementById('batchModeBtn');
+            const fileInput = document.getElementById('fileInput');
+
+            // Reset upload zone state
+            document.getElementById('dropZoneContent').classList.remove('hidden');
+            document.getElementById('filePreview').classList.add('hidden');
+            document.getElementById('batchFilesList').classList.add('hidden');
+            document.getElementById('batchFilesList').innerHTML = '';
+            fileInput.value = '';
+            uploadedFile = null;
+            batchFiles = [];
+            currentBatchId = null;
+
+            // Reset preview
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('previewPlaceholder').classList.remove('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('batchResultSection').classList.add('hidden');
+            processedImageUrl = null;
+            processedDownloadKey = null;
+            if (batchZipUrl) {
+                URL.revokeObjectURL(batchZipUrl);
+                batchZipUrl = null;
+            }
+            const serverLink = document.getElementById('serverDownloadLink');
+            if (serverLink) serverLink.classList.add('hidden');
+            const batchLink = document.getElementById('batchDownloadLink');
+            if (batchLink) batchLink.classList.add('hidden');
+            const deleteBtn = document.getElementById('batchDeleteBtn');
+            if (deleteBtn) {
+                deleteBtn.classList.add('hidden');
+                deleteBtn.disabled = false;
+                // Reset styling state (remove disabled look)
+                deleteBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                deleteBtn.classList.add('hover:bg-red-100');
+
+                // Restore original content
+                deleteBtn.innerHTML = `
+                                                                                                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                                                                                                        d="M6 18L18 6M6 6l12 12"></path>
+                                                                                                                                                </svg>
+                                                                                                                                                Delete Batch Files
+                                                                                                                                            `;
+            }
+
+            // Destroy cropper if exists
+            // Reset crop modified flag
+            cropModified = false;
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            document.getElementById('cropperImage').style.display = 'none';
+            document.getElementById('cropperPlaceholder').classList.remove('hidden');
+
+            // Reset apply toggles
+            ['applyResize', 'applyCrop', 'applyCompression', 'applyEffects', 'applyWatermark'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = false;
+            });
+            const resizeToggle = document.getElementById('applyResize');
+            if (resizeToggle) resizeToggle.checked = true;
+            resetSliderDisplays();
+
+            if (mode === 'single') {
+                singleBtn.classList.add('bg-[var(--color-primary)]', 'text-white');
+                singleBtn.classList.remove('text-[var(--color-text-medium)]');
+                batchBtn.classList.remove('bg-[var(--color-primary)]', 'text-white');
+                batchBtn.classList.add('text-[var(--color-text-medium)]');
+                fileInput.removeAttribute('multiple');
+            } else {
+                batchBtn.classList.add('bg-[var(--color-primary)]', 'text-white');
+                batchBtn.classList.remove('text-[var(--color-text-medium)]');
+                singleBtn.classList.remove('bg-[var(--color-primary)]', 'text-white');
+                singleBtn.classList.add('text-[var(--color-text-medium)]');
+                fileInput.setAttribute('multiple', '');
+            }
+        }
+
+        function setResizePreset(w, h) {
+            document.getElementById('targetWidth').value = w;
+            document.getElementById('targetHeight').value = h;
+
+            // Uncheck maintain aspect ratio so the exact preset dimensions are used (Stretch)
+            // or let the user re-check it if they want "Fit" behavior
+            const maintainRatio = document.getElementById('maintainAspectRatio');
+            if (maintainRatio) maintainRatio.checked = false;
+
+            ensureToggle('applyResize');
+        }
+
+        function setCropPreset(preset, source) {
+            document.getElementById('cropPreset').value = preset;
+            document.querySelectorAll('.crop-preset-btn').forEach(btn => {
+                btn.classList.remove('active', 'border-2', 'border-[var(--color-primary)]', 'bg-[var(--color-primary)]/10', 'text-[var(--color-primary)]');
+                btn.classList.add('border', 'border-[var(--color-border)]');
+            });
+            const sourceEl = source || (typeof event !== 'undefined' ? event.target : null);
+            if (sourceEl) {
+                sourceEl.classList.add('active', 'border-2', 'border-[var(--color-primary)]', 'bg-[var(--color-primary)]/10', 'text-[var(--color-primary)]');
+                sourceEl.classList.remove('border', 'border-[var(--color-border)]');
+            }
+
+            if (cropper) {
+                const aspectRatios = { 'none': NaN, '1:1': 1, '4:3': 4 / 3, '16:9': 16 / 9, '3:2': 3 / 2, '9:16': 9 / 16 };
+                cropper.setAspectRatio(aspectRatios[preset] || NaN);
+            }
+
+            ensureToggle('applyCrop');
+        }
+
+        function setRotation(deg) {
+            document.getElementById('rotationDegrees').value = deg;
+            document.querySelectorAll('.rotation-btn').forEach(btn => {
+                if (btn.dataset.rotation == deg) {
+                    btn.classList.add('active', 'border-2', 'border-[var(--color-primary)]', 'bg-[var(--color-primary)]/10');
+                    btn.classList.remove('border', 'border-[var(--color-border)]');
+                } else {
+                    btn.classList.remove('active', 'border-2', 'border-[var(--color-primary)]', 'bg-[var(--color-primary)]/10');
+                    btn.classList.add('border', 'border-[var(--color-border)]');
+                }
+            });
+            ensureToggle('applyEffects');
+            updateClientPreview();
+        }
+
+        function validateNumberInput(inputId, min, max, defaultValue = null) {
+            const input = document.getElementById(inputId);
+            if (!input || input.value.trim() === '') return defaultValue;
+
+            let value = parseInt(input.value);
+            if (isNaN(value)) {
+                input.value = defaultValue !== null ? defaultValue : '';
+                return defaultValue;
+            }
+
+            if (min !== undefined && value < min) value = min;
+            if (max !== undefined && value > max) value = max;
+
+            input.value = value;
+            return value;
+        }
+
+        function validateFormInputs() {
+            const validations = [
+                { id: 'targetWidth', min: 1, max: 10000 },
+                { id: 'targetHeight', min: 1, max: 10000 },
+                { id: 'cropX', min: 0, max: 10000 },
+                { id: 'cropY', min: 0, max: 10000 },
+                { id: 'cropWidth', min: 1, max: 10000 },
+                { id: 'cropHeight', min: 1, max: 10000 },
+                { id: 'targetFileSizeKb', min: 1, max: 10000 },
+                { id: 'watermarkFontSize', min: 8, max: 200 }
+            ];
+
+            validations.forEach(v => validateNumberInput(v.id, v.min, v.max));
+        }
+
+        function hasAnyOperationEnabled() {
+            const operations = [
+                'applyResize',
+                'applyCrop',
+                'applyCompression',
+                'applyEffects',
+                'applyWatermark'
+            ];
+
+            return operations.some(id => {
+                const checkbox = document.getElementById(id);
+                return checkbox && checkbox.checked;
+            });
+        }
+
+        /**
+         * Main processing function.
+         * Collects form data, handles validation, and submits to server via AJAX.
+         * Supports both single image and batch processing with progress feedback.
+         */
+        async function processImage() {
+            if (!uploadedFile && batchFiles.length === 0) {
+                const message = currentMode === 'batch'
+                    ? 'Please select at least one image file.'
+                    : 'Please select an image file to upload.';
+                if (window.toast) window.toast.warning(message);
+                return;
+            }
+
+            if (!hasAnyOperationEnabled()) {
+                if (window.toast) window.toast.warning('Please enable at least one operation (Resize, Crop, etc.)');
+                return;
+            }
+
+            validateFormInputs();
+
+            if (currentMode === 'batch' && batchFiles.length > 10) {
+                const confirmed = confirm(`You're about to process ${batchFiles.length} images. This may take a while. Continue?`);
+                if (!confirmed) return;
+            }
+
+            // Clear previous batch identifier before starting a new run
+            currentBatchId = null;
+            const batchLink = document.getElementById('batchDownloadLink');
+            if (batchLink) batchLink.classList.add('hidden');
+            const deleteBtn = document.getElementById('batchDeleteBtn');
+            if (deleteBtn) {
+                deleteBtn.classList.add('hidden');
+                deleteBtn.disabled = false;
+                // Reset styling state
+                deleteBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                deleteBtn.classList.add('hover:bg-red-100');
+                // Restore original content
+                deleteBtn.innerHTML = `
+                                                                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                                                                            d="M6 18L18 6M6 6l12 12"></path>
+                                                                                                                    </svg>
+                                                                                                                    Delete Batch Files
+                                                                                                                `;
+            }
+
+            // Phase 3: Progress Bar injection
+            const processBtnContainer = document.getElementById('processBtn')?.parentElement;
+            let progressEl = document.getElementById('batchProgress');
+
+            if (!progressEl && processBtnContainer) {
+                // Create if it doesn't exist
+                const div = document.createElement('div');
+                div.innerHTML = `
+                                                                            <div id="batchProgress" class="hidden mt-4">
+                                                                                <div class="flex justify-between text-sm mb-1">
+                                                                                    <span class="text-[var(--color-text-medium)]">Processing batch...</span>
+                                                                                    <span id="progressText" class="font-medium text-[var(--color-primary)]">0%</span>
+                                                                                </div>
+                                                                                <div class="w-full bg-[var(--color-border)] rounded-full h-2">
+                                                                                    <div id="progressBar" class="bg-[var(--color-primary)] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        `;
+                processBtnContainer.appendChild(div.firstElementChild);
+                progressEl = document.getElementById('batchProgress');
+            } else if (progressEl) {
+                // Reset if exists
+                progressEl.classList.add('hidden');
+                const bar = document.getElementById('progressBar');
+                const txt = document.getElementById('progressText');
+                if (bar) bar.style.width = '0%';
+                if (txt) txt.textContent = '0%';
+            }
+
+            const btn = document.getElementById('processBtn');
+            const icon = document.getElementById('processIcon');
+            const text = document.getElementById('processText');
+            const serverLink = document.getElementById('serverDownloadLink');
+            if (serverLink) serverLink.classList.add('hidden');
+
+            autoEnableTogglesForSubmission();
+
+            btn.disabled = true;
+            text.textContent = 'Processing...';
+            icon.classList.add('animate-spin');
+            if (currentMode === 'single') {
+                const preview = document.getElementById('imagePreview');
+                if (preview) preview.classList.add('opacity-50');
+            }
+            announceStatus(currentMode === 'batch'
+                ? `Processing ${batchFiles.length} images.`
+                : 'Processing image.');
+
+            try {
+                const formData = new FormData(document.getElementById('imageProcessingForm'));
+
+                if (currentMode === 'single') {
+                    formData.append('UploadedFile', uploadedFile);
+
+                    if (cropper && document.getElementById('applyCrop').checked) {
+                        const data = cropper.getData(true);
+                        formData.set('CropX', Math.round(data.x));
+                        formData.set('CropY', Math.round(data.y));
+                        formData.set('CropWidth', Math.round(data.width));
+                        formData.set('CropHeight', Math.round(data.height));
+                    }
+
+                    const response = await fetch('/ImageTools/ProcessAjax', {
+                        method: 'POST',
+                        body: formData,
+                        signal: AbortSignal.timeout(30000) // 30s timeout
+                    });
+
+                    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+                    const result = await response.json();
+                    if (result.success) {
+                        processedDownloadKey = result.downloadKey || null;
+                        showResult(result);
+                        if (window.toast) window.toast.success('Image processed successfully!');
+                    } else {
+                        const code = result.errorCode || ERROR_CODES.PROCESSING_FAILED;
+                        showError(code, result.error || 'Processing failed');
+                    }
+                } else {
+                    // Show progress bar
+                    const progressEl = document.getElementById('batchProgress');
+                    const bar = document.getElementById('progressBar');
+                    const txt = document.getElementById('progressText');
+                    if (progressEl) progressEl.classList.remove('hidden');
+
+                    // Validate file sizes before upload
+                    let totalBytes = 0;
+                    for (const file of batchFiles) {
+                        if (file.size > MAX_FILE_SIZE) {
+                            showError(ERROR_CODES.FILE_TOO_LARGE, `File "${file.name}" exceeds 10MB limit`);
+                            return;
+                        }
+                        totalBytes += file.size;
+                        if (totalBytes > MAX_BATCH_TOTAL) {
+                            showError(ERROR_CODES.BATCH_SIZE_LIMIT);
+                            return;
+                        }
+                    }
+
+                    batchFiles.forEach(f => formData.append('files', f));
+
+                    if (cropper && document.getElementById('applyCrop').checked) {
+                        const data = cropper.getData(true);
+                        formData.set('CropX', Math.round(data.x));
+                        formData.set('CropY', Math.round(data.y));
+                        formData.set('CropWidth', Math.round(data.width));
+                        formData.set('CropHeight', Math.round(data.height));
+                    }
+
+                    // Enhanced progress with file count for better UX
+                    const totalFiles = batchFiles.length;
+                    let fakeProgress = 0;
+                    const progressInterval = setInterval(() => {
+                        fakeProgress += Math.random() * 10;
+                        if (fakeProgress > 90) fakeProgress = 90;
+                        if (bar) bar.style.width = `${fakeProgress}%`;
+                        // Show percentage and file count for clearer feedback
+                        if (txt) txt.textContent = `${Math.round(fakeProgress)}% (${totalFiles} files)`;
+                    }, 500);
+
+                    try {
+                        const response = await fetch('/ImageTools/ProcessBatch', {
+                            method: 'POST',
+                            body: formData,
+                            signal: AbortSignal.timeout(60000) // 60s timeout for batch
+                        });
+
+                        clearInterval(progressInterval);
+                        if (bar) bar.style.width = '100%';
+                        if (txt) txt.textContent = '100%';
+
+                        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+                        const result = await response.json();
+                        if (result.success) {
+                            showBatchResult(result);
+                            if (window.toast) window.toast.success(`Batch processed! ${result.processedCount} images ready.`);
+                        } else {
+                            const code = result.errorCode || ERROR_CODES.PROCESSING_FAILED;
+                            showError(code, result.error || 'Batch processing failed');
+                        }
+                    } catch (e) {
+                        clearInterval(progressInterval);
+                        throw e;
+                    }
+                }
+            } catch (error) {
+                console.error('Processing error:', error);
+
+                // Reset progress bar on error (UX fix)
+                const progressEl = document.getElementById('batchProgress');
+                if (progressEl) {
+                    const bar = document.getElementById('progressBar');
+                    const txt = document.getElementById('progressText');
+                    if (bar) bar.style.width = '0%';
+                    if (txt) txt.textContent = 'Error';
+                    bar?.classList.add('bg-red-500');
+                    bar?.classList.remove('bg-[var(--color-primary)]');
+                }
+
+                if (error.name === 'AbortError') {
+                    showError(ERROR_CODES.PROCESSING_TIMEOUT);
+                } else if (error.message.includes('Server error')) {
+                    showError(ERROR_CODES.SERVER_ERROR, error.message);
+                } else if (error.name === 'TypeError' && error.message.toLowerCase().includes('network')) {
+                    showError(ERROR_CODES.NETWORK_ERROR);
+                } else {
+                    showError(ERROR_CODES.PROCESSING_FAILED);
+                }
+            } finally {
+                btn.disabled = false;
+                text.textContent = 'Process Image';
+                icon.classList.remove('animate-spin');
+
+                const progressEl = document.getElementById('batchProgress');
+                if (progressEl) {
+                    progressEl.classList.add('hidden');
+                    const bar = document.getElementById('progressBar');
+                    const txt = document.getElementById('progressText');
+                    if (bar) bar.style.width = '0%';
+                    if (txt) txt.textContent = '0%';
+                }
+
+                const preview = document.getElementById('imagePreview');
+                if (preview) preview.classList.remove('opacity-50');
+            }
+        }
+
+        async function showResult(result) {
+            // Build data URL from base64 image data
+            // const imageUrl = `data:${result.mimeType};base64,${result.imageData}`;
+            if (processedImageUrl && processedImageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(processedImageUrl);
+            }
+            const imageUrl = await createImageBlobUrl(result.imageData, result.mimeType);
+            processedImageUrl = imageUrl;
+            processedFormat = result.format || 'png';
+            document.getElementById('resultImage').src = imageUrl;
+            document.getElementById('batchResultSection').classList.add('hidden');
+
+            // Display dimensions
+            const dimensions = result.processedWidth && result.processedHeight
+                ? `${result.processedWidth} x ${result.processedHeight}`
+                : 'N/A';
+            document.getElementById('resultDimensions').textContent = dimensions;
+
+            // Display sizes (already formatted from API)
+            document.getElementById('resultOriginalSize').textContent = result.originalSize || 'N/A';
+            document.getElementById('resultNewSize').textContent = result.processedSize || 'N/A';
+
+            // Display compression ratio
+            document.getElementById('resultReduction').textContent = result.compressionRatio || 'N/A';
+
+            const formatEl = document.getElementById('resultFormat');
+            if (formatEl) formatEl.textContent = result.format || 'N/A';
+            const typeEl = document.getElementById('resultType');
+            if (typeEl) {
+                const type = result.mimeType ? (result.mimeType.split('/')[1] || result.mimeType) : null;
+                typeEl.textContent = type ? type.toUpperCase() : 'N/A';
+            }
+
+            const serverLink = document.getElementById('serverDownloadLink');
+            if (serverLink) {
+                if (processedDownloadKey) {
+                    serverLink.href = `/ImageTools/Download?key=${processedDownloadKey}`;
+                    serverLink.classList.remove('hidden');
+                } else {
+                    serverLink.classList.add('hidden');
+                }
+            }
+
+            document.getElementById('resultSection').classList.remove('hidden');
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Accessibility: announce and focus on result for screen readers
+            const resultImage = document.getElementById('resultImage');
+            announceAndFocus(resultImage, 'Image processed successfully. Result ready for download.');
+        }
+
+        function showBatchResult(result) {
+            document.getElementById('resultSection').classList.add('hidden');
+            if (!result.batchId) {
+                showError(ERROR_CODES.NO_BATCH_ID);
+                return;
+            }
+            currentBatchId = result.batchId || null;
+
+            // Cleanup old object URL if any (legacy support)
+            if (batchZipUrl) {
+                URL.revokeObjectURL(batchZipUrl);
+                batchZipUrl = null;
+            }
+
+            if (!result.batchId) {
+                showError(ERROR_CODES.NO_BATCH_ID);
+                return;
+            }
+
+            // Set up download link for the stream
+            const downloadUrl = `/Tools/Image/DownloadBatch?batchId=${result.batchId}`;
+
+            const linkEl = document.getElementById('batchDownloadLink');
+            if (linkEl) {
+                linkEl.href = downloadUrl;
+                // Remove download attribute to let server set filename via Content-Disposition
+                linkEl.removeAttribute('download');
+                linkEl.classList.remove('hidden');
+
+                // Add click handler for auto-delete feature
+                linkEl.onclick = function (e) {
+                    const autoDelete = document.getElementById('autoDeleteCheckbox')?.checked;
+                    if (autoDelete && currentBatchId) {
+                        // Schedule deletion after a short delay (allow download to start)
+                        setTimeout(() => {
+                            if (window.toast) window.toast.info('Auto-deleting files from server...');
+                            deleteBatchFiles(true); // Silent deletion, no confirmation
+                        }, 2000); // 2 second delay
+                    }
+                };
+            }
+
+            const deleteBtn = document.getElementById('batchDeleteBtn');
+            if (deleteBtn) {
+                deleteBtn.classList.remove('hidden');
+                deleteBtn.disabled = false;
+            }
+
+            const summary = document.getElementById('batchSummaryText');
+            if (summary) {
+                const count = result.processedCount || (result.sampleFileNames ? result.sampleFileNames.length : batchFiles.length);
+                summary.textContent = `${count} images processed`;
+            }
+
+            const list = document.getElementById('batchFileList');
+            if (list) {
+                const names = (result.sampleFileNames && result.sampleFileNames.length)
+                    ? result.sampleFileNames
+                    : batchFiles.map(f => f.name);
+                list.innerHTML = names.map(f =>
+                    `<div class="flex items-center gap-2">
+                                                                                                                                                                        <span class="w-2 h-2 rounded-full bg-[var(--color-primary)]"></span>
+                                                                                                                                                                        <span class="truncate">${f}</span>
+                                                                                                                                                                    </div>`
+                ).join('');
+            }
+
+            document.getElementById('batchResultSection').classList.remove('hidden');
+            document.getElementById('batchResultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const count = result.processedCount || (result.sampleFileNames ? result.sampleFileNames.length : batchFiles.length);
+            // Accessibility: announce and focus on batch result section
+            const batchSection = document.getElementById('batchResultSection');
+            announceAndFocus(batchSection, `Batch processed. ${count} images ready for download.`);
+
+            // User must click download button - no auto-download
+            // if (linkEl) linkEl.click();
+        }
+
+        async function deleteBatchFiles(silent = false) {
+            if (!currentBatchId) {
+                showError(ERROR_CODES.NO_BATCH_ID, 'No batch to delete.');
+                return;
+            }
+
+            const deleteBtn = document.getElementById('batchDeleteBtn');
+
+            // Prevent deletion if button is already disabled (already deleted)
+            if (deleteBtn && deleteBtn.disabled) {
+                return;
+            }
+
+            // Show confirmation dialog only for manual deletion (not auto-delete)
+            if (!silent) {
+                if (!confirm('Delete batch files from server?\n\nThis will permanently remove all processed images for this batch.')) {
+                    return;
+                }
+            }
+
+            const originalText = deleteBtn?.innerHTML;
+            if (deleteBtn) {
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = `
+                                                                                                                                                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                                                                                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                                                                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                                                                                                                                    </svg>
+                                                                                                                                                    Deleting...
+                                                                                                                                                `;
+            }
+
+            try {
+                const form = document.getElementById('imageProcessingForm');
+                const token = form?.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                if (!token) {
+                    showError(ERROR_CODES.TOKEN_MISSING);
+                    if (deleteBtn) { deleteBtn.disabled = false; deleteBtn.innerHTML = originalText; }
+                    return;
+                }
+                const body = new URLSearchParams();
+                body.append('__RequestVerificationToken', token);
+                body.append('batchId', currentBatchId);
+
+                const response = await fetch('/ImageTools/DeleteBatch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body
+                });
+                const result = await response.json();
+                if (result.success) {
+                    // Change delete button to disabled "Already Deleted" state
+                    if (deleteBtn) {
+                        deleteBtn.disabled = true;
+                        deleteBtn.classList.remove('hover:bg-red-100');
+                        deleteBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                        deleteBtn.innerHTML = `
+                                                                                                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                                                                                                d="M5 13l4 4L19 7"></path>
+                                                                                                                                        </svg>
+                                                                                                                                        Already Deleted
+                                                                                                                                    `;
+                    }
+
+                    // Hide download link
+                    const linkEl = document.getElementById('batchDownloadLink');
+                    if (linkEl) linkEl.classList.add('hidden');
+
+                    // Show enhanced success message with stats
+                    const statsMsg = result.bytesFreedFormatted
+                        ? `Deleted ${result.filesDeleted} files, freed ${result.bytesFreedFormatted}`
+                        : 'Batch files deleted from server.';
+                    if (window.toast) window.toast.success(statsMsg);
+
+                    // Fade out the batch result section
+                    const batchSection = document.getElementById('batchResultSection');
+                    if (batchSection) {
+                        batchSection.style.transition = 'opacity 0.5s ease-out';
+                        batchSection.style.opacity = '0';
+                        setTimeout(() => {
+                            batchSection.classList.add('hidden');
+                            batchSection.style.opacity = '1'; // Reset for next time
+                        }, 500);
+                    }
+
+                    currentBatchId = null;
+                } else {
+                    const code = result.errorCode || ERROR_CODES.DELETE_FAILED;
+                    showError(code, result.error);
+                    if (deleteBtn) { deleteBtn.disabled = false; deleteBtn.innerHTML = originalText; }
+                }
+            } catch (err) {
+                console.error(err);
+                showError(ERROR_CODES.DELETE_FAILED);
+                if (deleteBtn) { deleteBtn.disabled = false; deleteBtn.innerHTML = originalText; }
+            }
+        }
+
+        function downloadImage() {
+            if (processedImageUrl) {
+                const link = document.createElement('a');
+                link.href = processedImageUrl;
+                link.download = `processed_image.${processedFormat || 'png'}`;
+                link.click();
+            }
+        }
+
+        function processAnother() {
+            resetTool();
+        }
+
+        function formatSize(bytes) {
+            if (!bytes) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        /**
+         * Sanitizes a filename by removing potentially dangerous characters.
+         * @@param {string} input - The filename or pattern to sanitize.
+         * @@returns {string} Sanitized filename safe for filesystem use.
+         */
+        function sanitizeFilename(input) {
+            if (!input || typeof input !== 'string') return 'processed';
+            // Remove path traversal attempts and dangerous characters
+            // Includes: .. (directory traversal), < > : " / \ | ? * and control characters
+            return input
+                .replace(/\.\./g, '_')  // Prevent directory traversal
+                .replace(/[<>:"\/\\|?*\x00-\x1F]/g, '_')
+                .substring(0, 255)
+                .trim() || 'processed';
+        }
+
+        /**
+         * Fetches a URL with automatic retry for transient network failures.
+         * Uses exponential backoff between retries.
+         * @@param {string} url - The URL to fetch.
+         * @@param {RequestInit} options - Fetch options.
+         * @@param {number} maxRetries - Maximum number of retry attempts (default: 2).
+         * @@returns {Promise<Response>} The fetch response.
+         */
+        async function fetchWithRetry(url, options = {}, maxRetries = 2) {
+            let lastError;
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                try {
+                    return await fetch(url, options);
+                } catch (err) {
+                    lastError = err;
+                    // Only retry on network errors, not on abort
+                    if (err.name === 'AbortError' || attempt >= maxRetries) {
+                        throw err;
+                    }
+                    // Exponential backoff: 1s, 2s, 4s...
+                    const delay = 1000 * Math.pow(2, attempt);
+                    console.log(`Fetch failed, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+            throw lastError;
+        }
+
+        function cleanupResources(options = {}) {
+            const { includeListeners = false } = options;
+
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+
+            if (processedImageUrl && processedImageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(processedImageUrl);
+            }
+            processedImageUrl = null;
+
+            if (batchZipUrl) {
+                URL.revokeObjectURL(batchZipUrl);
+                batchZipUrl = null;
+            }
+
+            // Clean up any temporary canvas elements created for downscaling
+            const tempCanvases = document.querySelectorAll('.temp-canvas');
+            tempCanvases.forEach(canvas => canvas.remove());
+
+            if (includeListeners) {
+                eventManager.clear();
+            }
+        }
+
+        function resetTool() {
+            // reset form values and toggles
+            const form = document.getElementById('imageProcessingForm');
+            if (form) form.reset();
+
+            // destroy cropper and revoke object URLs
+            cleanupResources();
+            cropModified = false;
+            processedDownloadKey = null;
+            currentBatchId = null;
+
+            // reset UI state and previews
+            setMode(currentMode);
+            resetSliderDisplays();
+
+            // Clear client-side effects
+            const img = document.getElementById('imagePreview');
+            if (img) img.style.filter = '';
+            // Cropper is destroyed above, so no need to clear container
+
+            announceStatus('Tool reset.');
+        }
+
+        function resetSliderDisplays() {
+            const resizeSlider = document.getElementById('resizePercentage');
+            const resizeDisplay = document.getElementById('resizePercentageValue');
+            if (resizeSlider && resizeDisplay) resizeDisplay.textContent = `${resizeSlider.value}%`;
+
+            const qualitySlider = document.getElementById('quality');
+            const qualityDisplay = document.getElementById('qualityValue');
+            if (qualitySlider && qualityDisplay) qualityDisplay.textContent = `${qualitySlider.value}%`;
+
+            const brightnessSlider = document.getElementById('brightness');
+            const brightnessDisplay = document.getElementById('brightnessValue');
+            if (brightnessSlider && brightnessDisplay) brightnessDisplay.textContent = `${brightnessSlider.value}`;
+
+            const contrastSlider = document.getElementById('contrast');
+            const contrastDisplay = document.getElementById('contrastValue');
+            if (contrastSlider && contrastDisplay) contrastDisplay.textContent = `${contrastSlider.value}`;
+
+            const opacitySlider = document.getElementById('watermarkOpacity');
+            const opacityDisplay = document.getElementById('opacityValue');
+            if (opacitySlider && opacityDisplay) opacityDisplay.textContent = `${Math.round(opacitySlider.value * 100)}%`;
+        }
+
+        function autoEnableTogglesForSubmission() {
+            // Aggressive auto-enabling removed. 
+            // We now trust the user's explicit choice on the "Apply" checkboxes.
+            // If they unchecked it, they mean it!
+
+            // The initApplyToggles() function handles the "helpful" auto-enabling
+            // when the user is actively interacting with inputs.
+        }
+
+
+        function updateClientPreview() {
+            const brightness = document.getElementById('brightness')?.value || 1.0;
+            const contrast = document.getElementById('contrast')?.value || 1.0;
+            const grayscale = document.getElementById('applyGrayscale')?.checked ? 1 : 0;
+            const sepia = document.getElementById('applySepia')?.checked ? 1 : 0;
+            const rotation = parseInt(document.getElementById('rotationDegrees')?.value || 0);
+            const flipH = document.getElementById('flipHorizontal')?.checked;
+            const flipV = document.getElementById('flipVertical')?.checked;
+
+            const filterString = `brightness(${brightness}) contrast(${contrast}) grayscale(${grayscale}) sepia(${sepia})`;
+
+            // Transform string for CSS
+            let transformString = `rotate(${rotation}deg)`;
+            if (flipH) transformString += ' scaleX(-1)';
+            if (flipV) transformString += ' scaleY(-1)';
+
+            // Always try to apply to the main preview image
+            const previewImg = document.getElementById('imagePreview');
+            if (previewImg) {
+                previewImg.style.filter = filterString;
+                previewImg.style.transform = transformString;
+            }
+
+            if (cropper) {
+                // Use Cropper.js API for transforms
+                cropper.rotateTo(rotation);
+                const scaleX = flipH ? -1 : 1;
+                const scaleY = flipV ? -1 : 1;
+                cropper.scale(scaleX, scaleY);
+
+                // Apply filters to the actual image inside cropper canvas
+                const canvasImg = document.querySelector('.cropper-canvas img');
+                if (canvasImg) canvasImg.style.filter = filterString;
+
+                // Also apply to cropperImage element directly
+                const cropperImg = document.getElementById('cropperImage');
+                if (cropperImg) cropperImg.style.filter = filterString;
+
+                // And the view-box preview
+                const viewBoxImg = document.querySelector('.cropper-view-box img');
+                if (viewBoxImg) viewBoxImg.style.filter = filterString;
+            }
+        }
+
+        // --- Helper Functions for Phase 1 Fixes ---
+
+        /**
+         * Creates a Blob URL from a base64 string.
+         * Used to prevent memory issues associated with large data: URLs.
+         * @@param {string} base64Data - The base64 image data.
+         * @@param {string} mimeType - The MIME type of the image.
+         * @@returns {Promise<string>} A promise resolving to the object URL.
+         */
+        async function createImageBlobUrl(base64Data, mimeType) {
+            const response = await fetch(`data:${mimeType};base64,${base64Data}`);
+            const blob = await response.blob();
+            return URL.createObjectURL(blob);
+        }
+
+        /**
+         * Validates an image file's type and integrity.
+         * Checks against allowed MIME types, loads the image, and validates dimensions.
+         * @@param {File} file - The file to validate.
+         * @@returns {Promise<{valid: boolean, error?: string}>} Validation result.
+         */
+        function isValidImageFile(file) {
+            const validTypes = CONFIG.ALLOWED_FILE_TYPES;
+
+            if (!validTypes.includes(file.type)) {
+                return Promise.resolve({ valid: false, error: `Unsupported file type: ${file.type}` });
+            }
+
+            return new Promise((resolve) => {
+                const img = new Image();
+                const imageUrl = URL.createObjectURL(file);
+                const cleanup = () => URL.revokeObjectURL(imageUrl);
+
+                // Timeout handler - resolves promise on timeout to prevent hangs
+                const timeoutId = setTimeout(() => {
+                    cleanup();
+                    resolve({ valid: false, error: 'Image validation timeout' });
+                }, 5000);
+
+                img.onload = () => {
+                    clearTimeout(timeoutId);
+                    if (img.width > CONFIG.MAX_IMAGE_DIMENSION || img.height > CONFIG.MAX_IMAGE_DIMENSION) {
+                        cleanup();
+                        resolve({
+                            valid: false,
+                            error: `Image dimensions (${img.width}x${img.height}) exceed maximum allowed`
+                        });
+                        return;
+                    }
+                    cleanup();
+                    resolve({ valid: true });
+                };
+                img.onerror = () => {
+                    clearTimeout(timeoutId);
+                    cleanup();
+                    resolve({ valid: false, error: 'Corrupted or invalid image' });
+                };
+                img.src = imageUrl;
+            });
+        }
+    </script>
+}

@@ -1,0 +1,42 @@
+@*
+    In-Content Ad Placement
+    Integration: Google AdSense / Ezoic
+    Position: Within content (responsive, typically 728x90 or 300x250)
+    
+    SETUP INSTRUCTIONS:
+    1. Replace 'ca-pub-XXXXXXXXXXXXXXXX' with your AdSense publisher ID
+    2. Replace 'XXXXXXXXXX' with your ad slot ID
+    3. For Ezoic, replace the entire div with Ezoic placeholder ID
+*@
+
+@{
+    var adEnabled = ViewBag.EnableAds ?? true;
+}
+
+@if (adEnabled)
+{
+    <div class="ad-container my-8">
+        <div class="text-xs text-center text-[var(--color-text-light)] mb-1">Advertisement</div>
+        
+        @* Google AdSense - In-Content Ad *@
+        <ins class="adsbygoogle"
+             style="display:block; text-align:center;"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="fluid"
+             data-ad-layout="in-article"></ins>
+        
+        @* Fallback for development/testing *@
+        <div class="ad-placeholder" style="background: #f0f0f0; border: 2px dashed #ccc; padding: 2rem; text-align: center; min-height: 100px; display: flex; align-items: center; justify-content: center;">
+            <div>
+                <p class="text-[var(--color-text-medium)] mb-2">📢 Advertisement Space</p>
+                <p class="text-xs text-[var(--color-text-light)]">Responsive In-Content Ad Unit</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize AdSense
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+}

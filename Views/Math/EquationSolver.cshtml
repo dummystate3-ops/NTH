@@ -1,0 +1,515 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Equation Solver",
+    "applicationCategory": "EducationalApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-calculator text-primary"></i> Equation Solver
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Solve linear, quadratic, and cubic equations with step-by-step solutions
+        </p>
+    </div>
+
+    <!-- Equation Type Selector -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            Select Equation Type
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <button onclick="selectType('linear')" id="btnLinear" class="equation-type-btn active px-4 py-3 rounded-lg font-medium transition-all">
+                <div class="text-lg font-bold">Linear</div>
+                <div class="text-sm">ax + b = 0</div>
+            </button>
+            <button onclick="selectType('quadratic')" id="btnQuadratic" class="equation-type-btn px-4 py-3 rounded-lg font-medium transition-all">
+                <div class="text-lg font-bold">Quadratic</div>
+                <div class="text-sm">ax² + bx + c = 0</div>
+            </button>
+            <button onclick="selectType('cubic')" id="btnCubic" class="equation-type-btn px-4 py-3 rounded-lg font-medium transition-all">
+                <div class="text-lg font-bold">Cubic</div>
+                <div class="text-sm">ax³ + bx² + cx + d = 0</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Input Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Enter Coefficients
+        </h2>
+        
+        <!-- Linear Inputs -->
+        <div id="linearInputs" class="equation-inputs">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Coefficient a
+                    </label>
+                    <input type="number" id="linear_a" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., 2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Constant b
+                    </label>
+                    <input type="number" id="linear_b" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., -4">
+                </div>
+            </div>
+        </div>
+
+        <!-- Quadratic Inputs -->
+        <div id="quadraticInputs" class="equation-inputs hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Coefficient a
+                    </label>
+                    <input type="number" id="quad_a" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., 1">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Coefficient b
+                    </label>
+                    <input type="number" id="quad_b" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., -3">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Constant c
+                    </label>
+                    <input type="number" id="quad_c" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., 2">
+                </div>
+            </div>
+        </div>
+
+        <!-- Cubic Inputs -->
+        <div id="cubicInputs" class="equation-inputs hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Coefficient a
+                    </label>
+                    <input type="number" id="cubic_a" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., 1">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Coefficient b
+                    </label>
+                    <input type="number" id="cubic_b" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., -6">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Coefficient c
+                    </label>
+                    <input type="number" id="cubic_c" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., 11">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Constant d
+                    </label>
+                    <input type="number" id="cubic_d" step="any" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., -6">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="solveEquation()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">
+            <i class="fas fa-calculator mr-2"></i> Solve Equation
+        </button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="hidden">
+        <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-check-circle text-secondary"></i> Solution
+            </h2>
+            
+            <div id="equationDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
+                <!-- Equation will be displayed here -->
+            </div>
+
+            <div id="stepsDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
+                <!-- Steps will be displayed here -->
+            </div>
+
+            <div id="solutionDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                <!-- Solution will be displayed here -->
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_SocialSharing")
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            About Equation Solver
+        </h2>
+        <div class="space-y-4 text-gray-600 dark:text-gray-300">
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Linear Equations (ax + b = 0)</h3>
+                <p>Solved using: x = -b/a</p>
+                <p class="text-sm mt-1">Example: 2x - 4 = 0 → x = 2</p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Quadratic Equations (ax² + bx + c = 0)</h3>
+                <p>Solved using the quadratic formula: x = (-b ± √(b² - 4ac)) / 2a</p>
+                <p class="text-sm mt-1">Discriminant (Δ = b² - 4ac) determines the nature of roots:</p>
+                <ul class="list-disc list-inside text-sm ml-4">
+                    <li>Δ > 0: Two real distinct roots</li>
+                    <li>Δ = 0: One real repeated root</li>
+                    <li>Δ < 0: Two complex conjugate roots</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Cubic Equations (ax³ + bx² + cx + d = 0)</h3>
+                <p>Solved using Cardano's formula or numerical methods for real roots.</p>
+                <p class="text-sm mt-1">All cubic equations have at least one real root.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let currentType = 'linear';
+
+    // Select equation type
+    function selectType(type) {
+        currentType = type;
+        
+        // Update button styles
+        document.querySelectorAll('.equation-type-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById('btn' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
+        
+        // Show/hide input sections
+        document.querySelectorAll('.equation-inputs').forEach(section => {
+            section.classList.add('hidden');
+        });
+        document.getElementById(type + 'Inputs').classList.remove('hidden');
+        
+        // Hide results
+        document.getElementById('results').classList.add('hidden');
+    }
+
+    // Solve equation based on type
+    function solveEquation() {
+        try {
+            if (currentType === 'linear') {
+                solveLinear();
+            } else if (currentType === 'quadratic') {
+                solveQuadratic();
+            } else if (currentType === 'cubic') {
+                solveCubic();
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+
+    // Solve linear equation: ax + b = 0
+    function solveLinear() {
+        const a = parseFloat(document.getElementById('linear_a').value);
+        const b = parseFloat(document.getElementById('linear_b').value);
+        
+        if (isNaN(a) || isNaN(b)) {
+            alert('Please enter valid numbers for all coefficients.');
+            return;
+        }
+        
+        if (a === 0) {
+            alert('Coefficient a cannot be zero for a linear equation.');
+            return;
+        }
+        
+        const x = -b / a;
+        
+        // Display equation
+        document.getElementById('equationDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Equation:</h3>
+            <p class="text-lg">${formatCoefficient(a, 'x')} ${formatConstant(b)} = 0</p>
+        `;
+        
+        // Display steps
+        document.getElementById('stepsDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Step-by-Step Solution:</h3>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Start with equation: ${formatCoefficient(a, 'x')} ${formatConstant(b)} = 0</li>
+                <li>Isolate x: ${formatCoefficient(a, 'x')} = ${-b}</li>
+                <li>Divide both sides by ${a}: x = ${-b} / ${a}</li>
+                <li>Simplify: x = ${x.toFixed(6)}</li>
+            </ol>
+        `;
+        
+        // Display solution
+        document.getElementById('solutionDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Solution:</h3>
+            <p class="text-2xl font-bold text-primary">x = ${x.toFixed(6)}</p>
+        `;
+        
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Solve quadratic equation: ax² + bx + c = 0
+    function solveQuadratic() {
+        const a = parseFloat(document.getElementById('quad_a').value);
+        const b = parseFloat(document.getElementById('quad_b').value);
+        const c = parseFloat(document.getElementById('quad_c').value);
+        
+        if (isNaN(a) || isNaN(b) || isNaN(c)) {
+            alert('Please enter valid numbers for all coefficients.');
+            return;
+        }
+        
+        if (a === 0) {
+            alert('Coefficient a cannot be zero for a quadratic equation.');
+            return;
+        }
+        
+        // Calculate discriminant
+        const discriminant = b * b - 4 * a * c;
+        
+        // Display equation
+        document.getElementById('equationDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Equation:</h3>
+            <p class="text-lg">${formatCoefficient(a, 'x²')} ${formatCoefficient(b, 'x', true)} ${formatConstant(c)} = 0</p>
+        `;
+        
+        // Build steps
+        let stepsHtml = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Step-by-Step Solution:</h3>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Identify coefficients: a = ${a}, b = ${b}, c = ${c}</li>
+                <li>Calculate discriminant: Δ = b² - 4ac = ${b}² - 4(${a})(${c}) = ${discriminant.toFixed(6)}</li>
+        `;
+        
+        let solutionHtml = '<h3 class="font-semibold text-gray-800 dark:text-white mb-2">Solution:</h3>';
+        
+        if (discriminant > 0) {
+            // Two real distinct roots
+            const sqrtD = Math.sqrt(discriminant);
+            const x1 = (-b + sqrtD) / (2 * a);
+            const x2 = (-b - sqrtD) / (2 * a);
+            
+            stepsHtml += `
+                <li>Since Δ > 0, there are two real distinct roots</li>
+                <li>Apply quadratic formula: x = (-b ± √Δ) / 2a</li>
+                <li>x₁ = (${-b} + √${discriminant.toFixed(6)}) / ${2 * a} = ${x1.toFixed(6)}</li>
+                <li>x₂ = (${-b} - √${discriminant.toFixed(6)}) / ${2 * a} = ${x2.toFixed(6)}</li>
+            `;
+            
+            solutionHtml += `
+                <p class="text-xl font-bold text-primary mb-2">x₁ = ${x1.toFixed(6)}</p>
+                <p class="text-xl font-bold text-primary">x₂ = ${x2.toFixed(6)}</p>
+            `;
+        } else if (discriminant === 0) {
+            // One real repeated root
+            const x = -b / (2 * a);
+            
+            stepsHtml += `
+                <li>Since Δ = 0, there is one real repeated root</li>
+                <li>Apply formula: x = -b / 2a</li>
+                <li>x = ${-b} / ${2 * a} = ${x.toFixed(6)}</li>
+            `;
+            
+            solutionHtml += `
+                <p class="text-xl font-bold text-primary">x = ${x.toFixed(6)} (repeated root)</p>
+            `;
+        } else {
+            // Two complex conjugate roots
+            const realPart = -b / (2 * a);
+            const imagPart = Math.sqrt(-discriminant) / (2 * a);
+            
+            stepsHtml += `
+                <li>Since Δ < 0, there are two complex conjugate roots</li>
+                <li>Apply formula: x = (-b ± i√(-Δ)) / 2a</li>
+                <li>Real part = ${-b} / ${2 * a} = ${realPart.toFixed(6)}</li>
+                <li>Imaginary part = √${(-discriminant).toFixed(6)} / ${2 * a} = ${imagPart.toFixed(6)}</li>
+            `;
+            
+            solutionHtml += `
+                <p class="text-xl font-bold text-primary mb-2">x₁ = ${realPart.toFixed(6)} + ${imagPart.toFixed(6)}i</p>
+                <p class="text-xl font-bold text-primary">x₂ = ${realPart.toFixed(6)} - ${imagPart.toFixed(6)}i</p>
+            `;
+        }
+        
+        stepsHtml += '</ol>';
+        
+        document.getElementById('stepsDisplay').innerHTML = stepsHtml;
+        document.getElementById('solutionDisplay').innerHTML = solutionHtml;
+        
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Solve cubic equation: ax³ + bx² + cx + d = 0
+    // Using numerical method (Newton-Raphson) to find one real root
+    function solveCubic() {
+        const a = parseFloat(document.getElementById('cubic_a').value);
+        const b = parseFloat(document.getElementById('cubic_b').value);
+        const c = parseFloat(document.getElementById('cubic_c').value);
+        const d = parseFloat(document.getElementById('cubic_d').value);
+        
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+            alert('Please enter valid numbers for all coefficients.');
+            return;
+        }
+        
+        if (a === 0) {
+            alert('Coefficient a cannot be zero for a cubic equation.');
+            return;
+        }
+        
+        // Display equation
+        document.getElementById('equationDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Equation:</h3>
+            <p class="text-lg">${formatCoefficient(a, 'x³')} ${formatCoefficient(b, 'x²', true)} ${formatCoefficient(c, 'x', true)} ${formatConstant(d)} = 0</p>
+        `;
+        
+        // Function to evaluate the cubic polynomial
+        const f = (x) => a * x * x * x + b * x * x + c * x + d;
+        // Derivative of the cubic polynomial
+        const fPrime = (x) => 3 * a * x * x + 2 * b * x + c;
+        
+        // Newton-Raphson method to find one real root
+        let x0 = 0; // Initial guess
+        let x1 = x0;
+        let iterations = 0;
+        const maxIterations = 100;
+        const tolerance = 1e-10;
+        
+        do {
+            x0 = x1;
+            const fx = f(x0);
+            const fpx = fPrime(x0);
+            
+            if (Math.abs(fpx) < tolerance) {
+                x0 += 0.1; // Adjust initial guess if derivative is too small
+                continue;
+            }
+            
+            x1 = x0 - fx / fpx;
+            iterations++;
+            
+            if (iterations >= maxIterations) {
+                break;
+            }
+        } while (Math.abs(x1 - x0) > tolerance);
+        
+        const root = x1;
+        
+        // Display steps
+        document.getElementById('stepsDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Step-by-Step Solution:</h3>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Identify coefficients: a = ${a}, b = ${b}, c = ${c}, d = ${d}</li>
+                <li>Using numerical method (Newton-Raphson) to find real root</li>
+                <li>Function: f(x) = ${a}x³ + ${b}x² + ${c}x + ${d}</li>
+                <li>Derivative: f'(x) = ${3 * a}x² + ${2 * b}x + ${c}</li>
+                <li>Converged after ${iterations} iterations</li>
+            </ol>
+            <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                <strong>Note:</strong> Cubic equations always have at least one real root. 
+                Complete analytical solution using Cardano's formula is available but complex.
+            </p>
+        `;
+        
+        // Display solution
+        document.getElementById('solutionDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Solution (Real Root):</h3>
+            <p class="text-2xl font-bold text-primary mb-2">x ≈ ${root.toFixed(6)}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Verification: f(${root.toFixed(6)}) = ${f(root).toExponential(2)}</p>
+        `;
+        
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Helper function to format coefficients
+    function formatCoefficient(coef, variable, withSign = false) {
+        if (coef === 0) return '';
+        
+        let result = '';
+        if (withSign && coef > 0) {
+            result = '+ ';
+        } else if (coef < 0) {
+            result = '- ';
+            coef = Math.abs(coef);
+        }
+        
+        if (coef === 1 && variable) {
+            result += variable;
+        } else {
+            result += coef + (variable ? variable : '');
+        }
+        
+        return result;
+    }
+
+    // Helper function to format constants
+    function formatConstant(constant) {
+        if (constant === 0) return '';
+        if (constant > 0) return '+ ' + constant;
+        return '- ' + Math.abs(constant);
+    }
+</script>
+
+<style>
+    .equation-type-btn {
+        background: #f3f4f6;
+        border: 2px solid transparent;
+        color: #4b5563;
+    }
+    
+    .equation-type-btn:hover {
+        background: #e5e7eb;
+        transform: translateY(-2px);
+    }
+    
+    .equation-type-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+        border-color: #4A90E2;
+    }
+    
+    .dark .equation-type-btn {
+        background: #374151;
+        color: #d1d5db;
+    }
+    
+    .dark .equation-type-btn:hover {
+        background: #4b5563;
+    }
+    
+    .dark .equation-type-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+    }
+</style>
+}
+
+<!-- In-Content Ad -->
+@await Html.PartialAsync("_AdInContent")

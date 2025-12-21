@@ -1,0 +1,626 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["PageTitle"] = "Regex Tester | NovaTools Hub";
+    ViewData["MetaDescription"] = "Test and debug regular expressions with live highlighting and instant feedback.";
+}
+
+<!-- External Styles for Split.js & Monaco Overrides -->
+<style>
+    .gutter {
+        background-color: var(--color-border);
+        background-repeat: no-repeat;
+        background-position: 50%;
+        cursor: col-resize;
+        transition: background-color 0.2s;
+    }
+
+    .gutter:hover {
+        background-color: var(--color-primary);
+    }
+
+    /* Regex Highlights */
+    .match-highlight {
+        background-color: rgba(255, 215, 0, 0.35);
+        border-bottom: 2px solid goldenrod;
+    }
+
+    .dark .match-highlight {
+        background-color: rgba(255, 215, 0, 0.25);
+        border-bottom: 2px solid #b8860b;
+    }
+</style>
+
+<!-- Page Container -->
+<div class="min-h-screen bg-[var(--color-bg)]">
+
+    <!-- Header Section -->
+    <div class="container-custom py-8 lg:py-12">
+        <div class="max-w-4xl mx-auto text-center space-y-4">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-sm font-medium">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                </svg>
+                Developer Tools
+            </div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                Regex <span class="text-gradient">Tester</span> & Debugger
+            </h1>
+            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                Write, test, and debug regular expressions with real-time highlighting. See matches instantly as you
+                type.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tool Workspace -->
+    <div class="container-custom pb-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Floating Workspace Card -->
+            <div
+                class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-xl shadow-gray-200/20 dark:shadow-black/30 overflow-hidden">
+
+                <!-- Toolbar -->
+                <div
+                    class="bg-[var(--color-surface)] border-b border-[var(--color-border)] p-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:px-4">
+
+                    <!-- Pattern Input Group -->
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="flex-1 max-w-2xl relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="font-mono text-[var(--color-text-medium)] text-sm font-bold">/</span>
+                            </div>
+                            <input id="regexInput" type="text" spellcheck="false"
+                                class="w-full bg-[var(--color-bg)] text-[var(--color-text)] border border-[var(--color-border)] rounded-lg py-2.5 pl-7 pr-16 font-mono text-sm focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 outline-none transition-all placeholder-[var(--color-text-light)] shadow-sm"
+                                placeholder="Enter your regex pattern..." value="([A-Z])\w+" />
+
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-1">
+                                <button id="flagsBtn"
+                                    class="flex items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg)] border border-transparent hover:border-[var(--color-border)] transition-all text-xs font-mono text-[var(--color-primary)] font-semibold">
+                                    <span id="flagsDisplay">/g</span>
+                                    <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Flags Dropdown -->
+                            <div id="flagsDropdown"
+                                class="absolute right-0 top-full mt-2 w-64 bg-[var(--color-surface)] rounded-xl shadow-2xl border border-[var(--color-border)] z-50 hidden p-2">
+                                <div class="space-y-1">
+                                    <label
+                                        class="flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-bg)] rounded-lg cursor-pointer transition-colors">
+                                        <input type="checkbox"
+                                            class="flag-toggle w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            value="g" checked>
+                                        <div class="flex-1">
+                                            <span class="text-sm font-medium text-[var(--color-text)]">Global</span>
+                                            <p class="text-xs text-[var(--color-text-medium)]">Find all matches</p>
+                                        </div>
+                                        <kbd
+                                            class="px-1.5 py-0.5 text-xs font-mono bg-[var(--color-bg)] border border-[var(--color-border)] rounded">g</kbd>
+                                    </label>
+                                    <label
+                                        class="flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-bg)] rounded-lg cursor-pointer transition-colors">
+                                        <input type="checkbox"
+                                            class="flag-toggle w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            value="i">
+                                        <div class="flex-1">
+                                            <span class="text-sm font-medium text-[var(--color-text)]">Case
+                                                Insensitive</span>
+                                            <p class="text-xs text-[var(--color-text-medium)]">Ignore case differences
+                                            </p>
+                                        </div>
+                                        <kbd
+                                            class="px-1.5 py-0.5 text-xs font-mono bg-[var(--color-bg)] border border-[var(--color-border)] rounded">i</kbd>
+                                    </label>
+                                    <label
+                                        class="flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-bg)] rounded-lg cursor-pointer transition-colors">
+                                        <input type="checkbox"
+                                            class="flag-toggle w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            value="m">
+                                        <div class="flex-1">
+                                            <span class="text-sm font-medium text-[var(--color-text)]">Multiline</span>
+                                            <p class="text-xs text-[var(--color-text-medium)]">^ $ match line boundaries
+                                            </p>
+                                        </div>
+                                        <kbd
+                                            class="px-1.5 py-0.5 text-xs font-mono bg-[var(--color-bg)] border border-[var(--color-border)] rounded">m</kbd>
+                                    </label>
+                                    <label
+                                        class="flex items-center gap-3 px-3 py-2.5 hover:bg-[var(--color-bg)] rounded-lg cursor-pointer transition-colors">
+                                        <input type="checkbox"
+                                            class="flag-toggle w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                            value="s">
+                                        <div class="flex-1">
+                                            <span class="text-sm font-medium text-[var(--color-text)]">Single
+                                                Line</span>
+                                            <p class="text-xs text-[var(--color-text-medium)]">Dot matches newlines</p>
+                                        </div>
+                                        <kbd
+                                            class="px-1.5 py-0.5 text-xs font-mono bg-[var(--color-bg)] border border-[var(--color-border)] rounded">s</kbd>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2 shrink-0">
+                        <div class="flex bg-[var(--color-bg)] p-1 rounded-lg border border-[var(--color-border)]">
+                            <button
+                                class="px-3 py-1.5 text-xs font-medium rounded-md hover:bg-[var(--color-surface)] hover:shadow-sm transition-all text-[var(--color-text)]"
+                                onclick="loadPreset('email')">Email</button>
+                            <button
+                                class="px-3 py-1.5 text-xs font-medium rounded-md hover:bg-[var(--color-surface)] hover:shadow-sm transition-all text-[var(--color-text)]"
+                                onclick="loadPreset('url')">URL</button>
+                            <button
+                                class="px-3 py-1.5 text-xs font-medium rounded-md hover:bg-[var(--color-surface)] hover:shadow-sm transition-all text-[var(--color-text)]"
+                                onclick="loadPreset('date')">Date</button>
+                        </div>
+
+                        <button id="btnCheatsheet"
+                            class="p-2 rounded-lg hover:bg-[var(--color-bg)] border border-transparent hover:border-[var(--color-border)] transition-all text-[var(--color-text-medium)] hover:text-[var(--color-primary)]"
+                            title="Regex Reference">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Split View Workspace -->
+                <div id="split-container" class="flex flex-col lg:flex-row" style="height: 450px;">
+
+                    <!-- Editor Pane -->
+                    <div id="pane-editor" class="flex flex-col h-full relative">
+                        <div
+                            class="bg-[var(--color-bg)]/50 px-4 py-2 text-xs font-semibold tracking-wide text-[var(--color-text-medium)] border-b border-[var(--color-border)] flex justify-between items-center select-none uppercase">
+                            <span class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Test String
+                            </span>
+                            <span id="match-count" class="normal-case font-mono text-[var(--color-primary)]">0
+                                matches</span>
+                        </div>
+                        <div id="monaco-container" class="flex-1"></div>
+                    </div>
+
+                    <!-- Results Pane -->
+                    <div id="pane-results"
+                        class="flex flex-col h-full bg-[var(--color-surface)] border-l border-[var(--color-border)]">
+                        <div
+                            class="bg-[var(--color-bg)]/50 px-4 py-2 text-xs font-semibold tracking-wide text-[var(--color-text-medium)] border-b border-[var(--color-border)] flex items-center gap-2 select-none uppercase">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            Match Results
+                        </div>
+                        <div id="matches-list" class="flex-1 overflow-y-auto p-3 space-y-2">
+                            <div
+                                class="flex flex-col items-center justify-center h-full text-[var(--color-text-medium)] space-y-3 opacity-60">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <span class="text-sm">Matches will appear here</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="container-custom py-12 border-t border-[var(--color-border)]">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8 text-center">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div
+                    class="text-center space-y-3 p-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                        1</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Enter Your Pattern</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">Type your regex pattern in the input field. Use
+                        the flags dropdown to toggle options like global, case-insensitive, or multiline.</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                        2</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Add Test Text</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">Paste or type your test string in the editor.
+                        Matches are highlighted instantly with a golden background.</p>
+                </div>
+                <div
+                    class="text-center space-y-3 p-6 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
+                    <div
+                        class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                        3</div>
+                    <h3 class="font-semibold text-[var(--color-text)]">Review Matches</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">See all matches in the sidebar with capture
+                        groups. Click any match to jump to its location in the editor.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cheatsheet Modal (Redesigned) -->
+<dialog id="cheatsheet-modal" class="modal">
+    <div class="modal-box max-w-3xl bg-[var(--color-surface)] p-0 overflow-hidden">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                        </path>
+                    </svg>
+                    <h3 class="font-bold text-xl">Regex Quick Reference</h3>
+                </div>
+                <form method="dialog">
+                    <button class="btn btn-ghost btn-sm btn-circle text-white hover:bg-white/20">✕</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="p-6 space-y-6">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Character Classes -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+                        Characters</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">.</code><span
+                                class="text-[var(--color-text-medium)]">Any char</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">\d</code><span
+                                class="text-[var(--color-text-medium)]">Digit</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">\w</code><span
+                                class="text-[var(--color-text-medium)]">Word char</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">\s</code><span
+                                class="text-[var(--color-text-medium)]">Whitespace</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">\D</code><span
+                                class="text-[var(--color-text-medium)]">Non-digit</span></div>
+                    </div>
+                </div>
+
+                <!-- Quantifiers -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+                        Quantifiers</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">*</code><span
+                                class="text-[var(--color-text-medium)]">0 or more</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">+</code><span
+                                class="text-[var(--color-text-medium)]">1 or more</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">?</code><span
+                                class="text-[var(--color-text-medium)]">Optional</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">{n}</code><span
+                                class="text-[var(--color-text-medium)]">Exactly n</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">{n,m}</code><span
+                                class="text-[var(--color-text-medium)]">n to m</span></div>
+                    </div>
+                </div>
+
+                <!-- Anchors -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm uppercase tracking-wide text-indigo-600 dark:text-indigo-400">Anchors
+                    </h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">^</code><span
+                                class="text-[var(--color-text-medium)]">Start</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">$</code><span
+                                class="text-[var(--color-text-medium)]">End</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">\b</code><span
+                                class="text-[var(--color-text-medium)]">Word bound</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">\B</code><span
+                                class="text-[var(--color-text-medium)]">Non-bound</span></div>
+                    </div>
+                </div>
+
+                <!-- Groups -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm uppercase tracking-wide text-indigo-600 dark:text-indigo-400">Groups
+                    </h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">(...)</code><span
+                                class="text-[var(--color-text-medium)]">Capture</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">(?:...)</code><span
+                                class="text-[var(--color-text-medium)]">Non-cap</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">a|b</code><span
+                                class="text-[var(--color-text-medium)]">Alternation</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">[abc]</code><span
+                                class="text-[var(--color-text-medium)]">Char class</span></div>
+                        <div class="flex items-center gap-2"><code
+                                class="px-2 py-1 bg-[var(--color-bg)] rounded font-mono text-xs">[^abc]</code><span
+                                class="text-[var(--color-text-medium)]">Negated</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+@section Scripts {
+    <!-- Load Split.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
+
+    <!-- Load Monaco EDITOR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+
+        let editor;
+        let decorations = [];
+        let splitInstance;
+
+        const presets = {
+            email: { pattern: '\\b[A-Za-z0-9._%+-]+@@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b', text: "Contact us at support@@novatools.com or admin@@example.org.\nInvalid: user@@domain @@missing.com" },
+            url: { pattern: 'https?:\\/\\/(www\\.)?[-a-zA-Z0-9@@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@@:%_\\+.~#?&//=]*)', text: "Check out https://google.com or http://localhost:5000/tools\nJust text here." },
+            date: { pattern: '\\d{4}-\\d{2}-\\d{2}', text: "Dates to remember:\n2025-12-12 (Today)\n1999-01-01 (Y2K)\n12/12/2025 (Invalid format)" }
+        };
+
+        require(['vs/editor/editor.main'], function () {
+            initEditor();
+            initSplit();
+            initRegexLogic();
+            initFlagsDropdown();
+            setupThemeSync();
+        });
+
+        function initEditor() {
+            const theme = document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs';
+            editor = monaco.editor.create(document.getElementById('monaco-container'), {
+                value: "Hello World! 12345",
+                language: 'plaintext',
+                theme: theme,
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+                scrollBeyondLastLine: false,
+                lineNumbers: 'on',
+                glyphMargin: false,
+                folding: false,
+                padding: { top: 10 }
+            });
+
+            editor.onDidChangeModelContent(() => {
+                debounce(runRegexEngine, 300)();
+            });
+        }
+
+        function initSplit() {
+            splitInstance = Split(['#pane-editor', '#pane-results'], {
+                sizes: [65, 35],
+                minSize: 200,
+                gutterSize: 6,
+                cursor: 'col-resize',
+                direction: 'horizontal'
+            });
+        }
+
+        function initFlagsDropdown() {
+            const btn = document.getElementById('flagsBtn');
+            const dropdown = document.getElementById('flagsDropdown');
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('hidden');
+            });
+
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (!dropdown.contains(e.target) && e.target !== btn) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        function initRegexLogic() {
+            const patternInput = document.getElementById('regexInput');
+            const flagChecks = document.querySelectorAll('.flag-toggle');
+
+            patternInput.addEventListener('input', runRegexEngine);
+            flagChecks.forEach(cb => cb.addEventListener('change', () => {
+                updateFlagsDisplay();
+                runRegexEngine();
+            }));
+
+            updateFlagsDisplay();
+            loadPreset('email');
+
+            document.getElementById('btnCheatsheet').addEventListener('click', () => {
+                document.getElementById('cheatsheet-modal').showModal();
+            });
+        }
+
+        function updateFlagsDisplay() {
+            const flags = Array.from(document.querySelectorAll('.flag-toggle:checked')).map(cb => cb.value).join('');
+            document.getElementById('flagsDisplay').textContent = '/' + flags;
+            return flags;
+        }
+
+        function runRegexEngine() {
+            if (!editor) return;
+
+            const pattern = document.getElementById('regexInput').value;
+            const flags = updateFlagsDisplay();
+            const text = editor.getValue();
+
+            if (!pattern) {
+                decorations = editor.deltaDecorations(decorations, []);
+                document.getElementById('match-count').textContent = '0 matches';
+                updateMatchesList([]);
+                return;
+            }
+
+            try {
+                const regex = new RegExp(pattern, flags);
+                const model = editor.getModel();
+                const newDecorations = [];
+                const matchesData = [];
+
+                let match;
+                if (regex.global) {
+                    let lastIndex = 0;
+                    while ((match = regex.exec(text)) !== null && matchesData.length < 500) {
+                        const start = match.index;
+                        const end = start + match[0].length;
+
+                        if (end === lastIndex) {
+                            regex.lastIndex++;
+                            if (regex.lastIndex > text.length) break;
+                        }
+
+                        const startPos = model.getPositionAt(start);
+                        const endPos = model.getPositionAt(end);
+
+                        newDecorations.push({
+                            range: new monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column),
+                            options: { inlineClassName: 'match-highlight' }
+                        });
+
+                        matchesData.push({
+                            index: start,
+                            value: match[0],
+                            groups: match.slice(1),
+                            line: startPos.lineNumber
+                        });
+
+                        lastIndex = regex.lastIndex;
+                    }
+                } else {
+                    match = regex.exec(text);
+                    if (match) {
+                        const start = match.index;
+                        const end = start + match[0].length;
+                        const startPos = model.getPositionAt(start);
+                        const endPos = model.getPositionAt(end);
+                        newDecorations.push({
+                            range: new monaco.Range(startPos.lineNumber, startPos.column, endPos.lineNumber, endPos.column),
+                            options: { inlineClassName: 'match-highlight' }
+                        });
+                        matchesData.push({
+                            index: start,
+                            value: match[0],
+                            groups: match.slice(1),
+                            line: startPos.lineNumber
+                        });
+                    }
+                }
+
+                decorations = editor.deltaDecorations(decorations, newDecorations);
+                updateMatchesList(matchesData);
+                document.getElementById('match-count').textContent = `${matchesData.length} match${matchesData.length !== 1 ? 'es' : ''}`;
+
+            } catch (e) {
+                document.getElementById('match-count').textContent = "Invalid regex";
+                decorations = editor.deltaDecorations(decorations, []);
+            }
+        }
+
+        function updateMatchesList(matches) {
+            const container = document.getElementById('matches-list');
+            if (matches.length === 0) {
+                container.innerHTML = '<div class="flex flex-col items-center justify-center h-full text-[var(--color-text-medium)] space-y-3 opacity-60"><svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg><span class="text-sm">No matches found</span></div>';
+                return;
+            }
+
+            container.innerHTML = matches.map((m, i) => `
+                    <div class="p-3 bg-[var(--color-bg)] rounded-lg border border-[var(--color-border)] hover:border-indigo-400 hover:shadow-sm cursor-pointer transition-all group"
+                         onclick="scrollToLine(${m.line})">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold uppercase text-indigo-600 dark:text-indigo-400">Match ${i + 1}</span>
+                            <span class="text-xs text-[var(--color-text-medium)] bg-[var(--color-surface)] px-2 py-0.5 rounded">Line ${m.line}</span>
+                        </div>
+                        <div class="font-mono text-sm p-2 rounded bg-[var(--color-surface)] border border-[var(--color-border)] truncate group-hover:border-indigo-300">
+                            ${escapeHtml(m.value)}
+                        </div>
+                        ${m.groups.length ? `
+                            <div class="mt-2 pt-2 border-t border-[var(--color-border)] space-y-1">
+                                ${m.groups.map((g, gi) => `
+                                    <div class="flex items-center text-xs gap-2">
+                                        <span class="font-mono text-indigo-500 font-semibold">$${gi + 1}</span>
+                                        <span class="font-mono text-[var(--color-text-medium)] truncate">${escapeHtml(g || '(empty)')}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+        }
+
+        function loadPreset(name) {
+            const p = presets[name];
+            if (!p) return;
+            document.getElementById('regexInput').value = p.pattern;
+            editor.setValue(p.text);
+            runRegexEngine();
+        }
+
+        function scrollToLine(line) {
+            editor.revealLineInCenter(line);
+            editor.setPosition({ lineNumber: line, column: 1 });
+            editor.focus();
+        }
+
+        function setupThemeSync() {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        const isDark = document.documentElement.classList.contains('dark');
+                        monaco.editor.setTheme(isDark ? 'vs-dark' : 'vs');
+                    }
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true });
+        }
+
+        // Utils
+        let debounceTimer;
+        function debounce(func, timeout = 300) {
+            return (...args) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+}

@@ -1,0 +1,305 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+@section Head {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "SoftwareApplication",
+        "name": "Product Savings Comparison Tool",
+        "applicationCategory": "BusinessApplication",
+        "description": "Compare multiple product options side-by-side to find the best value"
+    }
+    </script>
+}
+
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">💡</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Product Savings Comparison</h1>
+            <p class="text-xl opacity-90">Compare multiple products to find the best value for your business</p>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container-custom max-w-6xl">
+        
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                <div class="text-sm text-blue-900 dark:text-blue-100">
+                    <strong>Your privacy matters:</strong> All comparisons are done in your browser. No data is stored on our servers.
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-8">
+            <h2 class="text-2xl font-bold mb-6">Add Products to Compare</h2>
+            
+            <div class="mb-6">
+                <label for="currency" class="block text-sm font-medium mb-2">Currency</label>
+                <select id="currency" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800">
+                    <option value="USD" data-symbol="$">USD - US Dollar ($)</option>
+                    <option value="PKR" data-symbol="₨">PKR - Pakistani Rupee (₨)</option>
+                    <option value="INR" data-symbol="₹">INR - Indian Rupee (₹)</option>
+                    <option value="SAR" data-symbol="﷼">SAR - Saudi Riyal (﷼)</option>
+                    <option value="AED" data-symbol="د.إ">AED - UAE Dirham (د.إ)</option>
+                    <option value="EUR" data-symbol="€">EUR - Euro (€)</option>
+                    <option value="GBP" data-symbol="£">GBP - British Pound (£)</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Product Name</label>
+                    <input type="text" id="productName" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800" placeholder="e.g., Premium Plan">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Setup Cost</label>
+                    <input type="number" id="setupCost" step="0.01" min="0" value="0" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Monthly Cost</label>
+                    <input type="number" id="monthlyCost" step="0.01" min="0" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800" placeholder="99.00">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Annual Discount (%)</label>
+                    <input type="number" id="annualDiscount" step="1" min="0" max="100" value="0" class="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] dark:bg-gray-800">
+                </div>
+            </div>
+
+            <button onclick="addProduct()" class="btn btn-primary">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Product
+            </button>
+        </div>
+
+        <div id="comparisonTable" class="hidden card mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Comparison</h2>
+                <button onclick="clearProducts()" class="text-sm text-red-600 hover:underline">Clear All</button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-[var(--color-border)]">
+                            <th class="text-left p-3">Product</th>
+                            <th class="text-right p-3">Setup</th>
+                            <th class="text-right p-3">1 Year</th>
+                            <th class="text-right p-3">3 Years</th>
+                            <th class="text-right p-3">5 Years</th>
+                            <th class="text-center p-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                <div id="recommendation" class="text-sm"></div>
+            </div>
+        </div>
+
+        <div id="chartContainer" class="hidden card mb-8">
+            <h3 class="text-xl font-bold mb-4">Cost Over Time</h3>
+            <div class="relative" style="height: 400px;">
+                <canvas id="costChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="text-xl font-bold mb-4">Tips for Product Comparison</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h4 class="font-semibold mb-2">💰 Consider Total Cost</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">Look beyond monthly fees - include setup costs, training, and long-term commitments.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">📊 Value vs Price</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">The cheapest option isn't always the best. Consider features, support, and scalability.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">🔄 Review Regularly</h4>
+                    <p class="text-sm text-[var(--color-text-medium)]">Reassess your subscriptions quarterly to ensure you're still getting value.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let products = [];
+        let costChart = null;
+        let currencySymbol = '$';
+
+        document.getElementById('currency').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            currencySymbol = selectedOption.getAttribute('data-symbol');
+            if (products.length > 0) {
+                renderComparison();
+            }
+        });
+
+        function addProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const setup = parseFloat(document.getElementById('setupCost').value) || 0;
+            const monthly = parseFloat(document.getElementById('monthlyCost').value);
+            const discount = parseFloat(document.getElementById('annualDiscount').value) || 0;
+
+            if (!name || !monthly || monthly <= 0) {
+                alert('Please enter product name and monthly cost');
+                return;
+            }
+
+            if (products.length >= 6) {
+                alert('Maximum 6 products can be compared');
+                return;
+            }
+
+            products.push({
+                id: Date.now(),
+                name,
+                setup,
+                monthly,
+                discount,
+                year1: setup + (monthly * 12 * (1 - discount / 100)),
+                year3: setup + (monthly * 36 * (1 - discount / 100)),
+                year5: setup + (monthly * 60 * (1 - discount / 100))
+            });
+
+            document.getElementById('productName').value = '';
+            document.getElementById('setupCost').value = '0';
+            document.getElementById('monthlyCost').value = '';
+            document.getElementById('annualDiscount').value = '0';
+
+            renderComparison();
+        }
+
+        function removeProduct(id) {
+            products = products.filter(p => p.id !== id);
+            renderComparison();
+        }
+
+        function clearProducts() {
+            if (confirm('Clear all products?')) {
+                products = [];
+                renderComparison();
+            }
+        }
+
+        function renderComparison() {
+            const table = document.getElementById('comparisonTable');
+            const chart = document.getElementById('chartContainer');
+            
+            if (products.length === 0) {
+                table.classList.add('hidden');
+                chart.classList.add('hidden');
+                return;
+            }
+
+            table.classList.remove('hidden');
+            chart.classList.remove('hidden');
+
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = products.map(p => `
+                <tr class="border-b border-[var(--color-border)]">
+                    <td class="p-3 font-semibold">${p.name}</td>
+                    <td class="p-3 text-right">${currencySymbol}${p.setup.toFixed(2)}</td>
+                    <td class="p-3 text-right">${currencySymbol}${p.year1.toFixed(2)}</td>
+                    <td class="p-3 text-right">${currencySymbol}${p.year3.toFixed(2)}</td>
+                    <td class="p-3 text-right">${currencySymbol}${p.year5.toFixed(2)}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="removeProduct(${p.id})" class="text-red-600 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            showRecommendation();
+            drawChart();
+        }
+
+        function showRecommendation() {
+            const best1 = products.reduce((min, p) => p.year1 < min.year1 ? p : min);
+            const best5 = products.reduce((min, p) => p.year5 < min.year5 ? p : min);
+            
+            const rec = document.getElementById('recommendation');
+            rec.innerHTML = `
+                <strong>💡 Recommendation:</strong> 
+                For 1 year: <strong>${best1.name}</strong> (${currencySymbol}${best1.year1.toFixed(2)})  |  
+                For 5 years: <strong>${best5.name}</strong> (${currencySymbol}${best5.year5.toFixed(2)})
+                ${best1.id !== best5.id ? '<br>Note: Different products are best for short vs long-term use.' : ''}
+            `;
+        }
+
+        function drawChart() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            
+            if (costChart) costChart.destroy();
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const colors = ['#4A90E2', '#50E3C2', '#9B59B6', '#E74C3C', '#F39C12', '#2ECC71'];
+
+            costChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['0', '1 Year', '3 Years', '5 Years'],
+                    datasets: products.map((p, i) => ({
+                        label: p.name,
+                        data: [p.setup, p.year1, p.year3, p.year5],
+                        borderColor: colors[i % colors.length],
+                        backgroundColor: colors[i % colors.length] + '20',
+                        borderWidth: 3,
+                        tension: 0.4
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: isDark ? '#E5E7EB' : '#374151' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: isDark ? '#E5E7EB' : '#374151',
+                                callback: v => '$' + v.toLocaleString()
+                            },
+                            grid: { color: isDark ? '#374151' : '#E5E7EB' }
+                        },
+                        x: {
+                            ticks: { color: isDark ? '#E5E7EB' : '#374151' },
+                            grid: { color: isDark ? '#374151' : '#E5E7EB' }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

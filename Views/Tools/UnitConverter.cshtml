@@ -1,0 +1,282 @@
+@{
+    ViewData["PageTitle"] = "Unit Converter | NovaTools Hub";
+    ViewData["MetaDescription"] = "Convert between different units of length, weight, temperature, volume, area, and speed";
+}
+
+<div class="container-custom section-padding">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="text-gradient">Unit Converter</span>
+            </h1>
+            <p class="text-xl text-[var(--color-text-medium)]">
+                Convert between different units of measurement instantly
+            </p>
+        </div>
+
+        <!-- Converter Card -->
+        <div class="card">
+            <!-- Category Selection -->
+            <div class="mb-6">
+                <label class="form-label">Category</label>
+                <select id="category" class="form-input">
+                    <option value="length">Length</option>
+                    <option value="weight">Weight</option>
+                    <option value="temperature">Temperature</option>
+                    <option value="volume">Volume</option>
+                    <option value="area">Area</option>
+                    <option value="speed">Speed</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- From Unit -->
+                <div>
+                    <label class="form-label">From</label>
+                    <input type="number" id="fromValue" class="form-input mb-3" placeholder="Enter value" step="any" value="1">
+                    <select id="fromUnit" class="form-input">
+                        <!-- Options populated by JavaScript -->
+                    </select>
+                </div>
+
+                <!-- To Unit -->
+                <div>
+                    <label class="form-label">To</label>
+                    <input type="number" id="toValue" class="form-input mb-3" placeholder="Result" readonly>
+                    <select id="toUnit" class="form-input">
+                        <!-- Options populated by JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="text-center mt-6">
+                <button id="swapBtn" class="btn btn-outline">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                    </svg>
+                    Swap Units
+                </button>
+            </div>
+
+            <!-- Conversion Formula -->
+            <div id="conversionInfo" class="mt-6 p-4 bg-[var(--color-bg)] rounded-lg">
+                <p class="text-sm text-[var(--color-text-medium)]">
+                    <strong>Conversion:</strong> <span id="conversionFormula"></span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Common Conversions -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Common Conversions</h3>
+            <div id="commonConversions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <div class="mt-8">
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+<!-- JSON-LD Schema -->
+<script type="application/ld+json">
+@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
+    "Unit Converter",
+    "Convert between different units of length, weight, temperature, volume, area, and speed",
+    Url.Action("UnitConverter", "Tools", null, Context.Request.Scheme) ?? "",
+    "Utility"
+))
+</script>
+
+@section Scripts {
+<script>
+    const unitCategories = {
+        length: {
+            units: {
+                'mm': 'Millimeters', 'cm': 'Centimeters', 'm': 'Meters', 'km': 'Kilometers',
+                'in': 'Inches', 'ft': 'Feet', 'yd': 'Yards', 'mi': 'Miles'
+            },
+            common: [
+                { from: 1, fromUnit: 'in', toUnit: 'cm', name: '1 inch' },
+                { from: 1, fromUnit: 'ft', toUnit: 'm', name: '1 foot' },
+                { from: 1, fromUnit: 'mi', toUnit: 'km', name: '1 mile' }
+            ]
+        },
+        weight: {
+            units: {
+                'mg': 'Milligrams', 'g': 'Grams', 'kg': 'Kilograms', 'ton': 'Metric Tons',
+                'oz': 'Ounces', 'lbs': 'Pounds'
+            },
+            common: [
+                { from: 1, fromUnit: 'kg', toUnit: 'lbs', name: '1 kilogram' },
+                { from: 1, fromUnit: 'lbs', toUnit: 'kg', name: '1 pound' },
+                { from: 1, fromUnit: 'oz', toUnit: 'g', name: '1 ounce' }
+            ]
+        },
+        temperature: {
+            units: {
+                'C': 'Celsius', 'F': 'Fahrenheit', 'K': 'Kelvin'
+            },
+            common: [
+                { from: 0, fromUnit: 'C', toUnit: 'F', name: 'Freezing point' },
+                { from: 100, fromUnit: 'C', toUnit: 'F', name: 'Boiling point' },
+                { from: 37, fromUnit: 'C', toUnit: 'F', name: 'Body temperature' }
+            ]
+        },
+        volume: {
+            units: {
+                'ml': 'Milliliters', 'l': 'Liters', 'm3': 'Cubic Meters',
+                'gal': 'Gallons', 'qt': 'Quarts', 'pt': 'Pints', 'cup': 'Cups', 'floz': 'Fluid Ounces'
+            },
+            common: [
+                { from: 1, fromUnit: 'l', toUnit: 'gal', name: '1 liter' },
+                { from: 1, fromUnit: 'gal', toUnit: 'l', name: '1 gallon' },
+                { from: 1, fromUnit: 'cup', toUnit: 'ml', name: '1 cup' }
+            ]
+        },
+        area: {
+            units: {
+                'mm2': 'Square Millimeters', 'cm2': 'Square Centimeters', 'm2': 'Square Meters', 'km2': 'Square Kilometers',
+                'in2': 'Square Inches', 'ft2': 'Square Feet', 'yd2': 'Square Yards', 'ac': 'Acres', 'ha': 'Hectares'
+            },
+            common: [
+                { from: 1, fromUnit: 'm2', toUnit: 'ft2', name: '1 square meter' },
+                { from: 1, fromUnit: 'ac', toUnit: 'ha', name: '1 acre' },
+                { from: 1, fromUnit: 'ft2', toUnit: 'm2', name: '1 square foot' }
+            ]
+        },
+        speed: {
+            units: {
+                'ms': 'Meters/second', 'kmh': 'Kilometers/hour', 'mph': 'Miles/hour', 'kn': 'Knots'
+            },
+            common: [
+                { from: 1, fromUnit: 'mph', toUnit: 'kmh', name: '1 mph' },
+                { from: 100, fromUnit: 'kmh', toUnit: 'mph', name: '100 km/h' },
+                { from: 1, fromUnit: 'ms', toUnit: 'kmh', name: '1 m/s' }
+            ]
+        }
+    };
+
+    let currentCategory = 'length';
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        updateUnits();
+        convert();
+        updateCommonConversions();
+
+        document.getElementById('category').addEventListener('change', function() {
+            currentCategory = this.value;
+            updateUnits();
+            convert();
+            updateCommonConversions();
+        });
+
+        document.getElementById('fromValue').addEventListener('input', convert);
+        document.getElementById('fromUnit').addEventListener('change', convert);
+        document.getElementById('toUnit').addEventListener('change', convert);
+
+        document.getElementById('swapBtn').addEventListener('click', function() {
+            const fromUnit = document.getElementById('fromUnit');
+            const toUnit = document.getElementById('toUnit');
+            const temp = fromUnit.value;
+            fromUnit.value = toUnit.value;
+            toUnit.value = temp;
+            convert();
+        });
+    });
+
+    function updateUnits() {
+        const units = unitCategories[currentCategory].units;
+        const fromSelect = document.getElementById('fromUnit');
+        const toSelect = document.getElementById('toUnit');
+        
+        fromSelect.innerHTML = '';
+        toSelect.innerHTML = '';
+
+        Object.keys(units).forEach((key, index) => {
+            fromSelect.add(new Option(units[key], key, index === 0, index === 0));
+            toSelect.add(new Option(units[key], key, index === 1, index === 1));
+        });
+    }
+
+    async function convert() {
+        const value = parseFloat(document.getElementById('fromValue').value);
+        const fromUnit = document.getElementById('fromUnit').value;
+        const toUnit = document.getElementById('toUnit').value;
+
+        if (isNaN(value)) {
+            document.getElementById('toValue').value = '';
+            return;
+        }
+
+        try {
+            const response = await fetch('/Tools/ConvertUnit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    value: value,
+                    fromUnit: fromUnit,
+                    toUnit: toUnit,
+                    category: currentCategory
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('toValue').value = data.result.toFixed(6);
+                updateFormula(value, fromUnit, data.result, toUnit);
+            }
+        } catch (error) {
+            console.error('Conversion error:', error);
+        }
+    }
+
+    function updateFormula(fromValue, fromUnit, toValue, toUnit) {
+        const fromName = unitCategories[currentCategory].units[fromUnit];
+        const toName = unitCategories[currentCategory].units[toUnit];
+        document.getElementById('conversionFormula').textContent = 
+            `${fromValue} ${fromName} = ${toValue.toFixed(4)} ${toName}`;
+    }
+
+    function updateCommonConversions() {
+        const common = unitCategories[currentCategory].common;
+        const container = document.getElementById('commonConversions');
+        container.innerHTML = '';
+
+        common.forEach(async (conv) => {
+            const response = await fetch('/Tools/ConvertUnit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    value: conv.from,
+                    fromUnit: conv.fromUnit,
+                    toUnit: conv.toUnit,
+                    category: currentCategory
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                const fromName = unitCategories[currentCategory].units[conv.fromUnit];
+                const toName = unitCategories[currentCategory].units[conv.toUnit];
+                const div = document.createElement('div');
+                div.className = 'p-3 bg-[var(--color-bg)] rounded';
+                div.innerHTML = `
+                    <p class="text-sm text-[var(--color-text-medium)]">${conv.name}</p>
+                    <p class="font-semibold">${conv.from} ${fromName} = ${data.result.toFixed(4)} ${toName}</p>
+                `;
+                container.appendChild(div);
+            }
+        });
+    }
+</script>
+}

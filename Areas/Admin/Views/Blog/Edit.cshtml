@@ -1,0 +1,168 @@
+@model BlogPost
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Edit Blog Post";
+    var categories = ViewBag.Categories as List<BlogCategory> ?? new List<BlogCategory>();
+}
+
+<div class="mb-6">
+    <a asp-action="Index" class="text-[var(--color-primary)] hover:underline">
+        ← Back to Posts
+    </a>
+</div>
+
+<div class="card">
+    <h1 class="text-3xl font-bold mb-6">Edit Blog Post</h1>
+
+    <form method="post" asp-action="Edit" asp-route-id="@Model.Id">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label for="Title" class="form-label">Title *</label>
+                <input type="text" id="Title" name="Title" asp-for="Title" class="form-input" required />
+                <span asp-validation-for="Title" class="text-red-600 text-sm"></span>
+            </div>
+
+            <div>
+                <label for="Slug" class="form-label">URL Slug *</label>
+                <input type="text" id="Slug" name="Slug" asp-for="Slug" class="form-input" required />
+                <span class="text-sm text-[var(--color-text-medium)]">Changing this will break existing links</span>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label for="Content" class="form-label">Content *</label>
+            <input type="hidden" id="Content" name="Content" asp-for="Content" />
+            <div id="editor" style="height: 400px; background: white;"></div>
+        </div>
+
+        <div class="mb-6">
+            <label for="Excerpt" class="form-label">Excerpt</label>
+            <textarea id="Excerpt" name="Excerpt" asp-for="Excerpt" rows="3" class="form-input"
+                      placeholder="Short summary"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label for="CategoryId" class="form-label">Category *</label>
+                <select id="CategoryId" name="CategoryId" asp-for="CategoryId" class="form-input" required>
+                    <option value="">Select a category</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label for="FeaturedImage" class="form-label">Featured Image URL</label>
+                <input type="url" id="FeaturedImage" name="FeaturedImage" asp-for="FeaturedImage" 
+                       class="form-input" placeholder="https://..." />
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label for="MetaDescription" class="form-label">Meta Description (SEO)</label>
+            <textarea id="MetaDescription" name="MetaDescription" asp-for="MetaDescription" 
+                      rows="2" class="form-input" maxlength="160"
+                      placeholder="160 characters max"></textarea>
+        </div>
+
+        <div class="mb-6">
+            <label for="Tags" class="form-label">Tags</label>
+            <input type="text" id="Tags" name="Tags" asp-for="Tags" class="form-input" 
+                   placeholder="comma, separated, tags" />
+        </div>
+
+        <div class="mb-6">
+            <label class="flex items-center gap-2">
+                <input type="checkbox" id="IsPublished" name="IsPublished" asp-for="IsPublished" class="form-checkbox" />
+                <span class="font-medium">Published</span>
+            </label>
+        </div>
+
+        <div class="flex gap-3">
+            <button type="submit" class="btn btn-primary">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Update Post
+            </button>
+            <a asp-action="Index" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Head {
+    <!-- Quill Rich Text Editor CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        .card { background: white; padding: 2rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .form-label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; font-size: 0.875rem; }
+        .form-input, .form-checkbox { 
+            width: 100%; 
+            padding: 0.625rem 0.875rem; 
+            border: 1px solid #d1d5db; 
+            border-radius: 0.5rem; 
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .form-checkbox { width: auto; height: 1.25rem; }
+        .btn { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 0.5rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border: none;
+            font-size: 0.95rem;
+        }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102,126,234,0.4); }
+        .btn-outline { background: white; border: 2px solid #667eea; color: #667eea; }
+        .btn-outline:hover { background: #667eea; color: white; }
+        #editor { border: 1px solid #d1d5db; border-radius: 0.5rem; }
+        .ql-toolbar { border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; background: #f9fafb; }
+        .ql-container { border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem; font-size: 1rem; }
+    </style>
+}
+
+@section Scripts {
+    <!-- Quill Rich Text Editor -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            }
+        });
+        
+        // Load existing content
+        var existingContent = document.getElementById('Content').value;
+        if (existingContent) {
+            quill.root.innerHTML = existingContent;
+        }
+        
+        // Save content to hidden field on form submit
+        document.querySelector('form').onsubmit = function() {
+            document.getElementById('Content').value = quill.root.innerHTML;
+        };
+    </script>
+}

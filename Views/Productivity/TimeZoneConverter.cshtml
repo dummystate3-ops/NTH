@@ -1,0 +1,264 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Time Zone Converter",
+    "applicationCategory": "UtilityApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-clock text-primary"></i> Time Zone Converter
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Convert time between different time zones instantly
+        </p>
+    </div>
+
+    <!-- Converter Tool -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Convert Time
+        </h2>
+        
+        <!-- From Section -->
+        <div class="mb-6 p-4 bg-blue-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                <i class="fas fa-arrow-circle-right text-primary"></i> From
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Date
+                    </label>
+                    <input type="date" id="fromDate" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Time
+                    </label>
+                    <input type="time" id="fromTime" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Time Zone
+                </label>
+                <select id="fromTimezone" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="">Select Time Zone</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Swap Button -->
+        <div class="text-center mb-6">
+            <button onclick="swapTimezones()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200">
+                <i class="fas fa-exchange-alt"></i> Swap
+            </button>
+        </div>
+
+        <!-- To Section -->
+        <div class="mb-6 p-4 bg-green-50 dark:bg-gray-700 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+                <i class="fas fa-arrow-circle-left text-secondary"></i> To
+            </h3>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Time Zone
+                </label>
+                <select id="toTimezone" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="">Select Time Zone</option>
+                </select>
+            </div>
+        </div>
+
+        <button onclick="convertTime()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">
+            <i class="fas fa-sync-alt mr-2"></i> Convert Time
+        </button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="hidden">
+        <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-check-circle text-secondary"></i> Conversion Result
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">From:</p>
+                    <p id="fromResult" class="text-xl font-bold text-gray-800 dark:text-white"></p>
+                </div>
+                
+                <div class="text-center text-2xl text-primary">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-1">To:</p>
+                    <p id="toResult" class="text-xl font-bold text-primary"></p>
+                </div>
+                
+                <div class="bg-blue-50 dark:bg-gray-700 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Time Difference:</h3>
+                    <p id="timeDifference" class="text-lg text-gray-700 dark:text-gray-300"></p>
+                </div>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_SocialSharing")
+    </div>
+
+    <!-- Quick Reference -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Common Time Zone Conversions
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600 dark:text-gray-300">
+            <div class="p-2 bg-gray-50 dark:bg-gray-700 rounded">EST (New York) → GMT (London): +5 hours</div>
+            <div class="p-2 bg-gray-50 dark:bg-gray-700 rounded">PST (Los Angeles) → EST (New York): +3 hours</div>
+            <div class="p-2 bg-gray-50 dark:bg-gray-700 rounded">GMT (London) → IST (India): +5:30 hours</div>
+            <div class="p-2 bg-gray-50 dark:bg-gray-700 rounded">JST (Tokyo) → EST (New York): -14 hours</div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            About Time Zone Converter
+        </h2>
+        <div class="space-y-4 text-gray-600 dark:text-gray-300">
+            <p>
+                <strong>Accurate Conversions:</strong> Our tool accounts for daylight saving time changes automatically.
+            </p>
+            <p>
+                <strong>All Time Zones:</strong> Convert between any of the world's time zones with full IANA timezone database support.
+            </p>
+            <p>
+                <strong>Meeting Scheduler:</strong> Perfect for scheduling international meetings and coordinating across time zones.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Populate timezone dropdowns
+    function populateTimezones() {
+        const timezones = Intl.supportedValuesOf('timeZone');
+        const fromSelect = document.getElementById('fromTimezone');
+        const toSelect = document.getElementById('toTimezone');
+        
+        const options = timezones.map(tz => `<option value="${tz}">${tz}</option>`).join('');
+        fromSelect.innerHTML = '<option value="">Select Time Zone</option>' + options;
+        toSelect.innerHTML = '<option value="">Select Time Zone</option>' + options;
+        
+        // Set defaults based on user's timezone
+        const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        fromSelect.value = userTz;
+    }
+
+    // Set current date and time
+    function setCurrentDateTime() {
+        const now = new Date();
+        document.getElementById('fromDate').valueAsDate = now;
+        document.getElementById('fromTime').value = now.toTimeString().slice(0, 5);
+    }
+
+    // Swap timezones
+    function swapTimezones() {
+        const fromTz = document.getElementById('fromTimezone').value;
+        const toTz = document.getElementById('toTimezone').value;
+        
+        document.getElementById('fromTimezone').value = toTz;
+        document.getElementById('toTimezone').value = fromTz;
+    }
+
+    // Convert time
+    function convertTime() {
+        const fromDate = document.getElementById('fromDate').value;
+        const fromTime = document.getElementById('fromTime').value;
+        const fromTz = document.getElementById('fromTimezone').value;
+        const toTz = document.getElementById('toTimezone').value;
+        
+        if (!fromDate || !fromTime || !fromTz || !toTz) {
+            alert('Please fill in all fields.');
+            return;
+        }
+        
+        try {
+            // Create date object in source timezone
+            const dateTimeStr = `${fromDate}T${fromTime}:00`;
+            const sourceDate = new Date(dateTimeStr);
+            
+            // Format in source timezone
+            const sourceFormatted = sourceDate.toLocaleString('en-US', {
+                timeZone: fromTz,
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            
+            // Format in target timezone
+            const targetFormatted = sourceDate.toLocaleString('en-US', {
+                timeZone: toTz,
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            
+            // Calculate time difference
+            const sourceTime = new Date(sourceDate.toLocaleString('en-US', { timeZone: fromTz }));
+            const targetTime = new Date(sourceDate.toLocaleString('en-US', { timeZone: toTz }));
+            const diffMs = targetTime - sourceTime;
+            const diffHours = diffMs / (1000 * 60 * 60);
+            const diffSign = diffHours >= 0 ? '+' : '';
+            
+            // Display results
+            document.getElementById('fromResult').textContent = `${sourceFormatted} (${fromTz})`;
+            document.getElementById('toResult').textContent = `${targetFormatted} (${toTz})`;
+            document.getElementById('timeDifference').textContent = 
+                `${diffSign}${diffHours.toFixed(1)} hours from ${fromTz.split('/').pop()} to ${toTz.split('/').pop()}`;
+            
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+        } catch (error) {
+            alert('Error converting time: ' + error.message);
+        }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        populateTimezones();
+        setCurrentDateTime();
+    });
+</script>

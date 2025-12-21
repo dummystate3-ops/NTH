@@ -1,0 +1,392 @@
+@{
+    ViewData["PageTitle"] = "Currency Converter | NovaTools Hub";
+    ViewData["MetaDescription"] = "Convert between major world currencies with live exchange rates";
+}
+
+<div class="container-custom section-padding">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="text-gradient">Currency Converter</span>
+            </h1>
+            <p class="text-xl text-[var(--color-text-medium)]">
+                Convert between major world currencies
+            </p>
+        </div>
+
+        <!-- Converter Card -->
+        <div class="card">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- From Currency -->
+                <div>
+                    <label class="form-label">From</label>
+                    <input type="number" id="amount" class="form-input mb-3" placeholder="Enter amount" step="0.01" value="100">
+                    <div class="relative">
+                        <input type="text" id="fromSearch" class="form-input mb-1" placeholder="Search currency..." oninput="filterCurrencies('from')">
+                        <select id="fromCurrency" class="form-input" size="1">
+                            <option value="USD" selected>USD - US Dollar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- To Currency -->
+                <div>
+                    <label class="form-label">To</label>
+                    <input type="text" id="result" class="form-input mb-3" placeholder="Result" readonly>
+                    <div class="relative">
+                        <input type="text" id="toSearch" class="form-input mb-1" placeholder="Search currency..." oninput="filterCurrencies('to')">
+                        <select id="toCurrency" class="form-input" size="1">
+                            <option value="PKR" selected>PKR - Pakistani Rupee</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="flex justify-center gap-4 mt-6">
+                <button id="swapBtn" class="btn btn-outline">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                    </svg>
+                    Swap
+                </button>
+                <button id="refreshBtn" class="btn btn-outline" onclick="refreshRates()">
+                    <svg id="refreshIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Refresh Rates
+                </button>
+            </div>
+
+            <!-- Exchange Rate Info -->
+            <div id="rateInfo" class="mt-6 p-4 bg-[var(--color-bg)] rounded-lg hidden">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        <strong>Exchange Rate:</strong> <span id="exchangeRate"></span>
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <span id="rateStatus" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            ● Live
+                        </span>
+                        <p class="text-xs text-[var(--color-text-light)]" id="rateTimestamp">
+                            Updated: --
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loadingIndicator" class="mt-4 text-center hidden">
+                <div class="inline-flex items-center gap-2 text-[var(--color-text-medium)]">
+                    <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Loading rates...
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Currency Pairs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Popular Currency Pairs</h3>
+            <div id="popularPairs" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Information -->
+        <div class="mt-8 card bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white">
+            <h3 class="text-xl font-semibold mb-3">About Exchange Rates</h3>
+            <p class="mb-2">
+                This currency converter uses live exchange rates from CurrencyFreaks API with real-time data.
+            </p>
+            <p class="text-sm opacity-90">
+                <strong>Note:</strong> Rates are cached for 30 minutes to optimize performance. 
+                Supports 150+ world currencies with accurate conversion rates.
+            </p>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <!-- Social Sharing -->
+        <div class="mt-8">
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+<!-- JSON-LD Schema -->
+<script type="application/ld+json">
+@Html.Raw(SeoHelper.GenerateFinancialServiceSchema(
+    "Currency Converter",
+    "Convert between major world currencies with live exchange rates",
+    Url.Action("CurrencyConverter", "Tools", null, Context.Request.Scheme) ?? ""
+))
+</script>
+
+@section Scripts {
+<script>
+    // Currency names mapping
+    const currencyNames = {
+        'USD': 'US Dollar', 'EUR': 'Euro', 'GBP': 'British Pound', 'JPY': 'Japanese Yen',
+        'CNY': 'Chinese Yuan', 'INR': 'Indian Rupee', 'PKR': 'Pakistani Rupee', 'CAD': 'Canadian Dollar',
+        'AUD': 'Australian Dollar', 'SAR': 'Saudi Riyal', 'AED': 'UAE Dirham', 'CHF': 'Swiss Franc',
+        'SGD': 'Singapore Dollar', 'MYR': 'Malaysian Ringgit', 'TRY': 'Turkish Lira', 'BRL': 'Brazilian Real',
+        'RUB': 'Russian Ruble', 'KRW': 'South Korean Won', 'MXN': 'Mexican Peso', 'IDR': 'Indonesian Rupiah',
+        'THB': 'Thai Baht', 'VND': 'Vietnamese Dong', 'PLN': 'Polish Zloty', 'SEK': 'Swedish Krona',
+        'NOK': 'Norwegian Krone', 'DKK': 'Danish Krone', 'NZD': 'New Zealand Dollar', 'ZAR': 'South African Rand',
+        'HKD': 'Hong Kong Dollar', 'TWD': 'Taiwan Dollar', 'PHP': 'Philippine Peso', 'CZK': 'Czech Koruna',
+        'ILS': 'Israeli Shekel', 'CLP': 'Chilean Peso', 'EGP': 'Egyptian Pound', 'COP': 'Colombian Peso',
+        'BDT': 'Bangladeshi Taka', 'NGN': 'Nigerian Naira', 'KWD': 'Kuwaiti Dinar', 'QAR': 'Qatari Riyal',
+        'OMR': 'Omani Rial', 'BHD': 'Bahraini Dinar', 'JOD': 'Jordanian Dinar', 'LKR': 'Sri Lankan Rupee',
+        'NPR': 'Nepalese Rupee', 'MMK': 'Myanmar Kyat', 'KES': 'Kenyan Shilling', 'GHS': 'Ghanaian Cedi',
+        'MAD': 'Moroccan Dirham', 'TND': 'Tunisian Dinar', 'HUF': 'Hungarian Forint', 'RON': 'Romanian Leu',
+        'BGN': 'Bulgarian Lev', 'HRK': 'Croatian Kuna', 'ISK': 'Icelandic Krona', 'UAH': 'Ukrainian Hryvnia',
+        'ARS': 'Argentine Peso', 'PEN': 'Peruvian Sol', 'VES': 'Venezuelan Bolivar', 'UYU': 'Uruguayan Peso'
+    };
+
+    // Cached rates (USD-based)
+    let cachedRates = {};
+    let ratesTimestamp = null;
+    let allCurrencies = [];
+    
+    const popularPairs = [
+        { from: 'USD', to: 'PKR', name: 'USD to PKR' },
+        { from: 'USD', to: 'EUR', name: 'USD to EUR' },
+        { from: 'GBP', to: 'USD', name: 'GBP to USD' },
+        { from: 'USD', to: 'INR', name: 'USD to INR' }
+    ];
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Load rates first (this caches them)
+        await loadRates();
+        
+        // Then populate dropdowns and do initial conversion
+        populateCurrencyDropdowns(allCurrencies);
+        convert();
+        updatePopularPairs();
+
+        // Event listeners
+        document.getElementById('amount').addEventListener('input', convert);
+        document.getElementById('fromCurrency').addEventListener('change', convert);
+        document.getElementById('toCurrency').addEventListener('change', convert);
+
+        document.getElementById('swapBtn').addEventListener('click', function() {
+            const fromCurrency = document.getElementById('fromCurrency');
+            const toCurrency = document.getElementById('toCurrency');
+            const temp = fromCurrency.value;
+            fromCurrency.value = toCurrency.value;
+            toCurrency.value = temp;
+            convert();
+        });
+    });
+
+    async function loadRates() {
+        const loading = document.getElementById('loadingIndicator');
+        loading.classList.remove('hidden');
+        
+        try {
+            const response = await fetch('/Tools/GetAllRates');
+            const data = await response.json();
+            
+            if (data.success && data.rates) {
+                cachedRates = data.rates;
+                ratesTimestamp = data.timestamp;
+                allCurrencies = Object.keys(data.rates).sort();
+                
+                // Update timestamp display
+                document.getElementById('rateTimestamp').textContent = `Updated: ${ratesTimestamp}`;
+                document.getElementById('rateStatus').innerHTML = '● Live';
+                document.getElementById('rateStatus').className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800';
+                
+                console.log(`Loaded ${allCurrencies.length} currencies from API`);
+                return true;
+            }
+        } catch (error) {
+            console.error('Error loading rates:', error);
+            document.getElementById('rateStatus').innerHTML = '● Offline';
+            document.getElementById('rateStatus').className = 'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800';
+        } finally {
+            loading.classList.add('hidden');
+        }
+        return false;
+    }
+
+    async function refreshRates() {
+        const refreshBtn = document.getElementById('refreshBtn');
+        const refreshIcon = document.getElementById('refreshIcon');
+        
+        // Disable button and add spinning animation
+        refreshBtn.disabled = true;
+        refreshIcon.classList.add('animate-spin');
+        
+        const success = await loadRates();
+        
+        if (success) {
+            // Re-populate dropdowns with new currencies
+            const fromValue = document.getElementById('fromCurrency').value;
+            const toValue = document.getElementById('toCurrency').value;
+            populateCurrencyDropdowns(allCurrencies);
+            document.getElementById('fromCurrency').value = fromValue;
+            document.getElementById('toCurrency').value = toValue;
+            
+            // Re-convert with new rates
+            convert();
+            updatePopularPairs();
+        }
+        
+        // Re-enable button
+        refreshBtn.disabled = false;
+        refreshIcon.classList.remove('animate-spin');
+    }
+
+    function populateCurrencyDropdowns(currencies) {
+        const fromSelect = document.getElementById('fromCurrency');
+        const toSelect = document.getElementById('toCurrency');
+        
+        // Save current selections
+        const fromValue = fromSelect.value || 'USD';
+        const toValue = toSelect.value || 'PKR';
+        
+        // Clear and populate
+        fromSelect.innerHTML = '';
+        toSelect.innerHTML = '';
+        
+        // Priority currencies at top
+        const priority = ['USD', 'EUR', 'GBP', 'PKR', 'INR', 'SAR', 'AED', 'JPY', 'CNY', 'CAD', 'AUD', 'CHF'];
+        const prioritySet = new Set(priority);
+        
+        // Add priority currencies first
+        priority.forEach(code => {
+            if (currencies.includes(code)) {
+                const name = currencyNames[code] || code;
+                fromSelect.add(new Option(`${code} - ${name}`, code));
+                toSelect.add(new Option(`${code} - ${name}`, code));
+            }
+        });
+        
+        // Add separator
+        fromSelect.add(new Option('─────────────', '', true, true));
+        fromSelect.options[fromSelect.options.length - 1].disabled = true;
+        toSelect.add(new Option('─────────────', '', true, true));
+        toSelect.options[toSelect.options.length - 1].disabled = true;
+        
+        // Add remaining currencies
+        currencies.filter(c => !prioritySet.has(c)).forEach(code => {
+            const name = currencyNames[code] || code;
+            fromSelect.add(new Option(`${code} - ${name}`, code));
+            toSelect.add(new Option(`${code} - ${name}`, code));
+        });
+        
+        // Restore selections
+        fromSelect.value = fromValue;
+        toSelect.value = toValue;
+    }
+
+    function filterCurrencies(type) {
+        const searchInput = document.getElementById(type + 'Search');
+        const select = document.getElementById(type + 'Currency');
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        if (!searchTerm) {
+            populateCurrencyDropdowns(allCurrencies);
+            return;
+        }
+        
+        const filtered = allCurrencies.filter(code => {
+            const name = (currencyNames[code] || '').toLowerCase();
+            return code.toLowerCase().includes(searchTerm) || name.includes(searchTerm);
+        });
+        
+        const currentValue = select.value;
+        select.innerHTML = '';
+        
+        filtered.forEach(code => {
+            const name = currencyNames[code] || code;
+            select.add(new Option(`${code} - ${name}`, code));
+        });
+        
+        if (filtered.includes(currentValue)) {
+            select.value = currentValue;
+        } else if (filtered.length > 0) {
+            select.value = filtered[0];
+        }
+    }
+
+    // Client-side conversion using cached rates (INSTANT!)
+    function convert() {
+        const amount = parseFloat(document.getElementById('amount').value);
+        const fromCurrency = document.getElementById('fromCurrency').value;
+        const toCurrency = document.getElementById('toCurrency').value;
+
+        if (isNaN(amount) || amount <= 0 || !fromCurrency || !toCurrency) {
+            document.getElementById('result').value = '';
+            document.getElementById('rateInfo').classList.add('hidden');
+            return;
+        }
+
+        // Check if we have cached rates
+        if (!cachedRates || Object.keys(cachedRates).length === 0) {
+            document.getElementById('result').value = 'Loading...';
+            return;
+        }
+
+        // Get rates (all cached rates are USD-based)
+        const fromRate = cachedRates[fromCurrency];
+        const toRate = cachedRates[toCurrency];
+
+        if (!fromRate || !toRate) {
+            document.getElementById('result').value = 'N/A';
+            return;
+        }
+
+        // Convert: amount in fromCurrency -> USD -> toCurrency
+        // If fromCurrency is USD, fromRate = 1
+        // rate = toRate / fromRate
+        const rate = toRate / fromRate;
+        const result = amount * rate;
+
+        document.getElementById('result').value = result.toFixed(2);
+        document.getElementById('exchangeRate').textContent = `1 ${fromCurrency} = ${rate.toFixed(6)} ${toCurrency}`;
+        document.getElementById('rateInfo').classList.remove('hidden');
+    }
+
+    // Update popular pairs using cached rates (no API calls!)
+    function updatePopularPairs() {
+        const container = document.getElementById('popularPairs');
+        container.innerHTML = '';
+
+        if (!cachedRates || Object.keys(cachedRates).length === 0) {
+            container.innerHTML = '<p class="text-[var(--color-text-medium)]">Loading rates...</p>';
+            return;
+        }
+
+        for (const pair of popularPairs) {
+            const fromRate = cachedRates[pair.from] || 1;
+            const toRate = cachedRates[pair.to] || 1;
+            const rate = toRate / fromRate;
+
+            const div = document.createElement('div');
+            div.className = 'p-3 bg-[var(--color-bg)] rounded cursor-pointer hover:bg-opacity-80 transition-colors';
+            div.innerHTML = `
+                <p class="text-sm text-[var(--color-text-medium)]">${pair.name}</p>
+                <p class="font-semibold">1 ${pair.from} = ${rate.toFixed(4)} ${pair.to}</p>
+            `;
+            div.onclick = () => {
+                document.getElementById('fromCurrency').value = pair.from;
+                document.getElementById('toCurrency').value = pair.to;
+                document.getElementById('fromSearch').value = '';
+                document.getElementById('toSearch').value = '';
+                populateCurrencyDropdowns(allCurrencies);
+                document.getElementById('fromCurrency').value = pair.from;
+                document.getElementById('toCurrency').value = pair.to;
+                convert();
+            };
+            container.appendChild(div);
+        }
+    }
+</script>
+}

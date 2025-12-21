@@ -1,0 +1,397 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "Permutation & Combination Calculator",
+    "applicationCategory": "EducationalApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-dice text-primary"></i> Permutation & Combination Calculator
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Calculate nPr (Permutations) and nCr (Combinations) with detailed explanations
+        </p>
+    </div>
+
+    <!-- Calculator Type Selector -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            Select Calculation Type
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="selectType('permutation')" id="btnPermutation" class="calc-type-btn active px-4 py-3 rounded-lg font-medium transition-all">
+                <div class="text-lg font-bold">Permutation (nPr)</div>
+                <div class="text-sm">Order matters</div>
+            </button>
+            <button onclick="selectType('combination')" id="btnCombination" class="calc-type-btn px-4 py-3 rounded-lg font-medium transition-all">
+                <div class="text-lg font-bold">Combination (nCr)</div>
+                <div class="text-sm">Order doesn't matter</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Input Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Enter Values
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    n (Total items)
+                </label>
+                <input type="number" id="n" min="0" step="1" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., 10">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total number of items available</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    r (Items to select)
+                </label>
+                <input type="number" id="r" min="0" step="1" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary" placeholder="e.g., 3">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Number of items to select</p>
+            </div>
+        </div>
+
+        <button onclick="calculate()" class="w-full bg-primary hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105">
+            <i class="fas fa-calculator mr-2"></i> Calculate
+        </button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="hidden">
+        <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-check-circle text-secondary"></i> Result
+            </h2>
+            
+            <div id="formulaDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
+                <!-- Formula will be displayed here -->
+            </div>
+
+            <div id="stepsDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
+                <!-- Steps will be displayed here -->
+            </div>
+
+            <div id="answerDisplay" class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                <!-- Answer will be displayed here -->
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_SocialSharing")
+    </div>
+
+    <!-- Info Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Understanding Permutations & Combinations
+        </h2>
+        <div class="space-y-4 text-gray-600 dark:text-gray-300">
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">
+                    <i class="fas fa-sort-numeric-up text-primary mr-2"></i>Permutation (nPr)
+                </h3>
+                <p class="mb-2"><strong>Formula:</strong> P(n, r) = n! / (n - r)!</p>
+                <p class="mb-2"><strong>When to use:</strong> When the order of selection matters</p>
+                <p class="text-sm"><strong>Example:</strong> Selecting 3 winners (1st, 2nd, 3rd) from 10 contestants - order matters because positions are different</p>
+            </div>
+            <div>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">
+                    <i class="fas fa-layer-group text-secondary mr-2"></i>Combination (nCr)
+                </h3>
+                <p class="mb-2"><strong>Formula:</strong> C(n, r) = n! / (r! × (n - r)!)</p>
+                <p class="mb-2"><strong>When to use:</strong> When the order of selection doesn't matter</p>
+                <p class="text-sm"><strong>Example:</strong> Selecting 3 team members from 10 people - order doesn't matter because all members have equal roles</p>
+            </div>
+            <div class="bg-blue-50 dark:bg-gray-700 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">
+                    <i class="fas fa-info-circle text-accent mr-2"></i>Key Points
+                </h3>
+                <ul class="list-disc list-inside space-y-1 text-sm">
+                    <li>n must be greater than or equal to r (n ≥ r)</li>
+                    <li>Both n and r must be non-negative integers</li>
+                    <li>P(n, r) ≥ C(n, r) - Permutations are always greater than or equal to combinations</li>
+                    <li>Factorial (!) means: n! = n × (n-1) × (n-2) × ... × 2 × 1</li>
+                    <li>Special case: 0! = 1</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let currentType = 'permutation';
+
+    // Select calculation type
+    function selectType(type) {
+        currentType = type;
+        
+        // Update button styles
+        document.querySelectorAll('.calc-type-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById('btn' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
+        
+        // Hide results
+        document.getElementById('results').classList.add('hidden');
+    }
+
+    // Calculate factorial
+    // For large numbers, we'll use logarithms to avoid overflow
+    function factorial(n) {
+        if (n < 0) return null;
+        if (n === 0 || n === 1) return 1;
+        
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+            result *= i;
+            // Check for overflow
+            if (result === Infinity) {
+                return Infinity;
+            }
+        }
+        return result;
+    }
+
+    // Calculate using logarithms for large numbers
+    function logFactorial(n) {
+        if (n < 0) return null;
+        if (n === 0 || n === 1) return 0;
+        
+        let result = 0;
+        for (let i = 2; i <= n; i++) {
+            result += Math.log(i);
+        }
+        return result;
+    }
+
+    // Calculate permutation P(n, r) = n! / (n - r)!
+    function calculatePermutation(n, r) {
+        // Try direct calculation first
+        const nFact = factorial(n);
+        const nMinusRFact = factorial(n - r);
+        
+        if (nFact !== Infinity && nMinusRFact !== Infinity) {
+            return nFact / nMinusRFact;
+        }
+        
+        // Use logarithms for large numbers
+        const logResult = logFactorial(n) - logFactorial(n - r);
+        return Math.exp(logResult);
+    }
+
+    // Calculate combination C(n, r) = n! / (r! × (n - r)!)
+    function calculateCombination(n, r) {
+        // Try direct calculation first
+        const nFact = factorial(n);
+        const rFact = factorial(r);
+        const nMinusRFact = factorial(n - r);
+        
+        if (nFact !== Infinity && rFact !== Infinity && nMinusRFact !== Infinity) {
+            return nFact / (rFact * nMinusRFact);
+        }
+        
+        // Use logarithms for large numbers
+        const logResult = logFactorial(n) - logFactorial(r) - logFactorial(n - r);
+        return Math.exp(logResult);
+    }
+
+    // Main calculation function
+    function calculate() {
+        const n = parseInt(document.getElementById('n').value);
+        const r = parseInt(document.getElementById('r').value);
+        
+        // Validation
+        if (isNaN(n) || isNaN(r)) {
+            alert('Please enter valid numbers for both n and r.');
+            return;
+        }
+        
+        if (n < 0 || r < 0) {
+            alert('Both n and r must be non-negative integers.');
+            return;
+        }
+        
+        if (r > n) {
+            alert('r cannot be greater than n (r must be ≤ n).');
+            return;
+        }
+        
+        if (currentType === 'permutation') {
+            calculateAndDisplayPermutation(n, r);
+        } else {
+            calculateAndDisplayCombination(n, r);
+        }
+    }
+
+    // Calculate and display permutation
+    function calculateAndDisplayPermutation(n, r) {
+        const result = calculatePermutation(n, r);
+        
+        // Display formula
+        document.getElementById('formulaDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Formula:</h3>
+            <p class="text-lg">P(${n}, ${r}) = ${n}! / (${n} - ${r})! = ${n}! / ${n - r}!</p>
+        `;
+        
+        // Display steps
+        let stepsHtml = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Step-by-Step Calculation:</h3>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Identify values: n = ${n}, r = ${r}</li>
+                <li>Apply permutation formula: P(n, r) = n! / (n - r)!</li>
+        `;
+        
+        if (n <= 20) {
+            // Show factorial calculations for smaller numbers
+            const nFact = factorial(n);
+            const nMinusRFact = factorial(n - r);
+            stepsHtml += `
+                <li>Calculate ${n}! = ${formatNumber(nFact)}</li>
+                <li>Calculate (${n} - ${r})! = ${n - r}! = ${formatNumber(nMinusRFact)}</li>
+                <li>Divide: ${formatNumber(nFact)} / ${formatNumber(nMinusRFact)} = ${formatNumber(result)}</li>
+            `;
+        } else {
+            // For large numbers, show simplified calculation
+            stepsHtml += `
+                <li>For large values, calculate: ${n} × ${n-1} × ${n-2} × ... × ${n-r+1}</li>
+                <li>Result = ${formatNumber(result)}</li>
+            `;
+        }
+        
+        stepsHtml += '</ol>';
+        document.getElementById('stepsDisplay').innerHTML = stepsHtml;
+        
+        // Display answer
+        document.getElementById('answerDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Answer:</h3>
+            <p class="text-3xl font-bold text-primary mb-2">P(${n}, ${r}) = ${formatNumber(result)}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                There are ${formatNumber(result)} different ways to arrange ${r} items from ${n} items (order matters).
+            </p>
+        `;
+        
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Calculate and display combination
+    function calculateAndDisplayCombination(n, r) {
+        const result = calculateCombination(n, r);
+        
+        // Display formula
+        document.getElementById('formulaDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Formula:</h3>
+            <p class="text-lg">C(${n}, ${r}) = ${n}! / (${r}! × (${n} - ${r})!) = ${n}! / (${r}! × ${n - r}!)</p>
+        `;
+        
+        // Display steps
+        let stepsHtml = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Step-by-Step Calculation:</h3>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Identify values: n = ${n}, r = ${r}</li>
+                <li>Apply combination formula: C(n, r) = n! / (r! × (n - r)!)</li>
+        `;
+        
+        if (n <= 20) {
+            // Show factorial calculations for smaller numbers
+            const nFact = factorial(n);
+            const rFact = factorial(r);
+            const nMinusRFact = factorial(n - r);
+            stepsHtml += `
+                <li>Calculate ${n}! = ${formatNumber(nFact)}</li>
+                <li>Calculate ${r}! = ${formatNumber(rFact)}</li>
+                <li>Calculate (${n} - ${r})! = ${n - r}! = ${formatNumber(nMinusRFact)}</li>
+                <li>Divide: ${formatNumber(nFact)} / (${formatNumber(rFact)} × ${formatNumber(nMinusRFact)}) = ${formatNumber(result)}</li>
+            `;
+        } else {
+            // For large numbers, show simplified explanation
+            stepsHtml += `
+                <li>For large values, calculate using simplified formula</li>
+                <li>Result = ${formatNumber(result)}</li>
+            `;
+        }
+        
+        stepsHtml += '</ol>';
+        document.getElementById('stepsDisplay').innerHTML = stepsHtml;
+        
+        // Display answer
+        document.getElementById('answerDisplay').innerHTML = `
+            <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Answer:</h3>
+            <p class="text-3xl font-bold text-primary mb-2">C(${n}, ${r}) = ${formatNumber(result)}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                There are ${formatNumber(result)} different ways to select ${r} items from ${n} items (order doesn't matter).
+            </p>
+        `;
+        
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Format large numbers with commas
+    function formatNumber(num) {
+        if (num === Infinity) return '∞ (Very large number)';
+        if (num >= 1e15) {
+            return num.toExponential(2);
+        }
+        return Math.round(num).toLocaleString();
+    }
+</script>
+
+<!-- In-Content Ad -->
+@await Html.PartialAsync("_AdInContent")
+
+<style>
+    .calc-type-btn {
+        background: #f3f4f6;
+        border: 2px solid transparent;
+        color: #4b5563;
+    }
+    
+    .calc-type-btn:hover {
+        background: #e5e7eb;
+        transform: translateY(-2px);
+    }
+    
+    .calc-type-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+        border-color: #4A90E2;
+    }
+    
+    .dark .calc-type-btn {
+        background: #374151;
+        color: #d1d5db;
+    }
+    
+    .dark .calc-type-btn:hover {
+        background: #4b5563;
+    }
+    
+    .dark .calc-type-btn.active {
+        background: linear-gradient(135deg, #4A90E2, #50E3C2);
+        color: white;
+    }
+</style>
+}

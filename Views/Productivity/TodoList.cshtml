@@ -1,0 +1,566 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
+}
+
+<!-- SEO & Schema -->
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "SoftwareApplication",
+    "name": "To-Do List Manager",
+    "applicationCategory": "UtilityApplication",
+    "description": "@Model.MetaDescription",
+    "operatingSystem": "Any",
+    "offers": {
+        "@@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    }
+}
+</script>
+
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
+            <i class="fas fa-tasks text-primary"></i> To-Do List
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+            Organize and prioritize your daily tasks
+        </p>
+    </div>
+
+    <!-- Add Task Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            <i class="fas fa-plus-circle text-primary"></i> Add New Task
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            <input type="text" id="taskTitle" placeholder="What needs to be done?" class="md:col-span-6 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            
+            <select id="taskPriority" class="md:col-span-2 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+            </select>
+            
+            <select id="taskCategory" class="md:col-span-2 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                <option value="">No Category</option>
+                <option value="work">Work</option>
+                <option value="personal">Personal</option>
+                <option value="shopping">Shopping</option>
+                <option value="health">Health</option>
+                <option value="other">Other</option>
+            </select>
+            
+            <button onclick="addTask()" class="md:col-span-2 bg-primary hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-200">
+                <i class="fas fa-plus mr-2"></i> Add
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters and Stats -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+            <div class="flex gap-2">
+                <button onclick="filterTasks('all')" class="filter-btn bg-gray-100 dark:bg-gray-700 hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition-all active" data-filter="all">
+                    All (<span id="countAll">0</span>)
+                </button>
+                <button onclick="filterTasks('active')" class="filter-btn bg-gray-100 dark:bg-gray-700 hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition-all" data-filter="active">
+                    Active (<span id="countActive">0</span>)
+                </button>
+                <button onclick="filterTasks('completed')" class="filter-btn bg-gray-100 dark:bg-gray-700 hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition-all" data-filter="completed">
+                    Completed (<span id="countCompleted">0</span>)
+                </button>
+            </div>
+            
+            <div class="flex gap-2">
+                <select id="sortBy" onchange="renderTasks()" class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="priority">Priority</option>
+                    <option value="category">Category</option>
+                </select>
+                <button onclick="clearCompleted()" class="text-sm text-red-600 hover:text-red-700 font-medium px-3 py-2">
+                    <i class="fas fa-trash mr-1"></i> Clear Completed
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks List -->
+    <div id="tasksList" class="space-y-3 mb-6">
+        <!-- Tasks will be rendered here -->
+    </div>
+
+    <div id="noTasks" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-12 text-center hidden">
+        <i class="fas fa-clipboard-check text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+        <p class="text-lg text-gray-500 dark:text-gray-400">No tasks found. Add your first task above!</p>
+    </div>
+
+    @await Html.PartialAsync("_SocialSharing")
+
+    <!-- Tips Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Productivity Tips
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-300">
+            <div class="flex gap-3">
+                <i class="fas fa-lightbulb text-yellow-500 text-lg"></i>
+                <p><strong>Start Small:</strong> Break large tasks into smaller, manageable steps.</p>
+            </div>
+            <div class="flex gap-3">
+                <i class="fas fa-flag text-red-500 text-lg"></i>
+                <p><strong>Prioritize:</strong> Use priority levels to focus on what matters most.</p>
+            </div>
+            <div class="flex gap-3">
+                <i class="fas fa-calendar-check text-green-500 text-lg"></i>
+                <p><strong>Daily Review:</strong> Review and update your tasks every morning.</p>
+            </div>
+            <div class="flex gap-3">
+                <i class="fas fa-check-double text-blue-500 text-lg"></i>
+                <p><strong>Celebrate:</strong> Mark tasks complete to track progress and stay motivated.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            <i class="fas fa-edit text-primary"></i> Edit Task
+        </h3>
+        
+        <input type="hidden" id="editTaskId">
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Task Title</label>
+                <input type="text" id="editTaskTitle" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Priority</label>
+                <select id="editTaskPriority" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+                <select id="editTaskCategory" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary">
+                    <option value="">No Category</option>
+                    <option value="work">Work</option>
+                    <option value="personal">Personal</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="health">Health</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="closeEditModal()" class="px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                Cancel
+            </button>
+            <button onclick="saveEdit()" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg">
+                <i class="fas fa-save mr-2"></i> Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .filter-btn.active {
+        background-color: var(--color-primary);
+        color: white;
+    }
+</style>
+
+@section Scripts {
+    <script src="~/js/productivity.workspace.js" asp-append-version="true"></script>
+    <script>
+        const API_BASE = '/api/productivity';
+        let workspaceId = null;
+        let tasks = [];
+        let currentFilter = 'all';
+        let isLoadingTasks = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTodoList();
+
+            document.getElementById('taskTitle').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    addTask();
+                }
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeEditModal();
+                }
+            });
+        });
+
+        async function initializeTodoList() {
+            try {
+                workspaceId = await ensureWorkspaceId();
+                await loadTasks();
+            } catch (error) {
+                console.error(error);
+                showNotification(error.message || 'Unable to load tasks.', 'error');
+            }
+        }
+
+        async function ensureWorkspaceId() {
+            if (workspaceId) {
+                return workspaceId;
+            }
+
+            if (!window.ProductivityWorkspace) {
+                throw new Error('Workspace helper unavailable.');
+            }
+
+            workspaceId = await window.ProductivityWorkspace.getId();
+            return workspaceId;
+        }
+
+        async function loadTasks() {
+            try {
+                const id = await ensureWorkspaceId();
+                isLoadingTasks = true;
+                const data = await apiRequest(`${API_BASE}/workspaces/${id}/todos`);
+                tasks = data.map(normalizeTodo);
+                renderTasks();
+            } catch (error) {
+                console.error('Failed to load tasks', error);
+                showNotification(error.message || 'Failed to load tasks.', 'error');
+            } finally {
+                isLoadingTasks = false;
+            }
+        }
+
+        async function addTask() {
+            const titleInput = document.getElementById('taskTitle');
+            const priorityInput = document.getElementById('taskPriority');
+            const categoryInput = document.getElementById('taskCategory');
+
+            const title = titleInput.value.trim();
+            if (!title) {
+                showNotification('Please enter a task title.', 'warning');
+                return;
+            }
+
+            try {
+                const payload = {
+                    workspaceId: await ensureWorkspaceId(),
+                    title,
+                    priority: priorityInput.value,
+                    category: categoryInput.value
+                };
+
+                const created = await apiRequest(`${API_BASE}/workspaces/${workspaceId}/todos`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                tasks.unshift(normalizeTodo(created));
+                renderTasks();
+
+                titleInput.value = '';
+                priorityInput.value = 'medium';
+                categoryInput.value = '';
+
+                showNotification('Task added successfully!', 'success');
+            } catch (error) {
+                console.error('Failed to add task', error);
+                showNotification(error.message || 'Failed to add task.', 'error');
+            }
+        }
+
+        async function toggleComplete(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            try {
+                const updated = await apiRequest(`${API_BASE}/todos/${id}/status`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        workspaceId: await ensureWorkspaceId(),
+                        completed: !task.completed
+                    })
+                });
+
+                tasks = tasks.map(t => t.id === id ? normalizeTodo(updated) : t);
+                renderTasks();
+            } catch (error) {
+                console.error('Failed to update task status', error);
+                showNotification(error.message || 'Failed to update task.', 'error');
+            }
+        }
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            document.getElementById('editTaskId').value = id;
+            document.getElementById('editTaskTitle').value = task.title;
+            document.getElementById('editTaskPriority').value = task.priority;
+            document.getElementById('editTaskCategory').value = task.category || '';
+
+            document.getElementById('editModal').classList.remove('hidden');
+            document.getElementById('editModal').classList.add('flex');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editModal').classList.remove('flex');
+        }
+
+        async function saveEdit() {
+            const id = parseInt(document.getElementById('editTaskId').value);
+            const title = document.getElementById('editTaskTitle').value.trim();
+            if (!title) {
+                showNotification('Task title cannot be empty.', 'warning');
+                return;
+            }
+
+            try {
+                const payload = {
+                    workspaceId: await ensureWorkspaceId(),
+                    title,
+                    priority: document.getElementById('editTaskPriority').value,
+                    category: document.getElementById('editTaskCategory').value
+                };
+
+                const updated = await apiRequest(`${API_BASE}/todos/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                tasks = tasks.map(t => t.id === id ? normalizeTodo(updated) : t);
+                renderTasks();
+                closeEditModal();
+                showNotification('Task updated successfully!', 'success');
+            } catch (error) {
+                console.error('Failed to update task', error);
+                showNotification(error.message || 'Failed to update task.', 'error');
+            }
+        }
+
+        async function deleteTask(id) {
+            if (!confirm('Delete this task?')) return;
+
+            try {
+                await apiRequest(`${API_BASE}/todos/${id}?workspaceId=${await ensureWorkspaceId()}`, {
+                    method: 'DELETE'
+                });
+
+                tasks = tasks.filter(t => t.id !== id);
+                renderTasks();
+                showNotification('Task deleted.', 'success');
+            } catch (error) {
+                console.error('Failed to delete task', error);
+                showNotification(error.message || 'Failed to delete task.', 'error');
+            }
+        }
+
+        function filterTasks(filter) {
+            currentFilter = filter;
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-primary', 'text-white');
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active', 'bg-primary', 'text-white');
+                }
+            });
+
+            renderTasks();
+        }
+
+        async function clearCompleted() {
+            const completedCount = tasks.filter(t => t.completed).length;
+            if (completedCount === 0) {
+                showNotification('No completed tasks to clear.', 'info');
+                return;
+            }
+
+            if (!confirm(`Delete ${completedCount} completed task(s)?`)) return;
+
+            try {
+                const id = await ensureWorkspaceId();
+                const result = await apiRequest(`${API_BASE}/workspaces/${id}/todos/clear-completed`, {
+                    method: 'POST'
+                });
+                await loadTasks();
+                const deleted = result?.deleted ?? completedCount;
+                showNotification(`${deleted} task(s) deleted.`, 'success');
+            } catch (error) {
+                console.error('Failed to clear completed tasks', error);
+                showNotification(error.message || 'Failed to clear tasks.', 'error');
+            }
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('tasksList');
+            const noTasks = document.getElementById('noTasks');
+
+            if (isLoadingTasks) {
+                list.innerHTML = '<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 text-center">Loading tasks...</div>';
+                noTasks.classList.add('hidden');
+                return;
+            }
+
+            let filteredTasks = tasks;
+            if (currentFilter === 'active') {
+                filteredTasks = tasks.filter(t => !t.completed);
+            } else if (currentFilter === 'completed') {
+                filteredTasks = tasks.filter(t => t.completed);
+            }
+
+            const sortBy = document.getElementById('sortBy').value;
+            filteredTasks = [...filteredTasks].sort((a, b) => {
+                if (sortBy === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
+                if (sortBy === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+                if (sortBy === 'priority') {
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    return priorityOrder[b.priority] - priorityOrder[a.priority];
+                }
+                if (sortBy === 'category') return (a.category || '').localeCompare(b.category || '');
+                return 0;
+            });
+
+            document.getElementById('countAll').textContent = tasks.length;
+            document.getElementById('countActive').textContent = tasks.filter(t => !t.completed).length;
+            document.getElementById('countCompleted').textContent = tasks.filter(t => t.completed).length;
+
+            if (filteredTasks.length === 0) {
+                list.innerHTML = '';
+                noTasks.classList.remove('hidden');
+                return;
+            }
+
+            noTasks.classList.add('hidden');
+
+            const priorityColors = {
+                high: 'border-red-500 bg-red-50 dark:bg-red-900/20',
+                medium: 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20',
+                low: 'border-green-500 bg-green-50 dark:bg-green-900/20'
+            };
+
+            const categoryIcons = {
+                work: '💼',
+                personal: '👤',
+                shopping: '🛒',
+                health: '🏥',
+                other: '📌'
+            };
+
+            list.innerHTML = filteredTasks.map(task => `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border-l-4 ${priorityColors[task.priority] || priorityColors.medium} ${task.completed ? 'opacity-60' : ''}">
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''}
+                               onchange="toggleComplete(${task.id})"
+                               class="mt-1 w-5 h-5 text-primary rounded focus:ring-2 focus:ring-primary cursor-pointer">
+
+                        <div class="flex-1">
+                            <div class="flex items-start justify-between gap-2 mb-2">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white ${task.completed ? 'line-through' : ''}">
+                                    ${task.category && categoryIcons[task.category] ? categoryIcons[task.category] + ' ' : ''}${escapeHtml(task.title)}
+                                </h3>
+                                <div class="flex gap-2">
+                                    <button onclick="editTask(${task.id})" class="text-primary hover:text-blue-600" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteTask(${task.id})" class="text-red-600 hover:text-red-700" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-2 py-1 rounded ${
+                                    task.priority === 'high' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' :
+                                    task.priority === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                                    'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
+                                }">
+                                    ${task.priority.toUpperCase()}
+                                </span>
+                                ${task.category ? `<span class="px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">${escapeHtml(task.category)}</span>` : ''}
+                                <span class="text-gray-500 dark:text-gray-400">
+                                    ${task.completed && task.completedAt ?
+                                        `✓ Completed ${new Date(task.completedAt).toLocaleDateString()}` :
+                                        `Created ${new Date(task.createdAt).toLocaleDateString()}`
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text ?? '';
+            return div.innerHTML;
+        }
+
+        async function apiRequest(url, options = {}) {
+            const method = options.method || 'GET';
+            const fetchOptions = {
+                method,
+                headers: {
+                    'Accept': 'application/json',
+                    ...(method === 'GET' ? {} : { 'Content-Type': 'application/json' }),
+                    ...(options.headers || {})
+                }
+            };
+
+            if (options.body && method !== 'GET' && method !== 'HEAD') {
+                fetchOptions.body = options.body;
+            }
+
+            const response = await fetch(url, fetchOptions);
+            if (response.status === 204) {
+                return null;
+            }
+
+            if (!response.ok) {
+                const message = await parseError(response);
+                throw new Error(message);
+            }
+
+            return await response.json();
+        }
+
+        async function parseError(response) {
+            try {
+                const data = await response.json();
+                return data.error || data.message || 'Request failed.';
+            } catch {
+                return 'Request failed.';
+            }
+        }
+
+        function normalizeTodo(dto) {
+            return {
+                id: dto.id ?? dto.Id,
+                title: dto.title ?? dto.Title ?? '',
+                priority: (dto.priority ?? dto.Priority ?? 'medium').toLowerCase(),
+                category: dto.category ?? dto.Category ?? '',
+                completed: dto.completed ?? dto.Completed ?? false,
+                createdAt: dto.createdAt ?? dto.CreatedAt,
+                completedAt: dto.completedAt ?? dto.CompletedAt
+            };
+        }
+    </script>
+}
