@@ -131,65 +131,44 @@
                 }
                 @await Html.PartialAsync("_ToolCard", null, pdfMergeCard)
 
-                <!-- Favicon Generator -->
-                <a href="@Url.Action("FaviconGenerator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🖼️
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Favicon Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create
-                        multi-platform icons from text or images.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 border border-orange-100">Assets</span>
-                    </div>
-                </a>
+                @{
+                    var faviconCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Favicon Gen",
+                        ["Description"] = "Create multi-platform icons from text or images.",
+                        ["Url"] = Url.Action("FaviconGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "🖼️",
+                        ["Category"] = "Assets",
+                        ["Badges"] = new[] { "Icons" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, faviconCard)
 
-                <!-- Image Compressor -->
-                <a asp-controller="ImageTools" asp-action="Compressor"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🗜️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Image Compressor</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">
-                        Compress images locally with adjustable quality and preview.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100">Optimization</span>
-                    </div>
-                </a>
+                @{
+                    var imageCompressorCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Image Compressor",
+                        ["Description"] = "Compress images locally with adjustable quality and preview.",
+                        ["Url"] = Url.Action("Compressor", "ImageTools") ?? "#",
+                        ["IconHtml"] = "🗜️",
+                        ["Category"] = "Images",
+                        ["Badges"] = new[] { "Optimization" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, imageCompressorCard)
 
-                <!-- QR Code -->
-                <a href="@Url.Action("QrCodeGenerator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📱
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            QR Code Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
-                        customizable QR codes for any purpose.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-50 text-slate-700 border border-slate-100">Sharing</span>
-                    </div>
-                </a>
+                @{
+                    var qrCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "QR Code Gen",
+                        ["Description"] = "Generate customizable QR codes for any purpose.",
+                        ["Url"] = Url.Action("QrCodeGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "📱",
+                        ["Category"] = "Sharing",
+                        ["Badges"] = new[] { "QR", "Codes" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, qrCard)
             </div>
         </div>
 
