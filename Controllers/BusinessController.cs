@@ -118,4 +118,44 @@ public class BusinessController : Controller
 
         return View(model);
     }
+
+    public IActionResult PakistanTaxCalculator()
+    {
+        var url = Url.Action("PakistanTaxCalculator", "Business", null, Request.Scheme) ?? string.Empty;
+
+        var model = new BasePageViewModel
+        {
+            PageTitle = "Pakistan Salary Tax Calculator 2025-26 | NovaTools Hub",
+            MetaDescription = "Calculate estimated income tax for salaried individuals in Pakistan for tax year 2025-26 using current FBR slabs.",
+            CanonicalUrl = url
+        };
+
+        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+            "Pakistan Salary Tax Calculator",
+            "Estimate Pakistan salary income tax for tax year 2025-26 using current FBR slabs for salaried individuals.",
+            url
+        );
+
+        return View(model);
+    }
+
+    public IActionResult PakistanZakatCalculator()
+    {
+        var url = Url.Action("PakistanZakatCalculator", "Business", null, Request.Scheme) ?? string.Empty;
+
+        var model = new BasePageViewModel
+        {
+            PageTitle = "Pakistan Zakat Calculator (Gold, Cash & Savings) | NovaTools Hub",
+            MetaDescription = "Calculate Zakat on gold, cash, savings and investments in Pakistan using gold and silver nisab thresholds.",
+            CanonicalUrl = url
+        };
+
+        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+            "Pakistan Zakat Calculator",
+            "Calculate Zakat on gold, cash, savings and investments in Pakistan using gold and silver nisab thresholds.",
+            url
+        );
+
+        return View(model);
+    }
 }

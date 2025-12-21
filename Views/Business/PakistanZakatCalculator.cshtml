@@ -1,0 +1,221 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">🕋</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Pakistan Zakat Calculator</h1>
+            <p class="text-xl opacity-90">
+                Calculate Zakat on gold, cash, savings and investments in Pakistan using gold and silver nisab thresholds.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container-custom max-w-5xl">
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8 text-sm text-blue-900 dark:text-blue-100">
+            <strong>Note:</strong>
+            This calculator provides an approximate zakat estimate for general guidance and education.
+            For personal rulings, please consult a qualified scholar and verify current gold/silver prices in Pakistan.
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Assets & Liabilities (PKR)</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="zkGold" class="form-label">Gold (value in PKR)</label>
+                        <input id="zkGold" type="number" min="0" step="1000" class="form-input" placeholder="e.g., 500000" />
+                        <p class="text-xs text-[var(--text-subtle)] mt-1">
+                            If you know the grams or tolas, multiply by the current price per gram or tola in PKR.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="zkSilver" class="form-label">Silver (value in PKR)</label>
+                        <input id="zkSilver" type="number" min="0" step="1000" class="form-input" placeholder="e.g., 100000" />
+                    </div>
+
+                    <div>
+                        <label for="zkCash" class="form-label">Cash & Bank Balances</label>
+                        <input id="zkCash" type="number" min="0" step="1000" class="form-input" placeholder="e.g., 250000" />
+                    </div>
+
+                    <div>
+                        <label for="zkSavings" class="form-label">Savings & Investments</label>
+                        <input id="zkSavings" type="number" min="0" step="1000" class="form-input" placeholder="e.g., 300000" />
+                    </div>
+
+                    <div>
+                        <label for="zkOtherAssets" class="form-label">Other Zakatable Assets</label>
+                        <input id="zkOtherAssets" type="number" min="0" step="1000" class="form-input" placeholder="e.g., business stock" />
+                    </div>
+
+                    <div class="pt-2">
+                        <label for="zkLiabilities" class="form-label">Deductible Liabilities</label>
+                        <input id="zkLiabilities" type="number" min="0" step="1000" class="form-input" placeholder="e.g., short-term debts" />
+                        <p class="text-xs text-[var(--text-subtle)] mt-1">
+                            Include short-term debts that are due and payable at the time of calculation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Nisab & Settings</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="form-label">Preferred Nisab Basis</label>
+                        <select id="zkNisabBasis" class="form-input">
+                            <option value="gold">Gold (87.48g / ~7.5 tola)</option>
+                            <option value="silver">Silver (612.36g / ~52.5 tola)</option>
+                        </select>
+                        <p class="text-xs text-[var(--text-subtle)] mt-1">
+                            Many scholars recommend using the silver nisab as it is lower and benefits more recipients.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="zkGoldNisab" class="form-label">Gold Nisab (PKR)</label>
+                        <input id="zkGoldNisab" type="number" min="0" step="1000" class="form-input" placeholder="e.g., 2,250,000" />
+                        <p class="text-xs text-[var(--text-subtle)] mt-1">
+                            Approximate value of 87.48g of gold in PKR. Update to match current market prices.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="zkSilverNisab" class="form-label">Silver Nisab (PKR)</label>
+                        <input id="zkSilverNisab" type="number" min="0" step="1000" class="form-input" placeholder="e.g., 166,000" />
+                        <p class="text-xs text-[var(--text-subtle)] mt-1">
+                            Approximate value of 612.36g of silver in PKR. Update to match current market prices.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="zkRate" class="form-label">Zakat Rate</label>
+                        <input id="zkRate" type="number" min="0" max="100" step="0.1" value="2.5" class="form-input" />
+                    </div>
+
+                    <button type="button" class="btn btn-primary w-full" onclick="calculateZakatPk()">
+                        Calculate Zakat
+                    </button>
+
+                    <button type="button" class="btn btn-outline w-full" onclick="resetZakatForm()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-8">
+            <h2 class="text-2xl font-bold mb-4">Zakat Summary</h2>
+
+            <div id="zkEmptyState" class="text-center py-10">
+                <div class="text-6xl mb-4 opacity-20">🧮</div>
+                <p class="text-[var(--text-default)]">
+                    Enter your assets, liabilities, and nisab values to see your zakat estimate.
+                </p>
+            </div>
+
+            <div id="zkResults" class="hidden space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                        <div class="text-xs text-emerald-700 dark:text-emerald-300 mb-1">Net Zakatable Wealth</div>
+                        <div id="zkNetWealth" class="text-2xl font-bold text-emerald-900 dark:text-emerald-100">₨0</div>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div class="text-xs text-blue-700 dark:text-blue-300 mb-1">Zakat Due</div>
+                        <div id="zkAmount" class="text-2xl font-bold text-blue-900 dark:text-blue-100">₨0</div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-900/20 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+                        <div class="text-xs text-slate-700 dark:text-slate-300 mb-1">Nisab Threshold Used</div>
+                        <div id="zkNisabUsed" class="text-sm font-semibold text-slate-900 dark:text-slate-100">₨0 (Gold)</div>
+                    </div>
+                </div>
+
+                <div class="space-y-1 text-sm text-[var(--text-default)] mt-4">
+                    <div class="flex justify-between">
+                        <span>Total assets considered</span>
+                        <span id="zkTotalAssets" class="font-semibold">₨0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total liabilities deducted</span>
+                        <span id="zkTotalLiabilities" class="font-semibold">₨0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Meets Nisab?</span>
+                        <span id="zkMeetsNisab" class="font-semibold">No</span>
+                    </div>
+                </div>
+
+                <p class="text-xs text-[var(--text-subtle)] mt-2">
+                    Zakat is usually due after a lunar year (hawl) has passed over your zakatable wealth.
+                    This tool does not track time; it assumes you are calculating on your zakat due date.
+                </p>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function formatPkZk(value) {
+            return '₨' + (value || 0).toLocaleString('en-PK', { maximumFractionDigits: 0 });
+        }
+
+        function calculateZakatPk() {
+            const gold = parseFloat(document.getElementById('zkGold').value || '0');
+            const silver = parseFloat(document.getElementById('zkSilver').value || '0');
+            const cash = parseFloat(document.getElementById('zkCash').value || '0');
+            const savings = parseFloat(document.getElementById('zkSavings').value || '0');
+            const other = parseFloat(document.getElementById('zkOtherAssets').value || '0');
+            const liabilities = parseFloat(document.getElementById('zkLiabilities').value || '0');
+
+            const goldNisab = parseFloat(document.getElementById('zkGoldNisab').value || '0');
+            const silverNisab = parseFloat(document.getElementById('zkSilverNisab').value || '0');
+            const basis = document.getElementById('zkNisabBasis').value;
+            const rate = parseFloat(document.getElementById('zkRate').value || '2.5');
+
+            const totalAssets = gold + silver + cash + savings + other;
+            const netWealth = Math.max(0, totalAssets - liabilities);
+            const nisabValue = basis === 'gold' ? goldNisab : silverNisab;
+
+            const meetsNisab = nisabValue > 0 && netWealth >= nisabValue;
+            const zakatDue = meetsNisab ? netWealth * (rate / 100) : 0;
+
+            document.getElementById('zkNetWealth').textContent = formatPkZk(netWealth);
+            document.getElementById('zkAmount').textContent = formatPkZk(Math.round(zakatDue));
+            document.getElementById('zkNisabUsed').textContent = formatPkZk(nisabValue) + (basis === 'gold' ? ' (Gold)' : ' (Silver)');
+            document.getElementById('zkTotalAssets').textContent = formatPkZk(totalAssets);
+            document.getElementById('zkTotalLiabilities').textContent = formatPkZk(liabilities);
+            document.getElementById('zkMeetsNisab').textContent = meetsNisab ? 'Yes' : 'No';
+
+            document.getElementById('zkEmptyState').classList.add('hidden');
+            document.getElementById('zkResults').classList.remove('hidden');
+        }
+
+        function resetZakatForm() {
+            ['zkGold', 'zkSilver', 'zkCash', 'zkSavings', 'zkOtherAssets', 'zkLiabilities', 'zkGoldNisab', 'zkSilverNisab'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('zkRate').value = '2.5';
+            document.getElementById('zkNisabBasis').value = 'gold';
+            document.getElementById('zkEmptyState').classList.remove('hidden');
+            document.getElementById('zkResults').classList.add('hidden');
+        }
+    </script>
+}
