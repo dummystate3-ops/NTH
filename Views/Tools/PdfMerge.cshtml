@@ -1,0 +1,282 @@
+@{
+    ViewData["PageTitle"] = "PDF Merge Tool | NovaTools Hub";
+    ViewData["MetaDescription"] = "Merge multiple PDF files into a single PDF securely in your browser. Drag, reorder, and download a combined PDF with no server upload.";
+}
+
+<div class="bg-[var(--color-bg)] min-h-screen">
+    <div class="container-custom section-padding">
+        <!-- Header -->
+        <div class="max-w-3xl mx-auto text-center mb-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wide">
+                PDF Tools
+            </div>
+            <h1 class="mt-4 text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text-dark)]">
+                Merge <span class="text-gradient">PDF Files</span>
+            </h1>
+            <p class="mt-3 text-[var(--color-text-medium)] text-base md:text-lg">
+                Combine multiple PDF documents into a single file directly in your browser.
+                Your PDFs never leave your device.
+            </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left: Upload & List -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">1. Add PDF Files</h2>
+                    <p class="text-sm text-[var(--color-text-medium)] mb-4">
+                        Drag &amp; drop PDFs here or click to select. You can reorder them before merging.
+                    </p>
+                    <label for="pdfInput"
+                           id="pdfDropZone"
+                           class="border-2 border-dashed border-[var(--color-border)] rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-colors">
+                        <svg class="w-10 h-10 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <div class="text-sm">
+                            <span class="text-[var(--color-primary)] font-medium">Click to upload</span>
+                            <span class="text-[var(--color-text-medium)]"> or drag and drop</span>
+                        </div>
+                        <p class="text-xs text-[var(--color-text-light)]">
+                            PDF files only, processed locally in your browser.
+                        </p>
+                        <input id="pdfInput" type="file" accept="application/pdf" class="sr-only" multiple />
+                    </label>
+
+                    <ul id="pdfList" class="mt-4 space-y-2 text-sm"></ul>
+
+                    <p id="pdfEmptyHint" class="mt-2 text-xs text-[var(--color-text-light)]">
+                        Tip: Use the drag handle to reorder PDFs before merging.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">2. Merge &amp; Download</h2>
+                    <div class="flex flex-wrap gap-3">
+                        <button id="mergeBtn" type="button" class="btn btn-primary">
+                            Merge PDFs
+                        </button>
+                        <button id="clearPdfBtn" type="button" class="btn btn-outline">
+                            Clear List
+                        </button>
+                    </div>
+                    <p id="mergeStatus" class="mt-3 text-xs text-[var(--color-text-light)]"></p>
+                </div>
+            </div>
+
+            <!-- Right: Info & Privacy -->
+            <aside class="space-y-4">
+                <div class="card">
+                    <h3 class="text-sm font-semibold mb-2">Privacy First</h3>
+                    <p class="text-xs text-[var(--color-text-medium)]">
+                        This PDF merge tool runs entirely in your browser using WebAssembly/JavaScript.
+                        Your PDF files are never uploaded to NovaTools Hub servers.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-semibold mb-2">Best For</h3>
+                    <ul class="list-disc pl-5 text-xs text-[var(--color-text-medium)] space-y-1">
+                        <li>Combining invoices or bank statements</li>
+                        <li>Joining course notes or assignments</li>
+                        <li>Preparing a single report from multiple PDFs</li>
+                    </ul>
+                </div>
+
+                <!-- In-Content Ad -->
+                @await Html.PartialAsync("_AdInContent")
+            </aside>
+        </div>
+
+        <partial name="_SocialSharing" />
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha384-+xJg4R1VYjMblwQjQCH+E4R80HP1XExa2QahX6qWWeXx46cbDmWzE+UI/Ez7JxDH" crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            const pdfInput = document.getElementById('pdfInput');
+            const pdfList = document.getElementById('pdfList');
+            const mergeBtn = document.getElementById('mergeBtn');
+            const clearBtn = document.getElementById('clearPdfBtn');
+            const statusEl = document.getElementById('mergeStatus');
+            const dropZone = document.getElementById('pdfDropZone');
+            const emptyHint = document.getElementById('pdfEmptyHint');
+
+            /** @type {Array<{id:string, file:File}>} */
+            let pdfFiles = [];
+
+            function renderList() {
+                pdfList.innerHTML = '';
+                if (pdfFiles.length === 0) {
+                    emptyHint.classList.remove('hidden');
+                    return;
+                }
+                emptyHint.classList.add('hidden');
+
+                pdfFiles.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-medium)]';
+
+                    const left = document.createElement('div');
+                    left.className = 'flex items-center gap-2';
+                    const handle = document.createElement('button');
+                    handle.type = 'button';
+                    handle.className = 'cursor-move text-[var(--color-text-light)]';
+                    handle.innerHTML = '⋮⋮';
+
+                    const name = document.createElement('span');
+                    name.textContent = item.file.name;
+
+                    const size = document.createElement('span');
+                    size.className = 'text-xs text-[var(--color-text-light)]';
+                    size.textContent = `(${(item.file.size / 1024).toFixed(1)} KB)`;
+
+                    left.appendChild(handle);
+                    left.appendChild(name);
+                    left.appendChild(size);
+
+                    const actions = document.createElement('div');
+                    actions.className = 'flex items-center gap-2';
+
+                    const upBtn = document.createElement('button');
+                    upBtn.type = 'button';
+                    upBtn.className = 'text-xs text-[var(--color-text-medium)] hover:text-[var(--color-primary)]';
+                    upBtn.textContent = 'Up';
+                    upBtn.onclick = () => moveItem(index, index - 1);
+
+                    const downBtn = document.createElement('button');
+                    downBtn.type = 'button';
+                    downBtn.className = 'text-xs text-[var(--color-text-medium)] hover:text-[var(--color-primary)]';
+                    downBtn.textContent = 'Down';
+                    downBtn.onclick = () => moveItem(index, index + 1);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'text-xs text-red-600 hover:text-red-700';
+                    removeBtn.textContent = 'Remove';
+                    removeBtn.onclick = () => removeItem(index);
+
+                    actions.appendChild(upBtn);
+                    actions.appendChild(downBtn);
+                    actions.appendChild(removeBtn);
+
+                    li.appendChild(left);
+                    li.appendChild(actions);
+                    pdfList.appendChild(li);
+                });
+            }
+
+            function moveItem(from, to) {
+                if (to < 0 || to >= pdfFiles.length) return;
+                const item = pdfFiles.splice(from, 1)[0];
+                pdfFiles.splice(to, 0, item);
+                renderList();
+            }
+
+            function removeItem(index) {
+                pdfFiles.splice(index, 1);
+                renderList();
+            }
+
+            function addFiles(files) {
+                const newFiles = Array.from(files).filter(f => f.type === 'application/pdf');
+                if (newFiles.length === 0) {
+                    statusEl.textContent = 'Only PDF files are supported.';
+                    return;
+                }
+                newFiles.forEach(f => {
+                    pdfFiles.push({ id: crypto.randomUUID(), file: f });
+                });
+                renderList();
+                statusEl.textContent = '';
+            }
+
+            pdfInput.addEventListener('change', (e) => {
+                if (e.target.files?.length) {
+                    addFiles(e.target.files);
+                    pdfInput.value = '';
+                }
+            });
+
+            // Drag and drop support
+            ['dragenter', 'dragover'].forEach(evt => {
+                dropZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('border-[var(--color-primary)]', 'bg-[var(--color-primary)]/5');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                dropZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('border-[var(--color-primary)]', 'bg-[var(--color-primary)]/5');
+                });
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const files = e.dataTransfer?.files;
+                if (files && files.length) {
+                    addFiles(files);
+                }
+            });
+
+            clearBtn.addEventListener('click', () => {
+                pdfFiles = [];
+                renderList();
+                statusEl.textContent = 'Cleared all selected PDFs.';
+            });
+
+            mergeBtn.addEventListener('click', async () => {
+                if (pdfFiles.length === 0) {
+                    statusEl.textContent = 'Please add at least two PDF files to merge.';
+                    return;
+                }
+                if (pdfFiles.length === 1) {
+                    statusEl.textContent = 'Add more than one PDF to perform a merge.';
+                    return;
+                }
+                mergeBtn.disabled = true;
+                mergeBtn.textContent = 'Merging...';
+                statusEl.textContent = 'Merging PDFs in your browser. Please wait...';
+
+                try {
+                    const { PDFDocument } = window.PDFLib;
+                    const mergedPdf = await PDFDocument.create();
+
+                    for (const item of pdfFiles) {
+                        const arrayBuffer = await item.file.arrayBuffer();
+                        const srcDoc = await PDFDocument.load(arrayBuffer);
+                        const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+                        copiedPages.forEach(page => mergedPdf.addPage(page));
+                    }
+
+                    const mergedBytes = await mergedPdf.save();
+                    const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                    link.href = url;
+                    link.download = `merged-pdf-${timestamp}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+
+                    statusEl.textContent = 'Merge complete. Your PDF has been downloaded.';
+                } catch (err) {
+                    console.error(err);
+                    statusEl.textContent = 'Failed to merge PDFs. Please try again or reduce file size.';
+                } finally {
+                    mergeBtn.disabled = false;
+                    mergeBtn.textContent = 'Merge PDFs';
+                }
+            });
+
+            renderList();
+        })();
+    </script>
+}

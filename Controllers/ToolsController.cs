@@ -215,6 +215,19 @@ namespace NovaToolsHub.Controllers
             return View();
         }
 
+        // PDF Merge Tool
+        public IActionResult PdfMerge()
+        {
+            SetSeoData("PDF Merge Tool", "Merge multiple PDF files into a single PDF securely in your browser.");
+            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "PDF Merge Tool",
+                "Merge multiple PDF files into a single PDF securely in your browser. No files are uploaded to the server.",
+                $"{Request.Scheme}://{Request.Host}/Tools/PdfMerge",
+                "UtilitySoftware"
+            );
+            return View();
+        }
+
         [HttpPost]
         public IActionResult CalculateDateDifference([FromBody] DateDifferenceRequest request)
         {

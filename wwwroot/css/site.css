@@ -213,6 +213,14 @@
         @apply shadow-[var(--shadow-md)];
     }
 
+    .pill-button {
+        @apply inline-flex items-center justify-center px-4 py-2 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-sm font-medium text-[var(--text-default)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors;
+    }
+
+    .pill-button.is-active {
+        @apply bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-sm;
+    }
+
     .rate-comparison-page .card {
         @apply cursor-auto shadow-[var(--shadow-md)];
     }

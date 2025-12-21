@@ -69,6 +69,16 @@ public class ImageToolsController : Controller
     }
 
     /// <summary>
+    /// GET: Simple Image Compressor tool (client-side only)
+    /// </summary>
+    [HttpGet]
+    [Route("Tools/Image/Compressor")]
+    public IActionResult Compressor()
+    {
+        return View();
+    }
+
+    /// <summary>
     /// GET: Display the Background Remover tool page
     /// </summary>
     [HttpGet]

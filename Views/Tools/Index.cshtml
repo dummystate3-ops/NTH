@@ -172,6 +172,26 @@
                     </div>
                 </a>
 
+                <!-- Image Compressor -->
+                <a asp-controller="ImageTools" asp-action="Compressor"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            🗜️</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Image Compressor</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">
+                        Compress images locally with adjustable quality and preview.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100">Optimization</span>
+                    </div>
+                </a>
+
                 <!-- QR Code -->
                 <a href="@Url.Action("QrCodeGenerator", "Tools")"
                     class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
