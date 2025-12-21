@@ -49,13 +49,29 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    <style>
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            padding: 0.5rem 1rem;
+            background: var(--color-primary);
+            color: #ffffff;
+            border-radius: 0.375rem;
+            z-index: 50;
+        }
+
+        .skip-link:focus {
+            left: 1rem;
+        }
+    </style>
     
     <!-- JSON-LD Schema -->
     @if (ViewBag.JsonLdSchema != null)
     {
-        <script type="application/ld+json">
+        &lt;script type="application/ld+json"&gt;
             @Html.Raw(ViewBag.JsonLdSchema)
-        </script>
+        &lt;/script&gt;
     }
     
     @await RenderSectionAsync("Head", required: false)
@@ -68,6 +84,7 @@
     @await Html.PartialAsync("_AdSenseScript")
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <!-- Header -->
     <header class="bg-[var(--color-surface)] shadow-md sticky top-0 z-50 border-b border-[var(--color-border)]">
         <nav class="container-custom">
@@ -212,7 +229,7 @@
     </header>
 
     <!-- Main Content -->
-    <main>
+    <main id="main-content">
         @RenderBody()
     </main>
     <!-- Footer -->

@@ -27,6 +27,20 @@
     --color-error: #E74C3C;
     --color-info: #4A90E2;
 
+    /* Surface hierarchy */
+    --surface-base: var(--color-bg);
+    --surface-raised: var(--color-surface);
+    --surface-higher: #FFFFFF;
+
+    /* Text semantics */
+    --text-strong: var(--color-text-dark);
+    --text-default: var(--color-text-medium);
+    --text-subtle: var(--color-text-light);
+
+    /* Border semantics */
+    --border-subtle: var(--color-border);
+    --border-strong: #C3D0DD;
+
     /* Shadows */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
