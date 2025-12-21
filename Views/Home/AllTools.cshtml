@@ -301,6 +301,39 @@
                     <p class="text-[var(--color-text-medium)]">Financial calculators and business planning tools</p>
                 </div>
             </div>
+
+            <div class="mb-6">
+                <div class="bg-gradient-to-r from-emerald-50 to-sky-50 dark:from-emerald-900/20 dark:to-sky-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg shadow-sm">
+                            🇵🇰
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-[var(--color-text-dark)]">
+                                Pakistan Finance Tools
+                            </p>
+                            <p class="text-xs text-[var(--color-text-medium)]">
+                                Quickly estimate Pakistan salary tax, zakat, and model loan or savings scenarios.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <a asp-controller="Business" asp-action="PakistanTaxCalculator" class="pill-button is-active">
+                            Salary Tax 2025-26
+                        </a>
+                        <a asp-controller="Business" asp-action="PakistanZakatCalculator" class="pill-button">
+                            Zakat Calculator
+                        </a>
+                        <a asp-controller="Business" asp-action="LoanCalculator" class="pill-button">
+                            Business Loan &amp; EMI
+                        </a>
+                        <a asp-controller="Business" asp-action="CompoundInterest" class="pill-button">
+                            Compound Interest
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <a asp-controller="Business" asp-action="ProfitMargin" class="tool-card group">
                     <div class="tool-icon">[*]</div>
