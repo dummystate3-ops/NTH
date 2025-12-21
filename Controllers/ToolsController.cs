@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NovaToolsHub.Models.ViewModels;
 using NovaToolsHub.Services;
 using NovaToolsHub.Helpers;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace NovaToolsHub.Controllers
@@ -219,12 +220,34 @@ namespace NovaToolsHub.Controllers
         public IActionResult PdfMerge()
         {
             SetSeoData("PDF Merge Tool", "Merge multiple PDF files into a single PDF securely in your browser.");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+            var url = $"{Request.Scheme}://{Request.Host}/Tools/PdfMerge";
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "PDF Merge Tool",
                 "Merge multiple PDF files into a single PDF securely in your browser. No files are uploaded to the server.",
-                $"{Request.Scheme}://{Request.Host}/Tools/PdfMerge",
+                url,
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Do my PDF files get uploaded to the server when I merge them?",
+                    "No. The PDF merge tool runs completely in your browser using JavaScript. Your PDF files are never uploaded to or stored on NovaTools Hub servers."
+                ),
+                (
+                    "Is there a limit to how many PDFs I can merge at once?",
+                    "You can add multiple PDF files and rearrange them before merging. Extremely large files or very long documents may be limited by your browser memory."
+                ),
+                (
+                    "Will the quality or security of my PDFs be affected?",
+                    "The merged PDF is created by combining the pages of your original files without altering their contents. You should avoid uploading confidential PDFs on shared or public devices."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 

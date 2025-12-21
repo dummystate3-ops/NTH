@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NovaToolsHub.Models.ViewModels;
 using NovaToolsHub.Helpers;
+using System.Collections.Generic;
 
 namespace NovaToolsHub.Controllers;
 
@@ -78,11 +79,30 @@ public class BusinessController : Controller
             CanonicalUrl = url
         };
 
-        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+        var financialSchema = SeoHelper.GenerateFinancialServiceSchema(
             "Business Loan Calculator",
             "Calculate business loan EMIs, payment schedules, and total interest with a detailed amortization table.",
             url
         );
+
+        var loanFaqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What is an EMI in a business loan?",
+                "An EMI (Equated Monthly Installment) is the fixed payment you make each period to repay your business loan. It covers both principal and interest based on your loan amount, interest rate, tenure, and payment frequency."
+            ),
+            (
+                "Does this calculator store any of my financial data?",
+                "No. All loan calculations run entirely in your browser and are not sent to or stored on NovaTools Hub servers."
+            ),
+            (
+                "Can I use this calculator for different currencies and payment schedules?",
+                "Yes. You can choose between multiple currencies and payment frequencies such as monthly, quarterly, or annual payments. The EMI and amortization schedule will adjust accordingly."
+            )
+        };
+
+        var loanFaqSchema = SeoHelper.GenerateFaqPageSchema(loanFaqs);
+        ViewBag.JsonLdSchema = $"[{financialSchema},{loanFaqSchema}]";
 
         return View(model);
     }
@@ -98,11 +118,30 @@ public class BusinessController : Controller
             CanonicalUrl = url
         };
 
-        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+        var savingsSchema = SeoHelper.GenerateFinancialServiceSchema(
             "Compound Interest & Savings Calculator",
             "Estimate how your savings grow over time with compound interest and optional monthly contributions.",
             url
         );
+
+        var savingsFaqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What does this compound interest calculator show?",
+                "This calculator projects how your savings can grow over time based on your initial amount, monthly contributions, annual interest rate, compounding frequency, and duration."
+            ),
+            (
+                "Is the result guaranteed by a bank or financial institution?",
+                "No. The projections are for educational purposes only and assume a constant annual rate. Real returns will vary based on market conditions and product fees."
+            ),
+            (
+                "Are my savings inputs sent to the server?",
+                "No. All compound interest calculations happen locally in your browser. NovaTools Hub does not store your amounts, rates, or durations."
+            )
+        };
+
+        var savingsFaqSchema = SeoHelper.GenerateFaqPageSchema(savingsFaqs);
+        ViewBag.JsonLdSchema = $"[{savingsSchema},{savingsFaqSchema}]";
 
         return View(model);
     }
@@ -130,11 +169,30 @@ public class BusinessController : Controller
             CanonicalUrl = url
         };
 
-        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+        var taxSchema = SeoHelper.GenerateFinancialServiceSchema(
             "Pakistan Salary Tax Calculator",
             "Estimate Pakistan salary income tax for tax year 2025-26 using current FBR slabs for salaried individuals.",
             url
         );
+
+        var taxFaqs = new List<(string Question, string Answer)>
+        {
+            (
+                "Which tax year does this Pakistan salary tax calculator use?",
+                "This tool is configured for Pakistan tax year 2025-26 and uses the latest publicly available FBR slabs for salaried individuals."
+            ),
+            (
+                "Does this calculator cover all allowances and exemptions?",
+                "No. The calculator works on your annual taxable salary after any exemptions or allowances. You should adjust your input to reflect taxable income or consult a tax professional."
+            ),
+            (
+                "Is the result an official tax determination?",
+                "No. This is an educational estimate only and does not replace an official FBR calculation or professional advice."
+            )
+        };
+
+        var taxFaqSchema = SeoHelper.GenerateFaqPageSchema(taxFaqs);
+        ViewBag.JsonLdSchema = $"[{taxSchema},{taxFaqSchema}]";
 
         return View(model);
     }
@@ -150,11 +208,30 @@ public class BusinessController : Controller
             CanonicalUrl = url
         };
 
-        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+        var zakatSchema = SeoHelper.GenerateFinancialServiceSchema(
             "Pakistan Zakat Calculator",
             "Calculate Zakat on gold, cash, savings and investments in Pakistan using gold and silver nisab thresholds.",
             url
         );
+
+        var zakatFaqs = new List<(string Question, string Answer)>
+        {
+            (
+                "How does this zakat calculator determine if I meet nisab?",
+                "The calculator compares your net zakatable wealth (after deducting eligible liabilities) with the nisab threshold you enter based on current gold or silver prices."
+            ),
+            (
+                "Does the calculator use live gold and silver prices?",
+                "No. You must provide updated nisab values in PKR based on current gold and silver prices in Pakistan to keep the calculation accurate."
+            ),
+            (
+                "Is this calculator a religious verdict (fatwa)?",
+                "No. It is an educational tool to help with basic zakat estimates. For personal rulings, you should consult a qualified scholar."
+            )
+        };
+
+        var zakatFaqSchema = SeoHelper.GenerateFaqPageSchema(zakatFaqs);
+        ViewBag.JsonLdSchema = $"[{zakatSchema},{zakatFaqSchema}]";
 
         return View(model);
     }

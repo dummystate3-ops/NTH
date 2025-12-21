@@ -100,6 +100,32 @@
                     </div>
                 </div>
 
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">Image Compressor FAQ</h2>
+                    <dl class="space-y-3 text-xs text-[var(--text-subtle)]">
+                        <div>
+                            <dt class="font-semibold text-[var(--text-default)]">What is a good quality setting for web images?</dt>
+                            <dd class="mt-1">
+                                For many websites, a quality between 60 and 85 offers a good balance between visual clarity and file size.
+                                You can experiment with the slider and compare the original and compressed previews.
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="font-semibold text-[var(--text-default)]">Can I increase the resolution of my image?</dt>
+                            <dd class="mt-1">
+                                No. This tool focuses on compression and optional downsizing. It cannot upscale beyond the original resolution.
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="font-semibold text-[var(--text-default)]">Is it safe to compress sensitive images here?</dt>
+                            <dd class="mt-1">
+                                Processing happens locally in your browser, which is safer than uploading images to a remote server.
+                                Still, avoid working with highly sensitive content on shared or public devices.
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+
                 <!-- In-Content Ad -->
                 @await Html.PartialAsync("_AdInContent")
                 <partial name="_SocialSharing" />
