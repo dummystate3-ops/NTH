@@ -160,6 +160,9 @@ logs/
 *.backup
 *.old
 
+# Temporary files
+tmp_*
+
 # (Keep local secrets out of git)
 appsettings.json
 appsettings.Development.json
