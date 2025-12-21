@@ -777,73 +777,72 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a asp-controller="Trending" asp-action="AIWritingAssistant"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🤖</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            AI Writer</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Draft content
-                        with AI.</p>
-                </a>
+                @{
+                    var aiWriterCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "AI Writer",
+                        ["Description"] = "Draft content with AI.",
+                        ["Url"] = Url.Action("AIWritingAssistant", "Trending") ?? "#",
+                        ["IconHtml"] = "🤖",
+                        ["Category"] = "AI",
+                        ["Badges"] = new[] { "Writing", "AI" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, aiWriterCard)
 
-                <a asp-controller="Trending" asp-action="PollBuilder"
-or"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🍳</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Recipe Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create recipes
-                        from ingredients.</p>
-                </a>
+                @{
+                    var pollBuilderCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Poll Builder",
+                        ["Description"] = "Instant polls and surveys.",
+                        ["Url"] = Url.Action("PollBuilder", "Trending") ?? "#",
+                        ["IconHtml"] = "📊",
+                        ["Category"] = "Engagement",
+                        ["Badges"] = new[] { "Polls" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pollBuilderCard)
 
-                <a asp-controller="Trending" asp-action="PollBuilder"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📊</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Poll Builder</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Instant polls
-                        and surveys.</p>
-                </a>
+                @{
+                    var rateCompCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Rate Comp",
+                        ["Description"] = "Compare currencies and units.",
+                        ["Url"] = Url.Action("RateComparison", "Trending") ?? "#",
+                        ["IconHtml"] = "📉",
+                        ["Category"] = "Comparison",
+                        ["Badges"] = new[] { "Rates" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, rateCompCard)
 
-                <a asp-controller="Trending" asp-action="RateComparison"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-pink-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📉</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Rate Comp</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Compare
-                        currencies and units.</p>
-                </a>
+                @{
+                    var encryptionCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Encryption",
+                        ["Description"] = "Secure browser-based encryption.",
+                        ["Url"] = Url.Action("EncryptionTool", "Trending") ?? "#",
+                        ["IconHtml"] = "🔐",
+                        ["Category"] = "Security",
+                        ["Badges"] = new[] { "Crypto" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, encryptionCard)
 
-                <a asp-controller="Trending" asp-action="EncryptionTool"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-500 to-gray-700 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🔐</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Encryption</h3>
-                    </div>
+                @{
+                    var memeCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Meme Gen",
+                        ["Description"] = "Create funny memes.",
+                        ["Url"] = Url.Action("MemeGenerator", "Trending") ?? "#",
+                        ["IconHtml"] = "🤣",
+                        ["Category"] = "Fun",
+                        ["Badges"] = new[] { "Memes" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, memeCard)
+            </div>
+        </div>
                     <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Secure
                         browser-based encryption.</p>
                 </a>
