@@ -66,91 +66,57 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- JSON Formatter -->
-                <a href="@Url.Action("JsonFormatter", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <svg class="w-32 h-32 text-[var(--color-text-dark)]" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                        </svg>
-                    </div>
-                    <div class="flex items-center gap-4 mb-6 relative z-10">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📄
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            JSON Formatter</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Format,
-                        validate, and minify JSON with instant diff reports.</p>
-                    <div class="flex flex-wrap gap-2 relative z-10">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-blue-50 text-blue-700 border border-blue-100">Validation</span>
-                    </div>
-                </a>
+                @{
+                    var jsonCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "JSON Formatter",
+                        ["Description"] = "Format, validate, and minify JSON with instant diff reports.",
+                        ["Url"] = Url.Action("JsonFormatter", "Tools") ?? "#",
+                        ["IconHtml"] = "📄",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Validation" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, jsonCard)
 
-                <!-- Regex Tester -->
-                <a href="@Url.Action("RegexTester", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🔍
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Regex Tester</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Test and debug
-                        regular expressions with real-time matching.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100">Debug</span>
-                    </div>
-                </a>
+                @{
+                    var regexCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Regex Tester",
+                        ["Description"] = "Test and debug regular expressions with real-time matching.",
+                        ["Url"] = Url.Action("RegexTester", "Tools") ?? "#",
+                        ["IconHtml"] = "🔍",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Debug" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, regexCard)
 
-                <!-- Lorem Ipsum -->
-                <a href="@Url.Action("LoremIpsum", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📝
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Lorem Ipsum</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
-                        placeholder text for designs with customizable styles.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-50 text-gray-600 border border-gray-100">Design</span>
-                    </div>
-                </a>
+                @{
+                    var loremCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Lorem Ipsum",
+                        ["Description"] = "Generate placeholder text for designs with customizable styles.",
+                        ["Url"] = Url.Action("LoremIpsum", "Tools") ?? "#",
+                        ["IconHtml"] = "📝",
+                        ["Category"] = "Content",
+                        ["Badges"] = new[] { "Design" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, loremCard)
 
-                <!-- Color Palette -->
-                <a href="@Url.Action("ColorPaletteGenerator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🎨
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Color Palette</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Build
-                        harmonious color schemes with harmony modes.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-pink-50 text-pink-700 border border-pink-100">Colors</span>
-                    </div>
-                </a>
+                @{
+                    var paletteCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Color Palette",
+                        ["Description"] = "Build harmonious color schemes with harmony modes.",
+                        ["Url"] = Url.Action("ColorPaletteGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "🎨",
+                        ["Category"] = "Design",
+                        ["Badges"] = new[] { "Colors" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, paletteCard)
 
                 <!-- Favicon Generator -->
                 <a href="@Url.Action("FaviconGenerator", "Tools")"
