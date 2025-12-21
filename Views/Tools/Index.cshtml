@@ -238,6 +238,38 @@
                         exchange rates for 150+ world currencies.</p>
                 </a>
 
+                <!-- Business Loan & EMI Calculator -->
+                <a asp-controller="Business" asp-action="LoanCalculator"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            💰</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Loan &amp; EMI</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">
+                        Calculate business loan EMIs and amortization schedules.
+                    </p>
+                </a>
+
+                <!-- Compound Interest -->
+                <a asp-controller="Business" asp-action="CompoundInterest"
+                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-lime-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            📈</div>
+                        <h3
+                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
+                            Compound Interest</h3>
+                    </div>
+                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">
+                        Project savings growth with compound interest and contributions.
+                    </p>
+                </a>
+
                 <!-- BMI Calculator -->
                 <a href="@Url.Action("BmiCalculator", "Tools")"
                     class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
