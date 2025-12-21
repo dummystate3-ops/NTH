@@ -19,6 +19,7 @@
 <!-- Tools List -->
 <section class="section-padding">
     <div class="container-custom">
+        <div id="tool-search-status" class="mb-4 text-sm text-[var(--color-text-medium)] hidden"></div>
         
         <!-- Converters -->
         <div id="converters" class="mb-16">
@@ -692,6 +693,39 @@
                 }
             }, 100);
         }
+
+        // Apply search filter when arriving with ?q=...
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+            if (!q) return;
+
+            const query = q.toLowerCase();
+            const cards = Array.from(document.querySelectorAll('.tool-card'));
+            if (!cards.length) return;
+
+            let matchCount = 0;
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    card.classList.remove('hidden');
+                    matchCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const status = document.getElementById('tool-search-status');
+            if (status) {
+                status.classList.remove('hidden');
+                if (matchCount > 0) {
+                    status.textContent = `Showing ${matchCount} tool${matchCount === 1 ? '' : 's'} matching "${q}".`;
+                } else {
+                    status.textContent = `No tools found matching "${q}". Showing all tools.`;
+                    cards.forEach(card => card.classList.remove('hidden'));
+                }
+            }
+        })();
 
         // Add animation on scroll
         const observerOptions = {
