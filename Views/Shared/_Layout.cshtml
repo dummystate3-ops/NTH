@@ -69,9 +69,9 @@
     <!-- JSON-LD Schema -->
     @if (ViewBag.JsonLdSchema != null)
     {
-        &lt;script type="application/ld+json"&gt;
+        <script type="application/ld+json">
             @Html.Raw(ViewBag.JsonLdSchema)
-        &lt;/script&gt;
+        </script>
     }
     
     @await RenderSectionAsync("Head", required: false)

@@ -118,6 +118,19 @@
                 }
                 @await Html.PartialAsync("_ToolCard", null, paletteCard)
 
+                @{
+                    var pdfMergeCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "PDF Merge Tool",
+                        ["Description"] = "Combine multiple PDF documents into a single file in your browser.",
+                        ["Url"] = Url.Action("PdfMerge", "Tools") ?? "#",
+                        ["IconHtml"] = "📚",
+                        ["Category"] = "Documents",
+                        ["Badges"] = new[] { "PDF", "Merge" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pdfMergeCard)
+
                 <!-- Favicon Generator -->
                 <a href="@Url.Action("FaviconGenerator", "Tools")"
                     class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
