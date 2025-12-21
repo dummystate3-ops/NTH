@@ -23,272 +23,464 @@
         <!-- Converters -->
         <div id="converters" class="mb-16">
             <div class="flex items-center gap-4 mb-6">
-                <span class="text-5xl">??</span>
+                <span class="text-5xl">🔄</span>
                 <div>
                     <h2 class="text-3xl font-bold">Converters</h2>
                     <p class="text-[var(--color-text-medium)]">Convert units, currencies, and measurements instantly</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <a asp-controller="Tools" asp-action="UnitConverter" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Unit Converter</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Convert between length, weight, temperature, and more</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Tools" asp-action="CurrencyConverter" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Currency Converter</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Convert between major world currencies</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Tools" asp-action="BmiCalculator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">BMI Calculator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Calculate your body mass index and health metrics</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Tools" asp-action="AgeCalculator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Age Calculator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Calculate age precisely in years, months, and days</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Tools" asp-action="DateCalculator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Date Calculator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Calculate differences and add/subtract days</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Tools" asp-action="PasswordGenerator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Password Generator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Create strong, secure passwords instantly</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Tools" asp-action="QrCodeGenerator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">QR Code Generator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Generate QR codes for text, URLs, and more</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var unitCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Unit Converter",
+                        ["Description"] = "Convert between length, weight, temperature, and more.",
+                        ["Url"] = Url.Action("UnitConverter", "Tools") ?? "#",
+                        ["IconHtml"] = "📏",
+                        ["Category"] = "Converters",
+                        ["Badges"] = new[] { "Units" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, unitCard)
+
+                @{
+                    var currencyCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Currency Converter",
+                        ["Description"] = "Convert between major world currencies.",
+                        ["Url"] = Url.Action("CurrencyConverter", "Tools") ?? "#",
+                        ["IconHtml"] = "💱",
+                        ["Category"] = "Finance",
+                        ["Badges"] = new[] { "FX" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, currencyCard)
+
+                @{
+                    var bmiCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "BMI Calculator",
+                        ["Description"] = "Calculate your body mass index and health metrics.",
+                        ["Url"] = Url.Action("BmiCalculator", "Tools") ?? "#",
+                        ["IconHtml"] = "⚖️",
+                        ["Category"] = "Health",
+                        ["Badges"] = new[] { "BMI" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, bmiCard)
+
+                @{
+                    var ageCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Age Calculator",
+                        ["Description"] = "Calculate age precisely in years, months, and days.",
+                        ["Url"] = Url.Action("AgeCalculator", "Tools") ?? "#",
+                        ["IconHtml"] = "🎂",
+                        ["Category"] = "Utility",
+                        ["Badges"] = new[] { "Age" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, ageCard)
+
+                @{
+                    var dateCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Date Calculator",
+                        ["Description"] = "Calculate differences and add/subtract days.",
+                        ["Url"] = Url.Action("DateCalculator", "Tools") ?? "#",
+                        ["IconHtml"] = "📅",
+                        ["Category"] = "Utility",
+                        ["Badges"] = new[] { "Dates" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, dateCard)
+
+                @{
+                    var passwordCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Password Generator",
+                        ["Description"] = "Create strong, secure passwords instantly.",
+                        ["Url"] = Url.Action("PasswordGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "🔒",
+                        ["Category"] = "Security",
+                        ["Badges"] = new[] { "Passwords" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, passwordCard)
+
+                @{
+                    var qrCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "QR Code Generator",
+                        ["Description"] = "Generate QR codes for text, URLs, and more.",
+                        ["Url"] = Url.Action("QrCodeGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "📱",
+                        ["Category"] = "Sharing",
+                        ["Badges"] = new[] { "QR" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, qrCard)
             </div>
         </div>
 
         <!-- Developer & Content Tools -->
         <div id="developer" class="mb-16">
             <div class="flex items-center gap-4 mb-6">
-                <span class="text-5xl">??</span>
+                <span class="text-5xl">💻</span>
                 <div>
                     <h2 class="text-3xl font-bold">Developer & Content Tools</h2>
                     <p class="text-[var(--color-text-medium)]">Format data, test patterns, and build content assets</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <a asp-controller="Tools" asp-action="JsonFormatter" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">JSON Formatter</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Format, validate, and compare JSON payloads</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var jsonCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "JSON Formatter",
+                        ["Description"] = "Format, validate, and compare JSON payloads.",
+                        ["Url"] = Url.Action("JsonFormatter", "Tools") ?? "#",
+                        ["IconHtml"] = "📄",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Validation" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, jsonCard)
 
-                <a asp-controller="Tools" asp-action="RegexTester" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Regex Tester</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Test regex patterns with live matches</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var regexCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Regex Tester",
+                        ["Description"] = "Test regex patterns with live matches.",
+                        ["Url"] = Url.Action("RegexTester", "Tools") ?? "#",
+                        ["IconHtml"] = "🔍",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Regex" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, regexCard)
 
-                <a asp-controller="Tools" asp-action="LoremIpsum" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Lorem Ipsum Generator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Generate placeholder text for layouts and mocks</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var loremCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Lorem Ipsum Generator",
+                        ["Description"] = "Generate placeholder text for layouts and mocks.",
+                        ["Url"] = Url.Action("LoremIpsum", "Tools") ?? "#",
+                        ["IconHtml"] = "📝",
+                        ["Category"] = "Content",
+                        ["Badges"] = new[] { "Text" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, loremCard)
 
-                <a asp-controller="Tools" asp-action="ColorPaletteGenerator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Color Palette Generator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Create palettes, gradients, and exportable swatches</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var paletteCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Color Palette Generator",
+                        ["Description"] = "Create palettes, gradients, and exportable swatches.",
+                        ["Url"] = Url.Action("ColorPaletteGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "🎨",
+                        ["Category"] = "Design",
+                        ["Badges"] = new[] { "Colors" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, paletteCard)
 
-                <a asp-controller="Tools" asp-action="PdfMerge" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">PDF Merge Tool</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Combine multiple PDF documents into one file</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var pdfMergeCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "PDF Merge Tool",
+                        ["Description"] = "Combine multiple PDF documents into one file directly in your browser.",
+                        ["Url"] = Url.Action("PdfMerge", "Tools") ?? "#",
+                        ["IconHtml"] = "📚",
+                        ["Category"] = "Documents",
+                        ["Badges"] = new[] { "PDF", "Merge" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pdfMergeCard)
             </div>
         </div>
 
         <!-- Math & Education -->
         <div id="math" class="mb-16">
             <div class="flex items-center gap-4 mb-6">
-                <span class="text-5xl">??</span>
+                <span class="text-5xl">📐</span>
                 <div>
                     <h2 class="text-3xl font-bold">Math & Education</h2>
                     <p class="text-[var(--color-text-medium)]">Advanced calculators for mathematical operations</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <a asp-controller="Math" asp-action="EquationSolver" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Equation Solver</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Solve linear, quadratic, and cubic equations with steps</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Math" asp-action="PermutationCombination" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Permutation & Combination</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Calculate permutations and combinations</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Math" asp-action="Cryptography" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Cryptography</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Encrypt and decrypt text with various ciphers</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Math" asp-action="ExpressionEvaluator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Expression Evaluator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Evaluate complex mathematical expressions safely</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Math" asp-action="IndicatorCodes" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Indicator Codes</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Convert between binary, decimal, and hexadecimal</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Math" asp-action="ProblemSolver" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Problem Solver</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Solve common mathematical problems step-by-step</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Math" asp-action="GraphPlotter" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Graph Plotter</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Visualize mathematical functions interactively</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var equationCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Equation Solver",
+                        ["Description"] = "Solve linear, quadratic, and cubic equations with steps.",
+                        ["Url"] = Url.Action("EquationSolver", "Math") ?? "#",
+                        ["IconHtml"] = "📐",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Equations" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, equationCard)
+
+                @{
+                    var permCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Permutation & Combination",
+                        ["Description"] = "Calculate permutations and combinations.",
+                        ["Url"] = Url.Action("PermutationCombination", "Math") ?? "#",
+                        ["IconHtml"] = "🎲",
+                        ["Category"] = "Combinatorics",
+                        ["Badges"] = new[] { "nPr", "nCr" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, permCard)
+
+                @{
+                    var cryptoCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Cryptography",
+                        ["Description"] = "Encrypt and decrypt text with various ciphers.",
+                        ["Url"] = Url.Action("Cryptography", "Math") ?? "#",
+                        ["IconHtml"] = "🗝️",
+                        ["Category"] = "Security",
+                        ["Badges"] = new[] { "Ciphers" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, cryptoCard)
+
+                @{
+                    var exprCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Expression Evaluator",
+                        ["Description"] = "Evaluate complex mathematical expressions safely.",
+                        ["Url"] = Url.Action("ExpressionEvaluator", "Math") ?? "#",
+                        ["IconHtml"] = "🧮",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Expressions" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, exprCard)
+
+                @{
+                    var indicatorCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Indicator Codes",
+                        ["Description"] = "Convert between binary, decimal, and hexadecimal.",
+                        ["Url"] = Url.Action("IndicatorCodes", "Math") ?? "#",
+                        ["IconHtml"] = "🔢",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Binary", "Hex" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, indicatorCard)
+
+                @{
+                    var problemCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Problem Solver",
+                        ["Description"] = "Solve common mathematical problems step-by-step.",
+                        ["Url"] = Url.Action("ProblemSolver", "Math") ?? "#",
+                        ["IconHtml"] = "🧩",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Problems" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, problemCard)
+
+                @{
+                    var graphCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Graph Plotter",
+                        ["Description"] = "Visualize mathematical functions interactively.",
+                        ["Url"] = Url.Action("GraphPlotter", "Math") ?? "#",
+                        ["IconHtml"] = "📈",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Graphs" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, graphCard)
             </div>
         </div>
 
         <!-- Productivity -->
         <div id="productivity" class="mb-16">
             <div class="flex items-center gap-4 mb-6">
-                <span class="text-5xl">?</span>
+                <span class="text-5xl">⚡</span>
                 <div>
                     <h2 class="text-3xl font-bold">Productivity & Utility</h2>
                     <p class="text-[var(--color-text-medium)]">Tools to boost your productivity and efficiency</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Advance Image Tool</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Crop, resize, compress, watermark, and batch download images</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var advImageCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Advance Image Tool",
+                        ["Description"] = "Crop, resize, compress, watermark, and batch download images.",
+                        ["Url"] = Url.Action("AdvancedResizer", "ImageTools") ?? "#",
+                        ["IconHtml"] = "🖼️",
+                        ["Category"] = "Images",
+                        ["Badges"] = new[] { "Batch" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, advImageCard)
 
-                <a asp-controller="ImageTools" asp-action="Compressor" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Image Compressor</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Compress JPG and PNG images locally in your browser</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var compressorCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Image Compressor",
+                        ["Description"] = "Compress JPG and PNG images locally in your browser.",
+                        ["Url"] = Url.Action("Compressor", "ImageTools") ?? "#",
+                        ["IconHtml"] = "🗜️",
+                        ["Category"] = "Images",
+                        ["Badges"] = new[] { "Compression" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, compressorCard)
 
-                <a asp-controller="ImageTools" asp-action="BackgroundRemover" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Background Remover</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Remove backgrounds with AI-powered segmentation</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var bgRemoveCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Background Remover",
+                        ["Description"] = "Remove backgrounds with AI-powered segmentation.",
+                        ["Url"] = Url.Action("BackgroundRemover", "ImageTools") ?? "#",
+                        ["IconHtml"] = "✂️",
+                        ["Category"] = "Images",
+                        ["Badges"] = new[] { "AI" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, bgRemoveCard)
 
-                <a asp-controller="Tools" asp-action="FaviconGenerator" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Favicon Generator</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Create favicon.ico and PWA icons from your logo with safe padding</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var faviconCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Favicon Generator",
+                        ["Description"] = "Create favicon.ico and PWA icons from your logo with safe padding.",
+                        ["Url"] = Url.Action("FaviconGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "📌",
+                        ["Category"] = "Assets",
+                        ["Badges"] = new[] { "Icons" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, faviconCard)
 
-                <a asp-controller="Productivity" asp-action="WorldTime" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">World Time Viewer</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">View current time across major world cities</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="TimeZoneConverter" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Time Zone Converter</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Convert time between different time zones</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="Stopwatch" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Stopwatch</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Precision timing with lap support</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="Notes" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Notes</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Quick notepad with auto-save functionality</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="TextToSpeech" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Text-to-Speech</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Convert text to natural-sounding speech</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="TimeTracker" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Time Tracker</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Track time spent on tasks and projects</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="TodoList" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">To-Do List</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Organize and prioritize your daily tasks</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="PomodoroTimer" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Pomodoro Timer</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Boost focus with the Pomodoro Technique</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
-                
-                <a asp-controller="Productivity" asp-action="KanbanBoard" class="tool-card group">
-                    <div class="tool-icon">[*]</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--color-text-dark)]">Kanban Board</h3>
-                    <p class="text-[var(--color-text-medium)] mb-4">Visual task management with drag-and-drop</p>
-                    <span class="text-[var(--color-primary)] font-medium">Try it now -></span>
-                </a>
+                @{
+                    var worldTimeCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "World Time Viewer",
+                        ["Description"] = "View current time across major world cities.",
+                        ["Url"] = Url.Action("WorldTime", "Productivity") ?? "#",
+                        ["IconHtml"] = "🌍",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Zones" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, worldTimeCard)
+
+                @{
+                    var tzCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Time Zone Converter",
+                        ["Description"] = "Convert time between different time zones.",
+                        ["Url"] = Url.Action("TimeZoneConverter", "Productivity") ?? "#",
+                        ["IconHtml"] = "🌐",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Zones" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, tzCard)
+
+                @{
+                    var stopwatchCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Stopwatch",
+                        ["Description"] = "Precision timing with lap support.",
+                        ["Url"] = Url.Action("Stopwatch", "Productivity") ?? "#",
+                        ["IconHtml"] = "⏱️",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Timer" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, stopwatchCard)
+
+                @{
+                    var notesCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Notes",
+                        ["Description"] = "Quick notepad with auto-save functionality.",
+                        ["Url"] = Url.Action("Notes", "Productivity") ?? "#",
+                        ["IconHtml"] = "📒",
+                        ["Category"] = "Writing",
+                        ["Badges"] = new[] { "Notes" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, notesCard)
+
+                @{
+                    var ttsCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Text-to-Speech",
+                        ["Description"] = "Convert text to natural-sounding speech.",
+                        ["Url"] = Url.Action("TextToSpeech", "Productivity") ?? "#",
+                        ["IconHtml"] = "🗣️",
+                        ["Category"] = "Audio",
+                        ["Badges"] = new[] { "TTS" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, ttsCard)
+
+                @{
+                    var trackerCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Time Tracker",
+                        ["Description"] = "Track time spent on tasks and projects.",
+                        ["Url"] = Url.Action("TimeTracker", "Productivity") ?? "#",
+                        ["IconHtml"] = "⌛",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Tracking" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, trackerCard)
+
+                @{
+                    var todoCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "To-Do List",
+                        ["Description"] = "Organize and prioritize your daily tasks.",
+                        ["Url"] = Url.Action("TodoList", "Productivity") ?? "#",
+                        ["IconHtml"] = "✅",
+                        ["Category"] = "Tasks",
+                        ["Badges"] = new[] { "Todos" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, todoCard)
+
+                @{
+                    var pomodoroCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Pomodoro Timer",
+                        ["Description"] = "Boost focus with the Pomodoro Technique.",
+                        ["Url"] = Url.Action("PomodoroTimer", "Productivity") ?? "#",
+                        ["IconHtml"] = "🍅",
+                        ["Category"] = "Focus",
+                        ["Badges"] = new[] { "Timer" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pomodoroCard)
+
+                @{
+                    var kanbanCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Kanban Board",
+                        ["Description"] = "Visual task management with drag-and-drop.",
+                        ["Url"] = Url.Action("KanbanBoard", "Productivity") ?? "#",
+                        ["IconHtml"] = "📋",
+                        ["Category"] = "Projects",
+                        ["Badges"] = new[] { "Kanban" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, kanbanCard)
             </div>
         </div>
 
