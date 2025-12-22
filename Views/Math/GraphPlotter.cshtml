@@ -1,28 +1,17 @@
 @model NovaToolsHub.Models.ViewModels.BasePageViewModel
-@{
-    ViewData["Title"] = Model.PageTitle;
-    ViewData["MetaDescription"] = Model.MetaDescription;
-    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
-}
-
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Graph Plotter",
-    "applicationCategory": "EducationalApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
 
 <div class="container mx-auto px-4 py-8 max-w-6xl">
+    @{
+        var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+        {
+            ("Home", Url.Action("Index", "Home") ?? "/"),
+            ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+            ("Math & Education", (Url.Action("Index", "Tools") ?? "/Tools") + "#math"),
+            ("Graph Plotter", Url.Action("GraphPlotter", "Math") ?? "#")
+        };
+    }
+    <partial name="_Breadcrumb" model="breadcrumbs" />
+
     <!-- Header -->
     <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
