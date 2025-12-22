@@ -29,12 +29,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult UnitConverter()
         {
             SetSeoData("Unit Converter", "Convert between different units of length, weight, temperature, volume, and more");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Unit Converter",
                 "Convert between different units of length, weight, temperature, volume, and more. Fast, accurate, and easy to use.",
                 $"{Request.Scheme}://{Request.Host}/Tools/UnitConverter",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What types of units can I convert with this unit converter?",
+                    "You can convert between length (millimeters, centimeters, meters, kilometers, inches, feet, yards, miles), weight (milligrams, grams, kilograms, metric tons, ounces, pounds), temperature (Celsius, Fahrenheit, Kelvin), volume (milliliters, liters, cubic meters, gallons, quarts, pints, cups, fluid ounces), area (square millimeters, square centimeters, square meters, square kilometers, square inches, square feet, square yards, acres, hectares), and speed (meters/second, kilometers/hour, miles/hour, knots)."
+                ),
+                (
+                    "How accurate are the unit conversions?",
+                    "Conversions are calculated using standard conversion constants and returned to several decimal places. For most everyday and educational use cases this level of precision is more than sufficient, but you should always consult official standards for critical engineering or scientific work."
+                ),
+                (
+                    "Do I need to sign up or upload any files to use the unit converter?",
+                    "No account or file upload is required. You simply enter a value, choose the source and target units, and the converter returns the result instantly in your browser."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -57,14 +78,29 @@ namespace NovaToolsHub.Controllers
         public IActionResult CurrencyConverter()
         {
             SetSeoData("Currency Converter", "Convert between major world currencies with live exchange rates");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Currency Converter",
                 "Convert between major world currencies with live exchange rates. Real-time currency conversion tool.",
                 $"{Request.Scheme}://{Request.Host}/Tools/CurrencyConverter",
                 "FinanceApplication"
             );
-            return View();
-        }
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How often are currency rates updated in this converter?",
+                    "Exchange rates are fetched from the CurrencyFreaks API and cached for a short period to keep the tool fast and reliable. This is suitable for general reference and quick comparisons, but intraday trading or large transfers should always use rates quoted directly by your bank or payment provider."
+                ),
+                (
+                    "Why does the amount I see here differ from my bank's conversion rate?",
+                    "Banks and payment providers typically add fees or markups on top of mid-market rates. Our currency converter uses API rates without additional fees, so the numbers may differ from what you are actually charged."
+                ),
+                (
+                    "Can I use this currency converter for financial or tax decisions?",
+                    "This converter is intended for informational purposes only. It is helpful for quick estimates, but you should always rely on official statements or your bank's quoted rates for binding financial, accounting, or tax decisions."
+                )
+ }
 
         [HttpPost]
         public async Task<IActionResult> ConvertCurrency([FromBody] CurrencyConversionRequest request)
@@ -135,14 +171,19 @@ namespace NovaToolsHub.Controllers
         public IActionResult BmiCalculator()
         {
             SetSeoData("BMI Calculator", "Calculate your Body Mass Index (BMI) and understand your health status");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "BMI Calculator",
                 "Calculate your Body Mass Index (BMI) and understand your health status. Free BMI calculator with metric and imperial units.",
                 $"{Request.Scheme}://{Request.Host}/Tools/BmiCalculator",
                 "HealthApplication"
             );
-            return View();
-        }
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Is BMI a perfect measure of health for everyone?",
+                    "No. BMI is a simple height and weight ratio and does not }
 
         [HttpPost]
         public IActionResult CalculateBmi([FromBody] BmiRequest request)
@@ -175,12 +216,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult AgeCalculator()
         {
             SetSeoData("Age Calculator", "Calculate your exact age in years, months, days, and more");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Age Calculator",
                 "Calculate your exact age in years, months, days, hours, and minutes. Precise age calculation tool.",
                 $"{Request.Scheme}://{Request.Host}/Tools/AgeCalculator",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How is age calculated in this age calculator?",
+                    "The tool calculates age based on full calendar years, months, and days between your date of birth and the selected target date. It also shows total months, weeks, and days, so you can see a detailed breakdown."
+                ),
+                (
+                    "Can I calculate my age on a past or future date?",
+                    "Yes. Enter your birth date and a target date in the future or past. The calculator will show how old you were or will be on that specific date, along with a countdown to your next birthday."
+                ),
+                (
+                    "Does the age calculator account for leap years?",
+                    "Yes. The calculation uses actual calendar dates, so leap years and varying month lengths are handled automatically. Time zones are not considered because the tool works at the date level, not the hour level."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -213,12 +275,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult DateCalculator()
         {
             SetSeoData("Date Calculator", "Calculate date differences and add or subtract days from any date");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Date Calculator",
                 "Calculate date differences, add or subtract days, and perform date arithmetic.",
                 $"{Request.Scheme}://{Request.Host}/Tools/DateCalculator",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How does the date difference calculator work?",
+                    "The date difference mode compares two calendar dates and returns the elapsed time in years, months, days, total months, total weeks, and total days. If you enter the dates in reverse order, the tool automatically swaps them so the earlier date comes first."
+                ),
+                (
+                    "What does the add/subtract days feature do?",
+                    "The add/subtract mode lets you pick a starting date, choose whether to add or subtract, and specify a number of days. The calculator then returns the resulting date, which is useful for deadlines, delivery estimates, and event planning."
+                ),
+                (
+                    "Does the date calculator support business days or time zones?",
+                    "This tool currently works with calendar days only and does not exclude weekends or holidays. It also does not adjust for time zones because it operates on dates rather than specific times of day."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -310,12 +393,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult PasswordGenerator()
         {
             SetSeoData("Password Generator", "Generate secure passwords and check password strength with our advanced security tool");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Password Generator",
                 "Generate secure passwords and check password strength with our advanced security tool.",
                 $"{Request.Scheme}://{Request.Host}/Tools/PasswordGenerator",
                 "SecurityApplication"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How strong are the passwords generated by this tool?",
+                    "Generated passwords are created using a cryptographically secure random number generator and can include uppercase letters, lowercase letters, numbers, and symbols. You can also choose longer lengths (for example 16 characters or more) to significantly increase strength."
+                ),
+                (
+                    "Does NovaTools Hub store my generated passwords?",
+                    "The generator endpoint creates a password on the server and returns it over an encrypted HTTPS connection. The application does not intentionally persist the generated passwords, but you should still treat them as sensitive secrets and store them in a trusted password manager."
+                ),
+                (
+                    "Is it safe to check an existing password with the strength checker?",
+                    "The strength checker uses the zxcvbn library in your browser to analyse the password you type. As a best practice you should avoid pasting very sensitive or long-term production passwords into any website, and instead use this feature with sample or similar passwords when possible."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
