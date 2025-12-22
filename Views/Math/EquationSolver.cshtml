@@ -165,9 +165,9 @@
                 <p>Solved using the quadratic formula: x = (-b ± √(b² - 4ac)) / 2a</p>
                 <p class="text-sm mt-1">Discriminant (Δ = b² - 4ac) determines the nature of roots:</p>
                 <ul class="list-disc list-inside text-sm ml-4">
-                    <li>Δ > 0: Two real distinct roots</li>
+                    <li>Δ &gt; 0: Two real distinct roots</li>
                     <li>Δ = 0: One real repeated root</li>
-                    <li>Δ < 0: Two complex conjugate roots</li>
+                    <li>Δ &lt; 0: Two complex conjugate roots</li>
                 </ul>
             </div>
             <div>
@@ -175,6 +175,27 @@
                 <p>Solved using Cardano's formula or numerical methods for real roots.</p>
                 <p class="text-sm mt-1">All cubic equations have at least one real root.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Related tools -->
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Related math tools
+        </h2>
+        <div class="flex flex-wrap gap-3 text-sm">
+            <a asp-controller="Math" asp-action="ProblemSolver" class="pill-button">
+                Interactive Problem Solver
+            </a>
+            <a asp-controller="Math" asp-action="PermutationCombination" class="pill-button">
+                Permutation &amp; Combination
+            </a>
+            <a asp-controller="Math" asp-action="ExpressionEvaluator" class="pill-button">
+                Expression Evaluator
+            </a>
+            <a asp-controller="Math" asp-action="GraphPlotter" class="pill-button">
+                Graph Plotter
+            </a>
         </div>
     </div>
 </div>

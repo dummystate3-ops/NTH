@@ -93,7 +93,7 @@
     <!-- Info Section -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-            Understanding Permutations & Combinations
+            Understanding Permutations &amp; Combinations
         </h2>
         <div class="space-y-4 text-gray-600 dark:text-gray-300">
             <div>
@@ -124,6 +124,24 @@
                     <li>Special case: 0! = 1</li>
                 </ul>
             </div>
+        </div>
+    </div>
+
+    <!-- Related tools -->
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Related probability tools
+        </h2>
+        <div class="flex flex-wrap gap-3 text-sm">
+            <a asp-controller="Math" asp-action="EquationSolver" class="pill-button">
+                Equation Solver
+            </a>
+            <a asp-controller="Math" asp-action="ProblemSolver" class="pill-button">
+                Problem Solver
+            </a>
+            <a asp-controller="Math" asp-action="ExpressionEvaluator" class="pill-button">
+                Expression Evaluator
+            </a>
         </div>
     </div>
 </div>
