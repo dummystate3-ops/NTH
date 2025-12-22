@@ -159,11 +159,25 @@
                                type="search"
                                autocomplete="off"
                                placeholder="Search tools…"
-                               class="w-48 lg:w-64 pl-3 pr-8 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] text-sm text-[var(--color-text-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" />
+                               class="w-40 xl:w-56 pl-3 pr-8 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] text-sm text-[var(--color-text-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" />
                         <svg class="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-[var(--color-text-medium)] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"></path>
                         </svg>
                     </form>
+
+                    <!-- Command palette trigger -->
+                    <button type="button"
+                            id="command-palette-trigger"
+                            class="ml-2 hidden xl:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[var(--color-border)] text-xs text-[var(--color-text-medium)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text-dark)]"
+                            aria-label="Open quick tool search (Ctrl+K)">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"></path>
+                        </svg>
+                        <span class="flex items-center gap-1">
+                            <span class="px-1 rounded border border-[var(--color-border)]">Ctrl</span>
+                            <span class="px-1 rounded border border-[var(--color-border)]">K</span>
+                        </span>
+                    </button>
                     
                     <!-- Theme Toggle -->
                     <button class="theme-toggle p-2 rounded-lg hover:bg-[var(--color-bg)] transition-colors" aria-label="Toggle theme">
@@ -570,6 +584,7 @@
             const input = document.getElementById('command-palette-input');
             const resultsContainer = document.getElementById('command-palette-results');
             const closeButton = document.getElementById('command-palette-close');
+            const triggerButton = document.getElementById('command-palette-trigger');
 
             if (!backdrop || !input || !resultsContainer) {
                 return;
@@ -717,6 +732,11 @@
 
             closeButton?.addEventListener('click', function () {
                 closePalette();
+            });
+
+            triggerButton?.addEventListener('click', function (e) {
+                e.preventDefault();
+                openPalette();
             });
 
             backdrop.addEventListener('click', function (e) {
