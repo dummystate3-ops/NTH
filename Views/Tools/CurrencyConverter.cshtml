@@ -5,6 +5,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Currency Converter", Url.Action("CurrencyConverter", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -118,14 +128,7 @@
     </div>
 </div>
 
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-@Html.Raw(SeoHelper.GenerateFinancialServiceSchema(
-    "Currency Converter",
-    "Convert between major world currencies with live exchange rates",
-    Url.Action("CurrencyConverter", "Tools", null, Context.Request.Scheme) ?? ""
-))
-</script>
+
 
 @section Scripts {
 <script>

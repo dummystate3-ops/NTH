@@ -5,6 +5,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Age Calculator", Url.Action("AgeCalculator", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -106,15 +116,7 @@
     </div>
 </div>
 
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
-    "Age Calculator",
-    "Calculate your exact age in years, months, days, weeks, and get countdown to your next birthday",
-    Url.Action("AgeCalculator", "Tools", null, Context.Request.Scheme) ?? "",
-    "Utility"
-))
-</script>
+
 
 @section Scripts {
 <script>
