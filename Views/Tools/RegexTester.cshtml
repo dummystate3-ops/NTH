@@ -35,22 +35,34 @@
 
     <!-- Header Section -->
     <div class="container-custom py-8 lg:py-12">
-        <div class="max-w-4xl mx-auto text-center space-y-4">
-            <div
-                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                </svg>
-                Developer Tools
+        <div class="max-w-4xl mx-auto">
+            @{
+                var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+                {
+                    ("Home", Url.Action("Index", "Home") ?? "/"),
+                    ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                    ("Regex Tester", Url.Action("RegexTester", "Tools") ?? "#")
+                };
+            }
+            <partial name="_Breadcrumb" model="breadcrumb" />
+
+            <div class="text-center space-y-4">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                    </svg>
+                    Developer Tools
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                    Regex <span class="text-gradient">Tester</span> &amp; Debugger
+                </h1>
+                <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                    Write, test, and debug regular expressions with real-time highlighting. See matches instantly as you
+                    type.
+                </p>
             </div>
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
-                Regex <span class="text-gradient">Tester</span> & Debugger
-            </h1>
-            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
-                Write, test, and debug regular expressions with real-time highlighting. See matches instantly as you
-                type.
-            </p>
         </div>
     </div>
 
@@ -248,6 +260,32 @@
                         groups. Click any match to jump to its location in the editor.</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Related Tools, Ad & Social -->
+    <div class="container-custom pb-12 border-t border-[var(--color-border)]">
+        <div class="max-w-5xl mx-auto space-y-6">
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">Related developer tools</h3>
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <a asp-controller="Tools" asp-action="JsonFormatter" class="pill-button">
+                        JSON Formatter
+                    </a>
+                    <a asp-controller="Tools" asp-action="PasswordGenerator" class="pill-button">
+                        Password Generator
+                    </a>
+                    <a asp-controller="Tools" asp-action="QrCodeGenerator" class="pill-button">
+                        QR Code Generator
+                    </a>
+                    <a asp-controller="Tools" asp-action="UnitConverter" class="pill-button">
+                        Unit Converter
+                    </a>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_AdInContent")
+            <partial name="_SocialSharing" />
         </div>
     </div>
 </div>

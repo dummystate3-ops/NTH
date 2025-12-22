@@ -9,22 +9,34 @@
 
     <!-- Header Section -->
     <div class="container-custom py-8 lg:py-10">
-        <div class="max-w-4xl mx-auto text-center space-y-4">
-            <div
-                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
-                    </path>
-                </svg>
-                Design Tools
+        <div class="max-w-4xl mx-auto">
+            @{
+                var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+                {
+                    ("Home", Url.Action("Index", "Home") ?? "/"),
+                    ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                    ("Color Palette Generator", Url.Action("ColorPaletteGenerator", "Tools") ?? "#")
+                };
+            }
+            <partial name="_Breadcrumb" model="breadcrumb" />
+
+            <div class="text-center space-y-4">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                        </path>
+                    </svg>
+                    Design Tools
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                    Color <span class="text-gradient">Palette</span> Generator
+                </h1>
+                <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                    Craft designer-friendly palettes with complementary, analogous, triadic, and monochromatic harmonies.
+                </p>
             </div>
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
-                Color <span class="text-gradient">Palette</span> Generator
-            </h1>
-            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
-                Craft designer-friendly palettes with complementary, analogous, triadic, and monochromatic harmonies.
-            </p>
         </div>
     </div>
 
@@ -244,18 +256,32 @@
         </div>
     </div>
 
-    <!-- Social Sharing -->
+    <!-- Related Tools, Ad & Social -->
     <div class="container-custom pb-12 border-t border-[var(--color-border)] pt-8">
-        <div class="max-w-3xl mx-auto">
+        <div class="max-w-3xl mx-auto space-y-6">
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">Related design &amp; asset tools</h3>
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <a asp-controller="Tools" asp-action="FaviconGenerator" class="pill-button">
+                        Favicon Generator
+                    </a>
+                    <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="pill-button">
+                        Advanced Image Tool
+                    </a>
+                    <a asp-controller="ImageTools" asp-action="Compressor" class="pill-button">
+                        Image Compressor
+                    </a>
+                    <a asp-controller="Tools" asp-action="LoremIpsum" class="pill-button">
+                        Lorem Ipsum Generator
+                    </a>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_AdInContent")
             @await Html.PartialAsync("_SocialSharing")
         </div>
     </div>
 </div>
-
-@if (ViewBag.JsonLdSchema is string schema && !string.IsNullOrWhiteSpace(schema))
-{
-    <script type="application/ld+json">@Html.Raw(schema)</script>
-}
 
 @section Scripts {
     <script>

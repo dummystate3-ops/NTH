@@ -31,23 +31,35 @@
 
     <!-- Header Section -->
     <div class="container-custom py-8 lg:py-12">
-        <div class="max-w-4xl mx-auto text-center space-y-4">
-            <div
-                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                    </path>
-                </svg>
-                Data Tools
+        <div class="max-w-4xl mx-auto">
+            @{
+                var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+                {
+                    ("Home", Url.Action("Index", "Home") ?? "/"),
+                    ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                    ("JSON Formatter", Url.Action("JsonFormatter", "Tools") ?? "#")
+                };
+            }
+            <partial name="_Breadcrumb" model="breadcrumb" />
+
+            <div class="text-center space-y-4">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    Data Tools
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
+                    JSON <span class="text-gradient">Formatter</span> &amp; Validator
+                </h1>
+                <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                    Format, beautify, minify, and validate JSON data with our enterprise-grade editor. Compare differences
+                    side-by-side.
+                </p>
             </div>
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text)]">
-                JSON <span class="text-gradient">Formatter</span> & Validator
-            </h1>
-            <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
-                Format, beautify, minify, and validate JSON data with our enterprise-grade editor. Compare differences
-                side-by-side.
-            </p>
         </div>
     </div>
 
@@ -182,6 +194,32 @@
                         "Diff" mode to compare two JSON documents side-by-side.</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Related Tools, Ad & Social -->
+    <div class="container-custom pb-12 border-t border-[var(--color-border)]">
+        <div class="max-w-5xl mx-auto space-y-6">
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">Related developer tools</h3>
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <a asp-controller="Tools" asp-action="RegexTester" class="pill-button">
+                        Regex Tester
+                    </a>
+                    <a asp-controller="Tools" asp-action="PasswordGenerator" class="pill-button">
+                        Password Generator
+                    </a>
+                    <a asp-controller="Tools" asp-action="QrCodeGenerator" class="pill-button">
+                        QR Code Generator
+                    </a>
+                    <a asp-controller="Tools" asp-action="UnitConverter" class="pill-button">
+                        Unit Converter
+                    </a>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_AdInContent")
+            <partial name="_SocialSharing" />
         </div>
     </div>
 </div>

@@ -5,6 +5,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Date Calculator", Url.Action("DateCalculator", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -140,6 +150,24 @@
             </div>
         </div>
 
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related date &amp; time tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="AgeCalculator" class="pill-button">
+                    Age Calculator
+                </a>
+                <a asp-controller="Tools" asp-action="BmiCalculator" class="pill-button">
+                    BMI Calculator
+                </a>
+                <a asp-controller="Productivity" asp-action="WorldTime" class="pill-button">
+                    World Time Viewer
+                </a>
+                <a asp-controller="Productivity" asp-action="TimeZoneConverter" class="pill-button">
+                    Time Zone Converter
+                </a>
+            </div>
+        </div>
+
         <!-- In-Content Ad -->
         @await Html.PartialAsync("_AdInContent")
 
@@ -149,16 +177,6 @@
         </div>
     </div>
 </div>
-
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
-    "Date Calculator",
-    "Calculate date differences, add or subtract days, and perform date arithmetic",
-    Url.Action("DateCalculator", "Tools", null, Context.Request.Scheme) ?? "",
-    "Utility"
-))
-</script>
 
 @section Scripts {
 <script>

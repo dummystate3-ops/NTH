@@ -5,6 +5,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("BMI Calculator", Url.Action("BmiCalculator", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -134,6 +144,21 @@
             </p>
         </div>
 
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related health &amp; time tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="AgeCalculator" class="pill-button">
+                    Age Calculator
+                </a>
+                <a asp-controller="Tools" asp-action="DateCalculator" class="pill-button">
+                    Date Calculator
+                </a>
+                <a asp-controller="Tools" asp-action="UnitConverter" class="pill-button">
+                    Unit Converter
+                </a>
+            </div>
+        </div>
+
         <!-- In-Content Ad -->
         @await Html.PartialAsync("_AdInContent")
 
@@ -143,16 +168,6 @@
         </div>
     </div>
 </div>
-
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
-    "BMI Calculator",
-    "Calculate your Body Mass Index and get health insights based on your height and weight",
-    Url.Action("BmiCalculator", "Tools", null, Context.Request.Scheme) ?? "",
-    "HealthApplication"
-))
-</script>
 
 @section Scripts {
 <script>

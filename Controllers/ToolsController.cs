@@ -213,6 +213,12 @@ namespace NovaToolsHub.Controllers
         public IActionResult DateCalculator()
         {
             SetSeoData("Date Calculator", "Calculate date differences and add or subtract days from any date");
+            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Date Calculator",
+                "Calculate date differences, add or subtract days, and perform date arithmetic.",
+                $"{Request.Scheme}://{Request.Host}/Tools/DateCalculator",
+                "UtilitySoftware"
+            );
             return View();
         }
 
@@ -300,10 +306,16 @@ namespace NovaToolsHub.Controllers
             }
         }
 
-        // Password Generator & Checker
+        // Password Generator
         public IActionResult PasswordGenerator()
         {
-            SetSeoData("Password Generator", "Generate secure passwords and check password strength");
+            SetSeoData("Password Generator", "Generate secure passwords and check password strength with our advanced security tool");
+            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Password Generator",
+                "Generate secure passwords and check password strength with our advanced security tool.",
+                $"{Request.Scheme}://{Request.Host}/Tools/PasswordGenerator",
+                "SecurityApplication"
+            );
             return View();
         }
 
@@ -739,6 +751,12 @@ namespace NovaToolsHub.Controllers
             SetSeoData(
                 "Lorem Ipsum Generator - Placeholder Text Generator",
                 "Generate Lorem Ipsum placeholder text for your designs and mockups. Customize paragraphs, words, or lists with classic or modern styles."
+            );
+            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Lorem Ipsum Generator",
+                "Generate placeholder text for mockups, wireframes, and design prototypes with customizable length and format.",
+                $"{Request.Scheme}://{Request.Host}/Tools/LoremIpsum",
+                "UtilitySoftware"
             );
             return View();
         }

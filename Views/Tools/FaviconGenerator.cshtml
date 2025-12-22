@@ -6,6 +6,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-7xl mx-auto space-y-8">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Favicon Generator", Url.Action("FaviconGenerator", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <div class="card bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white shadow-xl">
             <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between gap-6">
                 <div class="space-y-3">
@@ -322,6 +332,31 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="container-custom pb-12 border-t border-[var(--color-border)] mt-8">
+    <div class="max-w-4xl mx-auto space-y-6">
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-3">Related brand &amp; asset tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="ColorPaletteGenerator" class="pill-button">
+                    Color Palette Generator
+                </a>
+                <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="pill-button">
+                    Advanced Image Tool
+                </a>
+                <a asp-controller="ImageTools" asp-action="Compressor" class="pill-button">
+                    Image Compressor
+                </a>
+                <a asp-controller="Tools" asp-action="JsonFormatter" class="pill-button">
+                    JSON Formatter
+                </a>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_AdInContent")
+        <partial name="_SocialSharing" />
     </div>
 </div>
 
