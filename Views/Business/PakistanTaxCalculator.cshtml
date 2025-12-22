@@ -1,0 +1,252 @@
+@model BasePageViewModel
+
+@{
+    ViewBag.PageTitle = Model.PageTitle;
+    ViewBag.MetaDescription = Model.MetaDescription;
+    ViewBag.CanonicalUrl = Model.CanonicalUrl;
+}
+
+<section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
+    <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="text-5xl mb-4">🇵🇰</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Pakistan Salary Tax Calculator</h1>
+            <p class="text-xl opacity-90">
+                Estimate your annual and monthly income tax for tax year 2025-26 using current FBR slabs for salaried individuals.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container-custom max-w-5xl">
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8 text-sm text-blue-900 dark:text-blue-100">
+            <strong>Disclaimer:</strong>
+            This tool provides an approximate calculation based on publicly available FBR slabs for salaried individuals for tax year 2025-26.
+            It is for guidance only and is not a substitute for professional tax advice or official FBR calculations.
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Enter Salary Details</h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="annualSalary" class="form-label">Annual Taxable Salary (PKR)</label>
+                        <input id="annualSalary" type="number" min="0" step="1000"
+                               class="form-input"
+                               placeholder="e.g., 1,800,000" />
+                        <p class="text-xs text-[var(--text-subtle)] mt-1">
+                            Use taxable salary after eligible exemptions (if any).
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="isSalaried" class="form-label">Taxpayer Type</label>
+                        <select id="isSalaried" class="form-input">
+                            <option value="salaried">Salaried Individual (default)</option>
+                            <option value="other" disabled>Other (not supported in this version)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="includeSurcharge" class="form-label">High-Income Surcharge</label>
+                        <select id="includeSurcharge" class="form-input">
+                            <option value="yes">Apply 9% surcharge on tax above PKR 10,000,000</option>
+                            <option value="no">Ignore surcharge</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn btn-primary w-full" onclick="calculatePkTax()">
+                        Calculate Tax
+                    </button>
+
+                    <button type="button" class="btn btn-outline w-full" onclick="resetPkTaxForm()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-6">Tax Summary</h2>
+
+                <div id="pkTaxEmpty" class="text-center py-10">
+                    <div class="text-6xl mb-4 opacity-20">📄</div>
+                    <p class="text-[var(--text-default)]">
+                        Enter your annual taxable salary to see estimated tax and take-home pay.
+                    </p>
+                </div>
+
+                <div id="pkTaxResults" class="hidden space-y-4">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div class="text-xs text-blue-700 dark:text-blue-300 mb-1">Annual Tax</div>
+                            <div id="pkAnnualTax" class="text-2xl font-bold text-blue-900 dark:text-blue-100">₨0</div>
+                        </div>
+                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                            <div class="text-xs text-green-700 dark:text-green-300 mb-1">Net Annual Take-Home</div>
+                            <div id="pkNetAnnual" class="text-2xl font-bold text-green-900 dark:text-green-100">₨0</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-50 dark:bg-slate-900/20 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+                            <div class="text-xs text-slate-700 dark:text-slate-300 mb-1">Monthly Tax</div>
+                            <div id="pkMonthlyTax" class="text-xl font-bold text-slate-900 dark:text-slate-100">₨0</div>
+                        </div>
+                        <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                            <div class="text-xs text-emerald-700 dark:text-emerald-300 mb-1">Net Monthly Take-Home</div>
+                            <div id="pkNetMonthly" class="text-xl font-bold text-emerald-900 dark:text-emerald-100">₨0</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-sm text-[var(--text-default)]">
+                        <div class="flex justify-between">
+                            <span>Effective tax rate</span>
+                            <span id="pkEffectiveRate" class="font-semibold">0%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Annual taxable salary used</span>
+                            <span id="pkSalaryUsed" class="font-semibold">₨0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Surcharge applied</span>
+                            <span id="pkSurchargeInfo" class="font-semibold">No</span>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-[var(--text-subtle)] mt-2">
+                        For final liability, please cross-check with the latest FBR circulars or a tax professional.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-3">How the Calculation Works (2025-26, Salaried)</h3>
+            <p class="text-sm text-[var(--text-default)] mb-3">
+                This calculator uses a progressive slab system for salaried individuals (salary &gt; 75% of taxable income).
+                Tax for each slab is calculated as a fixed amount plus a percentage of the amount exceeding the lower bound of that slab.
+            </p>
+            <p class="text-sm text-[var(--text-default)] mb-1">
+                The slabs are implemented as configurable bands in code, so they can be updated centrally when FBR issues new rates.
+            </p>
+        </div>
+
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">Pakistan Salary Tax FAQ</h3>
+            <dl class="space-y-4 text-sm text-[var(--text-default)]">
+                <div>
+                    <dt class="font-semibold text-[var(--text-strong)]">Should I enter gross salary or taxable salary?</dt>
+                    <dd class="mt-1">
+                        Enter your estimated annual taxable salary after allowable exemptions and deductions.
+                        For example, deduct approved contributions or allowances before entering the amount here.
+                    </dd>
+                </div>
+                <div>
+                    <dt class="font-semibold text-[var(--text-strong)]">Does this include tax on bonuses and other income?</dt>
+                    <dd class="mt-1">
+                        You can include bonuses or other taxable employment income in the annual figure you enter,
+                        as long as they fall under salary income for the same tax year.
+                    </dd>
+                </div>
+                <div>
+                    <dt class="font-semibold text-[var(--text-strong)]">What about non-salaried or mixed income?</dt>
+                    <dd class="mt-1">
+                        This version focuses on salaried individuals. If you have mixed or business income,
+                        you should consult a tax adviser or refer to detailed FBR guidance for your specific case.
+                    </dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="card mt-8">
+            <h3 class="text-lg font-bold mb-3">Related Pakistan finance tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Business" asp-action="PakistanZakatCalculator" class="pill-button">
+                    Pakistan Zakat Calculator
+                </a>
+                <a asp-controller="Business" asp-action="LoanCalculator" class="pill-button">
+                    Business Loan &amp; EMI
+                </a>
+                <a asp-controller="Business" asp-action="CompoundInterest" class="pill-button">
+                    Compound Interest &amp; Savings
+                </a>
+            </div>
+        </div>
+
+        <!-- In-Content Ad -->
+        @await Html.PartialAsync("_AdInContent")
+
+        <partial name="_SocialSharing" />
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const pkTaxSlabs = [
+            { min: 0, max: 600000, base: 0, rate: 0 },
+            { min: 600000, max: 1200000, base: 0, rate: 0.01 },
+            { min: 1200000, max: 2200000, base: 6000, rate: 0.11 },
+            { min: 2200000, max: 3200000, base: 116000, rate: 0.23 },
+            { min: 3200000, max: 4100000, base: 346000, rate: 0.30 },
+            // For incomes above 4.1M, treat with a single high slab band using 35% on excess.
+            { min: 4100000, max: Number.MAX_SAFE_INTEGER, base: 610000, rate: 0.35 }
+        ];
+
+        function formatPk(value) {
+            return '₨' + (value || 0).toLocaleString('en-PK', { maximumFractionDigits: 0 });
+        }
+
+        function calculatePkTax() {
+            const salaryInput = document.getElementById('annualSalary');
+            const includeSurcharge = document.getElementById('includeSurcharge').value === 'yes';
+
+            const salary = parseFloat(salaryInput.value || '0');
+
+            if (!salary || salary <= 0) {
+                alert('Please enter a valid annual taxable salary in PKR.');
+                return;
+            }
+
+            let tax = 0;
+
+            const slab = pkTaxSlabs.find(s => salary > s.min && salary <= s.max);
+            if (slab) {
+                tax = slab.base + (salary - slab.min) * slab.rate;
+            } else if (salary > pkTaxSlabs[pkTaxSlabs.length - 1].min) {
+                const top = pkTaxSlabs[pkTaxSlabs.length - 1];
+                tax = top.base + (salary - top.min) * top.rate;
+            }
+
+            let surchargeApplied = false;
+            if (includeSurcharge && salary > 10000000 && tax > 0) {
+                tax = tax * 1.09;
+                surchargeApplied = true;
+            }
+
+            const annualTax = Math.round(tax);
+            const monthlyTax = Math.round(annualTax / 12);
+            const netAnnual = Math.round(salary - annualTax);
+            const netMonthly = Math.round(netAnnual / 12);
+            const effectiveRate = (annualTax / salary) * 100;
+
+            document.getElementById('pkAnnualTax').textContent = formatPk(annualTax);
+            document.getElementById('pkNetAnnual').textContent = formatPk(netAnnual);
+            document.getElementById('pkMonthlyTax').textContent = formatPk(monthlyTax);
+            document.getElementById('pkNetMonthly').textContent = formatPk(netMonthly);
+            document.getElementById('pkEffectiveRate').textContent = effectiveRate.toFixed(2) + '%';
+            document.getElementById('pkSalaryUsed').textContent = formatPk(salary);
+            document.getElementById('pkSurchargeInfo').textContent = surchargeApplied ? 'Yes (9% on tax)' : 'No';
+
+            document.getElementById('pkTaxEmpty').classList.add('hidden');
+            document.getElementById('pkTaxResults').classList.remove('hidden');
+        }
+
+        function resetPkTaxForm() {
+            document.getElementById('annualSalary').value = '';
+            document.getElementById('pkTaxEmpty').classList.remove('hidden');
+            document.getElementById('pkTaxResults').classList.add('hidden');
+        }
+    </script>
+}

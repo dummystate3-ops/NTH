@@ -66,131 +66,109 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- JSON Formatter -->
-                <a href="@Url.Action("JsonFormatter", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <svg class="w-32 h-32 text-[var(--color-text-dark)]" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                        </svg>
-                    </div>
-                    <div class="flex items-center gap-4 mb-6 relative z-10">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📄
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            JSON Formatter</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Format,
-                        validate, and minify JSON with instant diff reports.</p>
-                    <div class="flex flex-wrap gap-2 relative z-10">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-blue-50 text-blue-700 border border-blue-100">Validation</span>
-                    </div>
-                </a>
+                @{
+                    var jsonCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "JSON Formatter",
+                        ["Description"] = "Format, validate, and minify JSON with instant diff reports.",
+                        ["Url"] = Url.Action("JsonFormatter", "Tools") ?? "#",
+                        ["IconHtml"] = "📄",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Validation" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, jsonCard)
 
-                <!-- Regex Tester -->
-                <a href="@Url.Action("RegexTester", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🔍
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Regex Tester</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Test and debug
-                        regular expressions with real-time matching.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100">Debug</span>
-                    </div>
-                </a>
+                @{
+                    var regexCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Regex Tester",
+                        ["Description"] = "Test and debug regular expressions with real-time matching.",
+                        ["Url"] = Url.Action("RegexTester", "Tools") ?? "#",
+                        ["IconHtml"] = "🔍",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Debug" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, regexCard)
 
-                <!-- Lorem Ipsum -->
-                <a href="@Url.Action("LoremIpsum", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📝
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Lorem Ipsum</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
-                        placeholder text for designs with customizable styles.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-gray-50 text-gray-600 border border-gray-100">Design</span>
-                    </div>
-                </a>
+                @{
+                    var loremCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Lorem Ipsum",
+                        ["Description"] = "Generate placeholder text for designs with customizable styles.",
+                        ["Url"] = Url.Action("LoremIpsum", "Tools") ?? "#",
+                        ["IconHtml"] = "📝",
+                        ["Category"] = "Content",
+                        ["Badges"] = new[] { "Design" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, loremCard)
 
-                <!-- Color Palette -->
-                <a href="@Url.Action("ColorPaletteGenerator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🎨
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Color Palette</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Build
-                        harmonious color schemes with harmony modes.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-pink-50 text-pink-700 border border-pink-100">Colors</span>
-                    </div>
-                </a>
+                @{
+                    var paletteCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Color Palette",
+                        ["Description"] = "Build harmonious color schemes with harmony modes.",
+                        ["Url"] = Url.Action("ColorPaletteGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "🎨",
+                        ["Category"] = "Design",
+                        ["Badges"] = new[] { "Colors" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, paletteCard)
 
-                <!-- Favicon Generator -->
-                <a href="@Url.Action("FaviconGenerator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🖼️
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Favicon Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create
-                        multi-platform icons from text or images.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 border border-orange-100">Assets</span>
-                    </div>
-                </a>
+                @{
+                    var pdfMergeCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "PDF Merge Tool",
+                        ["Description"] = "Combine multiple PDF documents into a single file in your browser.",
+                        ["Url"] = Url.Action("PdfMerge", "Tools") ?? "#",
+                        ["IconHtml"] = "📚",
+                        ["Category"] = "Documents",
+                        ["Badges"] = new[] { "PDF", "Merge" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pdfMergeCard)
 
-                <!-- QR Code -->
-                <a href="@Url.Action("QrCodeGenerator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📱
-                        </div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            QR Code Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
-                        customizable QR codes for any purpose.</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span
-                            class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-50 text-slate-700 border border-slate-100">Sharing</span>
-                    </div>
-                </a>
+                @{
+                    var faviconCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Favicon Gen",
+                        ["Description"] = "Create multi-platform icons from text or images.",
+                        ["Url"] = Url.Action("FaviconGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "🖼️",
+                        ["Category"] = "Assets",
+                        ["Badges"] = new[] { "Icons" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, faviconCard)
+
+                @{
+                    var imageCompressorCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Image Compressor",
+                        ["Description"] = "Compress images locally with adjustable quality and preview.",
+                        ["Url"] = Url.Action("Compressor", "ImageTools") ?? "#",
+                        ["IconHtml"] = "🗜️",
+                        ["Category"] = "Images",
+                        ["Badges"] = new[] { "Optimization" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, imageCompressorCard)
+
+                @{
+                    var qrCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "QR Code Gen",
+                        ["Description"] = "Generate customizable QR codes for any purpose.",
+                        ["Url"] = Url.Action("QrCodeGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "📱",
+                        ["Category"] = "Sharing",
+                        ["Badges"] = new[] { "QR", "Codes" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, qrCard)
             </div>
         </div>
 
@@ -208,95 +186,151 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Unit Converter -->
-                <a href="@Url.Action("UnitConverter", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📏</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Unit Converter</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Convert between
-                        length, weight, volume, and more.</p>
-                </a>
+                @{
+                    var unitCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Unit Converter",
+                        ["Description"] = "Convert between length, weight, volume, and more.",
+                        ["Url"] = Url.Action("UnitConverter", "Tools") ?? "#",
+                        ["IconHtml"] = "📏",
+                        ["Category"] = "Converters",
+                        ["Badges"] = new[] { "Units" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, unitCard)
 
-                <!-- Currency Converter -->
-                <a href="@Url.Action("CurrencyConverter", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            💱</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Currency</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Real-time
-                        exchange rates for 150+ world currencies.</p>
-                </a>
+                @{
+                    var currencyCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Currency",
+                        ["Description"] = "Real-time exchange rates for 150+ world currencies.",
+                        ["Url"] = Url.Action("CurrencyConverter", "Tools") ?? "#",
+                        ["IconHtml"] = "💱",
+                        ["Category"] = "Finance",
+                        ["Badges"] = new[] { "FX" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, currencyCard)
 
-                <!-- BMI Calculator -->
-                <a href="@Url.Action("BmiCalculator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-rose-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            ⚖️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            BMI Calculator</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate Body
-                        Mass Index for health insights.</p>
-                </a>
+                @{
+                    var loanEmiCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Loan & EMI",
+                        ["Description"] = "Calculate business loan EMIs and amortization schedules.",
+                        ["Url"] = Url.Action("LoanCalculator", "Business") ?? "#",
+                        ["IconHtml"] = "💰",
+                        ["Category"] = "Finance",
+                        ["Badges"] = new[] { "Loans" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, loanEmiCard)
 
-                <!-- Age Calculator -->
-                <a href="@Url.Action("AgeCalculator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-fuchsia-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🎂</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Age Calculator</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate exact
-                        age in years, months, and days.</p>
-                </a>
+                @{
+                    var compoundCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Compound Interest",
+                        ["Description"] = "Project savings growth with compound interest and contributions.",
+                        ["Url"] = Url.Action("CompoundInterest", "Business") ?? "#",
+                        ["IconHtml"] = "📈",
+                        ["Category"] = "Finance",
+                        ["Badges"] = new[] { "Savings" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, compoundCard)
 
-                <!-- Date Calculator -->
-                <a href="@Url.Action("DateCalculator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📅</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Date Calc</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate
-                        duration between dates or future dates.</p>
-                </a>
+                @{
+                    var pkTaxCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Pakistan Tax",
+                        ["Description"] = "Estimate Pakistan salary income tax for 2025-26.",
+                        ["Url"] = Url.Action("PakistanTaxCalculator", "Business") ?? "#",
+                        ["IconHtml"] = "🇵🇰",
+                        ["Category"] = "Pakistan",
+                        ["Badges"] = new[] { "Tax" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pkTaxCard)
 
-                <!-- Password Generator -->
-                <a href="@Url.Action("PasswordGenerator", "Tools")"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-zinc-600 to-zinc-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🔒</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Password Gen</h3>
+                @{
+                    var bmiCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "BMI Calculator",
+                        ["Description"] = "Calculate Body Mass Index for health insights.",
+                        ["Url"] = Url.Action("BmiCalculator", "Tools") ?? "#",
+                        ["IconHtml"] = "⚖️",
+                        ["Category"] = "Health",
+                        ["Badges"] = new[] { "BMI" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, bmiCard)
+
+                @{
+                    var ageCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Age Calculator",
+                        ["Description"] = "Calculate exact age in years, months, and days.",
+                        ["Url"] = Url.Action("AgeCalculator", "Tools") ?? "#",
+                        ["IconHtml"] = "🎂",
+                        ["Category"] = "Utility",
+                        ["Badges"] = new[] { "Age" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, ageCard)
+
+                @{
+                    var dateCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Date Calc",
+                        ["Description"] = "Calculate duration between dates or future dates.",
+                        ["Url"] = Url.Action("DateCalculator", "Tools") ?? "#",
+                        ["IconHtml"] = "📅",
+                        ["Category"] = "Utility",
+                        ["Badges"] = new[] { "Dates" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, dateCard)
+
+                @{
+                    var passwordCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Password Gen",
+                        ["Description"] = "Generate strong, secure passwords instantly.",
+                        ["Url"] = Url.Action("PasswordGenerator", "Tools") ?? "#",
+                        ["IconHtml"] = "🔒",
+                        ["Category"] = "Security",
+                        ["Badges"] = new[] { "Passwords" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, passwordCard)
+            </div>
+        </div>
+
+        <!-- Pakistan Finance Highlight -->
+        <div class="mb-24 scroll-mt-24">
+            <div class="card bg-gradient-to-r from-emerald-50 to-sky-50 dark:from-emerald-900/20 dark:to-sky-900/20 border border-emerald-200 dark:border-emerald-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-md">
+                        🇵🇰
                     </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Generate
-                        strong, secure passwords instantly.</p>
-                </a>
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight text-[var(--color-text-dark)] mb-1">
+                            Pakistan Finance Tools
+                        </h2>
+                        <p class="text-[var(--color-text-medium)] text-sm md:text-base max-w-xl">
+                            Quickly estimate Pakistan salary income tax for 2025-26 and calculate zakat on gold, cash, and savings using local nisab thresholds.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3 w-full md:w-auto">
+                    <a asp-controller="Business" asp-action="PakistanTaxCalculator"
+                       class="pill-button is-active">
+                        Salary Tax 2025-26
+                    </a>
+                    <a asp-controller="Business" asp-action="PakistanZakatCalculator"
+                       class="pill-button">
+                        Zakat Calculator
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -312,103 +346,96 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a asp-controller="Math" asp-action="EquationSolver"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📐</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Equation Solver</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Solve linear,
-                        quadratic, and cubic equations.</p>
-                </a>
+                @{
+                    var equationCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Equation Solver",
+                        ["Description"] = "Solve linear, quadratic, and cubic equations.",
+                        ["Url"] = Url.Action("EquationSolver", "Math") ?? "#",
+                        ["IconHtml"] = "📐",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Equations" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, equationCard)
 
-                <a asp-controller="Math" asp-action="ProblemSolver"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🧩</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Problem Solver</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">General math
-                        problem solver.</p>
-                </a>
+                @{
+                    var problemCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Problem Solver",
+                        ["Description"] = "General math problem solver.",
+                        ["Url"] = Url.Action("ProblemSolver", "Math") ?? "#",
+                        ["IconHtml"] = "🧩",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Problems" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, problemCard)
 
-                <a asp-controller="Math" asp-action="GraphPlotter"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📈</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Graph Plotter</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Plot and
-                        analyze 2D mathematical functions.</p>
-                </a>
+                @{
+                    var graphCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Graph Plotter",
+                        ["Description"] = "Plot and analyze 2D mathematical functions.",
+                        ["Url"] = Url.Action("GraphPlotter", "Math") ?? "#",
+                        ["IconHtml"] = "📈",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Graphs" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, graphCard)
 
-                <a asp-controller="Math" asp-action="ExpressionEvaluator"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-violet-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🧮</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Evaluator</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Evaluate
-                        complex mathematical expressions.</p>
-                </a>
+                @{
+                    var evaluatorCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Evaluator",
+                        ["Description"] = "Evaluate complex mathematical expressions.",
+                        ["Url"] = Url.Action("ExpressionEvaluator", "Math") ?? "#",
+                        ["IconHtml"] = "🧮",
+                        ["Category"] = "Math",
+                        ["Badges"] = new[] { "Expressions" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, evaluatorCard)
 
-                <a asp-controller="Math" asp-action="PermutationCombination"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-red-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🎲</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Permutation</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate
-                        permutations and combinations.</p>
-                </a>
+                @{
+                    var permutationCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Permutation",
+                        ["Description"] = "Calculate permutations and combinations.",
+                        ["Url"] = Url.Action("PermutationCombination", "Math") ?? "#",
+                        ["IconHtml"] = "🎲",
+                        ["Category"] = "Combinatorics",
+                        ["Badges"] = new[] { "nPr", "nCr" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, permutationCard)
 
-                <a asp-controller="Math" asp-action="Cryptography"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🗝️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Cryptography</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Basic
-                        cryptographic ciphers tool.</p>
-                </a>
+                @{
+                    var cryptoCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Cryptography",
+                        ["Description"] = "Basic cryptographic ciphers tool.",
+                        ["Url"] = Url.Action("Cryptography", "Math") ?? "#",
+                        ["IconHtml"] = "🗝️",
+                        ["Category"] = "Security",
+                        ["Badges"] = new[] { "Ciphers" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, cryptoCard)
 
-                <a asp-controller="Math" asp-action="IndicatorCodes"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-700 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🔢</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Indicator Codes</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Binary,
-                        decimal, and hex conversions.</p>
-                </a>
+                @{
+                    var indicatorCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Indicator Codes",
+                        ["Description"] = "Binary, decimal, and hex conversions.",
+                        ["Url"] = Url.Action("IndicatorCodes", "Math") ?? "#",
+                        ["IconHtml"] = "🔢",
+                        ["Category"] = "Developer",
+                        ["Badges"] = new[] { "Binary", "Hex" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, indicatorCard)
             </div>
         </div>
 
@@ -422,144 +449,135 @@
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a asp-controller="ImageTools" asp-action="AdvancedResizer"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🖼️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Image Resizer</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Resize, crop,
-                        and batch process images.</p>
-                </a>
+                @{
+                    var imageResizerCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Image Resizer",
+                        ["Description"] = "Resize, crop, and batch process images.",
+                        ["Url"] = Url.Action("AdvancedResizer", "ImageTools") ?? "#",
+                        ["IconHtml"] = "🖼️",
+                        ["Category"] = "Images",
+                        ["Badges"] = new[] { "Batch" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, imageResizerCard)
 
-                <a asp-controller="Productivity" asp-action="TodoList"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            ✅</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            To-Do List</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Simple yet
-                        effective task management.</p>
-                </a>
-                <a asp-controller="Productivity" asp-action="KanbanBoard"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📋</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Kanban Board</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Visual project
-                        management with boards.</p>
-                </a>
+                @{
+                    var todoCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "To-Do List",
+                        ["Description"] = "Simple yet effective task management.",
+                        ["Url"] = Url.Action("TodoList", "Productivity") ?? "#",
+                        ["IconHtml"] = "✅",
+                        ["Category"] = "Tasks",
+                        ["Badges"] = new[] { "Todos" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, todoCard)
 
-                <a asp-controller="Productivity" asp-action="Notes"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-yellow-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📒</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Notes</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Quick notepad
-                        with auto-save.</p>
-                </a>
+                @{
+                    var kanbanCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Kanban Board",
+                        ["Description"] = "Visual project management with boards.",
+                        ["Url"] = Url.Action("KanbanBoard", "Productivity") ?? "#",
+                        ["IconHtml"] = "📋",
+                        ["Category"] = "Projects",
+                        ["Badges"] = new[] { "Kanban" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, kanbanCard)
 
-                <a asp-controller="Productivity" asp-action="PomodoroTimer"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🍅</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Pomodoro</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Focus timer
-                        technique.</p>
-                </a>
+                @{
+                    var notesCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Notes",
+                        ["Description"] = "Quick notepad with auto-save.",
+                        ["Url"] = Url.Action("Notes", "Productivity") ?? "#",
+                        ["IconHtml"] = "📒",
+                        ["Category"] = "Writing",
+                        ["Badges"] = new[] { "Notes" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, notesCard)
 
-                <a asp-controller="Productivity" asp-action="TimeTracker"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            ⏱️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Time Tracker</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Track time for
-                        tasks and projects.</p>
-                </a>
+                @{
+                    var pomodoroCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Pomodoro",
+                        ["Description"] = "Focus timer technique.",
+                        ["Url"] = Url.Action("PomodoroTimer", "Productivity") ?? "#",
+                        ["IconHtml"] = "🍅",
+                        ["Category"] = "Focus",
+                        ["Badges"] = new[] { "Timer" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pomodoroCard)
 
-                <a asp-controller="Productivity" asp-action="Stopwatch"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-500 to-gray-700 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            ⏱️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Stopwatch</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Precise timing
-                        with laps.</p>
-                </a>
+                @{
+                    var timeTrackerCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Time Tracker",
+                        ["Description"] = "Track time for tasks and projects.",
+                        ["Url"] = Url.Action("TimeTracker", "Productivity") ?? "#",
+                        ["IconHtml"] = "⏱️",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Tracking" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, timeTrackerCard)
 
-                <a asp-controller="Productivity" asp-action="WorldTime"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🌍</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            World Time</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Current time
-                        across global cities.</p>
-                </a>
+                @{
+                    var stopwatchCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Stopwatch",
+                        ["Description"] = "Precise timing with laps.",
+                        ["Url"] = Url.Action("Stopwatch", "Productivity") ?? "#",
+                        ["IconHtml"] = "⏱️",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Timer" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, stopwatchCard)
 
-                <a asp-controller="Productivity" asp-action="TimeZoneConverter"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🌐</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Time Zone Conv</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Convert calls
-                        across time zones.</p>
-                </a>
+                @{
+                    var worldTimeCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "World Time",
+                        ["Description"] = "Current time across global cities.",
+                        ["Url"] = Url.Action("WorldTime", "Productivity") ?? "#",
+                        ["IconHtml"] = "🌍",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Zones" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, worldTimeCard)
 
-                <a asp-controller="Productivity" asp-action="TextToSpeech"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-purple-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🗣️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Text-to-Speech</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Convert text to
-                        spoken audio.</p>
-                </a>
+                @{
+                    var tzConvCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Time Zone Conv",
+                        ["Description"] = "Convert calls across time zones.",
+                        ["Url"] = Url.Action("TimeZoneConverter", "Productivity") ?? "#",
+                        ["IconHtml"] = "🌐",
+                        ["Category"] = "Time",
+                        ["Badges"] = new[] { "Zones" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, tzConvCard)
+
+                @{
+                    var ttsCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Text-to-Speech",
+                        ["Description"] = "Convert text to spoken audio.",
+                        ["Url"] = Url.Action("TextToSpeech", "Productivity") ?? "#",
+                        ["IconHtml"] = "🗣️",
+                        ["Category"] = "Audio",
+                        ["Badges"] = new[] { "TTS" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, ttsCard)
             </div>
         </div>
 
@@ -575,89 +593,83 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a asp-controller="Business" asp-action="ProfitMargin"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            💰</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Profit Margin</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate
-                        margins and pricing.</p>
-                </a>
+                @{
+                    var profitCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Profit Margin",
+                        ["Description"] = "Calculate margins and pricing.",
+                        ["Url"] = Url.Action("ProfitMargin", "Business") ?? "#",
+                        ["IconHtml"] = "💰",
+                        ["Category"] = "Business",
+                        ["Badges"] = new[] { "Margin" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, profitCard)
 
-                <a asp-controller="Business" asp-action="RoiAnalysis"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📈</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            ROI Analysis</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Analyze return
-                        on investment.</p>
-                </a>
+                @{
+                    var roiCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "ROI Analysis",
+                        ["Description"] = "Analyze return on investment.",
+                        ["Url"] = Url.Action("RoiAnalysis", "Business") ?? "#",
+                        ["IconHtml"] = "📈",
+                        ["Category"] = "Finance",
+                        ["Badges"] = new[] { "ROI" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, roiCard)
 
-                <a asp-controller="Business" asp-action="LoanCalculator"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            💵</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Loan Calc</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Calculate loan
-                        payments and amortization.</p>
-                </a>
+                @{
+                    var loanCalcCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Loan Calc",
+                        ["Description"] = "Calculate loan payments and amortization.",
+                        ["Url"] = Url.Action("LoanCalculator", "Business") ?? "#",
+                        ["IconHtml"] = "💵",
+                        ["Category"] = "Finance",
+                        ["Badges"] = new[] { "Loans" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, loanCalcCard)
 
-                <a asp-controller="Business" asp-action="UnbilledHours"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            ⏳</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Unbilled Hours</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Track value of
-                        unbilled work.</p>
-                </a>
+                @{
+                    var unbilledCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Unbilled Hours",
+                        ["Description"] = "Track value of unbilled work.",
+                        ["Url"] = Url.Action("UnbilledHours", "Business") ?? "#",
+                        ["IconHtml"] = "⏳",
+                        ["Category"] = "Billing",
+                        ["Badges"] = new[] { "Hours" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, unbilledCard)
 
-                <a asp-controller="Business" asp-action="SavingsComparison"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🛒</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Savings Comp</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Compare
-                        products for best value.</p>
-                </a>
+                @{
+                    var savingsCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Savings Comp",
+                        ["Description"] = "Compare products for best value.",
+                        ["Url"] = Url.Action("SavingsComparison", "Business") ?? "#",
+                        ["IconHtml"] = "🛒",
+                        ["Category"] = "Finance",
+                        ["Badges"] = new[] { "Savings" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, savingsCard)
 
-                <a asp-controller="Business" asp-action="AutomationPlanner"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-purple-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🤖</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Auto Planner</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Estimate ROI
-                        from automation.</p>
-                </a>
+                @{
+                    var autoPlannerCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Auto Planner",
+                        ["Description"] = "Estimate ROI from automation.",
+                        ["Url"] = Url.Action("AutomationPlanner", "Business") ?? "#",
+                        ["IconHtml"] = "🤖",
+                        ["Category"] = "Automation",
+                        ["Badges"] = new[] { "ROI" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, autoPlannerCard)
             </div>
         </div>
 
@@ -673,89 +685,83 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a asp-controller="Academic" asp-action="QuizBuilder"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-fuchsia-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            ❓</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Quiz Builder</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create
-                        interactive quizzes.</p>
-                </a>
+                @{
+                    var quizCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Quiz Builder",
+                        ["Description"] = "Create interactive quizzes.",
+                        ["Url"] = Url.Action("QuizBuilder", "Academic") ?? "#",
+                        ["IconHtml"] = "❓",
+                        ["Category"] = "Study",
+                        ["Badges"] = new[] { "Quizzes" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, quizCard)
 
-                <a asp-controller="Academic" asp-action="Flashcards"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-blue-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📇</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Flashcards</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Study with
-                        digital flashcards.</p>
-                </a>
+                @{
+                    var flashcardsCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Flashcards",
+                        ["Description"] = "Study with digital flashcards.",
+                        ["Url"] = Url.Action("Flashcards", "Academic") ?? "#",
+                        ["IconHtml"] = "📇",
+                        ["Category"] = "Study",
+                        ["Badges"] = new[] { "Cards" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, flashcardsCard)
 
-                <a asp-controller="Academic" asp-action="GrammarHelper"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-400 to-teal-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            ✍️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Grammar Helper</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Improve writing
-                        with AI.</p>
-                </a>
+                @{
+                    var grammarCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Grammar Helper",
+                        ["Description"] = "Improve writing with AI.",
+                        ["Url"] = Url.Action("GrammarHelper", "Academic") ?? "#",
+                        ["IconHtml"] = "✍️",
+                        ["Category"] = "Writing",
+                        ["Badges"] = new[] { "Grammar" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, grammarCard)
 
-                <a asp-controller="Academic" asp-action="FormulaReference"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📚</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Formulas</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Math, physics,
-                        chemistry guide.</p>
-                </a>
+                @{
+                    var formulasCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Formulas",
+                        ["Description"] = "Math, physics, chemistry guide.",
+                        ["Url"] = Url.Action("FormulaReference", "Academic") ?? "#",
+                        ["IconHtml"] = "📚",
+                        ["Category"] = "Reference",
+                        ["Badges"] = new[] { "Formulas" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, formulasCard)
 
-                <a asp-controller="Academic" asp-action="Whiteboard"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-500 to-zinc-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🖊️</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Whiteboard</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Interactive
-                        drawing board.</p>
-                </a>
+                @{
+                    var whiteboardCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Whiteboard",
+                        ["Description"] = "Interactive drawing board.",
+                        ["Url"] = Url.Action("Whiteboard", "Academic") ?? "#",
+                        ["IconHtml"] = "🖊️",
+                        ["Category"] = "Collaboration",
+                        ["Badges"] = new[] { "Board" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, whiteboardCard)
 
-                <a asp-controller="Academic" asp-action="MindMap"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-purple-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🧠</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Mind Map</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Visualize and
-                        organize ideas.</p>
-                </a>
+                @{
+                    var mindMapCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Mind Map",
+                        ["Description"] = "Visualize and organize ideas.",
+                        ["Url"] = Url.Action("MindMap", "Academic") ?? "#",
+                        ["IconHtml"] = "🧠",
+                        ["Category"] = "Planning",
+                        ["Badges"] = new[] { "Maps" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, mindMapCard)
             </div>
         </div>
 
@@ -771,72 +777,72 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a asp-controller="Trending" asp-action="AIWritingAssistant"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🤖</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            AI Writer</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Draft content
-                        with AI.</p>
-                </a>
+                @{
+                    var aiWriterCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "AI Writer",
+                        ["Description"] = "Draft content with AI.",
+                        ["Url"] = Url.Action("AIWritingAssistant", "Trending") ?? "#",
+                        ["IconHtml"] = "🤖",
+                        ["Category"] = "AI",
+                        ["Badges"] = new[] { "Writing", "AI" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, aiWriterCard)
 
-                <a asp-controller="Trending" asp-action="RecipeGenerator"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🍳</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Recipe Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create recipes
-                        from ingredients.</p>
-                </a>
+                @{
+                    var pollBuilderCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Poll Builder",
+                        ["Description"] = "Instant polls and surveys.",
+                        ["Url"] = Url.Action("PollBuilder", "Trending") ?? "#",
+                        ["IconHtml"] = "📊",
+                        ["Category"] = "Engagement",
+                        ["Badges"] = new[] { "Polls" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, pollBuilderCard)
 
-                <a asp-controller="Trending" asp-action="PollBuilder"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📊</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Poll Builder</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Instant polls
-                        and surveys.</p>
-                </a>
+                @{
+                    var rateCompCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Rate Comp",
+                        ["Description"] = "Compare currencies and units.",
+                        ["Url"] = Url.Action("RateComparison", "Trending") ?? "#",
+                        ["IconHtml"] = "📉",
+                        ["Category"] = "Comparison",
+                        ["Badges"] = new[] { "Rates" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, rateCompCard)
 
-                <a asp-controller="Trending" asp-action="RateComparison"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-400 to-pink-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            📉</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Rate Comp</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Compare
-                        currencies and units.</p>
-                </a>
+                @{
+                    var encryptionCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Encryption",
+                        ["Description"] = "Secure browser-based encryption.",
+                        ["Url"] = Url.Action("EncryptionTool", "Trending") ?? "#",
+                        ["IconHtml"] = "🔐",
+                        ["Category"] = "Security",
+                        ["Badges"] = new[] { "Crypto" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, encryptionCard)
 
-                <a asp-controller="Trending" asp-action="EncryptionTool"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-500 to-gray-700 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🔐</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Encryption</h3>
-                    </div>
+                @{
+                    var memeCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = "Meme Gen",
+                        ["Description"] = "Create funny memes.",
+                        ["Url"] = Url.Action("MemeGenerator", "Trending") ?? "#",
+                        ["IconHtml"] = "🤣",
+                        ["Category"] = "Fun",
+                        ["Badges"] = new[] { "Memes" }
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, memeCard)
+            </div>
+        </div>
                     <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Secure
                         browser-based encryption.</p>
                 </a>
@@ -882,13 +888,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div
                         class="flex items-center gap-3 p-4 rounded-xl bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors">
-                        <span class="text-2xl">💰</span>
-                        <span class="font-medium">Tax & Loan Calc</span>
+                        <span class="text-2xl">📚</span>
+                        <span class="font-medium">PDF Tools Suite</span>
                     </div>
                     <div
                         class="flex items-center gap-3 p-4 rounded-xl bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors">
-                        <span class="text-2xl">📊</span>
-                        <span class="font-medium">Analytics Dashboard</span>
+                        <span class="text-2xl">💹</span>
+                        <span class="font-medium">Advanced Finance Tools</span>
                     </div>
                     <div
                         class="flex items-center gap-3 p-4 rounded-xl bg-white/5 backdrop-blur border border-white/10 hover:bg-white/10 transition-colors">

@@ -8,15 +8,6 @@
 
 @section Head {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "FinancialService",
-        "name": "Business Loan Calculator",
-        "serviceType": "Loan Calculation",
-        "description": "Calculate business loan payments, EMI schedules, and interest breakdowns with amortization"
-    }
-    </script>
 }
 
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -193,6 +184,48 @@
                 <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Compare Lenders →</a>
                 <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">SBA Loans →</a>
                 <a href="#" class="text-sm text-[var(--color-primary)] hover:underline">Equipment Financing →</a>
+            </div>
+        </div>
+
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">Loan & EMI Calculator FAQ</h3>
+            <dl class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <dt class="font-semibold text-[var(--color-text-dark)]">What details do I need to use this calculator?</dt>
+                    <dd class="mt-1">
+                        Enter your loan amount, annual interest rate, loan term, and payment frequency (monthly, quarterly, or yearly).
+                        The calculator will derive your EMI, total interest, and a full amortization schedule.
+                    </dd>
+                </div>
+                <div>
+                    <dt class="font-semibold text-[var(--color-text-dark)]">Can I use this for personal and business loans?</dt>
+                    <dd class="mt-1">
+                        Yes. The math behind EMI calculations is the same for many installment-based loans, whether personal or business.
+                        Just make sure your interest rate and term match the product your lender offers.
+                    </dd>
+                </div>
+                <div>
+                    <dt class="font-semibold text-[var(--color-text-dark)]">Does this replace official loan documentation?</dt>
+                    <dd class="mt-1">
+                        No. This tool is for planning and education. Your lender’s official offer and repayment schedule always
+                        take precedence over the estimates shown here.
+                    </dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="card mt-8">
+            <h3 class="text-lg font-bold mb-3">Related finance tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Business" asp-action="CompoundInterest" class="pill-button">
+                    Compound Interest &amp; Savings
+                </a>
+                <a asp-controller="Business" asp-action="PakistanTaxCalculator" class="pill-button">
+                    Pakistan Salary Tax 2025-26
+                </a>
+                <a asp-controller="Business" asp-action="PakistanZakatCalculator" class="pill-button">
+                    Pakistan Zakat Calculator
+                </a>
             </div>
         </div>
 

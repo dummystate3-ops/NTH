@@ -1,0 +1,38 @@
+@{
+    var title = ViewData["Title"] as string ?? string.Empty;
+    var subtitle = ViewData["Subtitle"] as string;
+    var eyebrow = ViewData["Eyebrow"] as string;
+    var iconHtml = ViewData["IconHtml"] as string;
+}
+
+<section class="section-padding">
+    <div class="container-custom">
+        <div class="text-center mb-10">
+            @if (!string.IsNullOrEmpty(eyebrow))
+            {
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--surface-raised)] border border-[var(--border-subtle)] text-xs font-semibold uppercase tracking-wide text-[var(--text-subtle)] mb-3">
+                    @eyebrow
+                </div>
+            }
+
+            <div class="flex items-center justify-center gap-3 mb-3">
+                @if (!string.IsNullOrEmpty(iconHtml))
+                {
+                    <div class="w-10 h-10 rounded-xl bg-[var(--surface-raised)] border border-[var(--border-subtle)] flex items-center justify-center text-2xl shadow-sm">
+                        @Html.Raw(iconHtml)
+                    </div>
+                }
+                <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-[var(--text-strong)]">
+                    @title
+                </h2>
+            </div>
+
+            @if (!string.IsNullOrEmpty(subtitle))
+            {
+                <p class="text-[var(--text-default)] text-base md:text-lg max-w-2xl mx-auto">
+                    @subtitle
+                </p>
+            }
+        </div>
+    </div>
+</section>

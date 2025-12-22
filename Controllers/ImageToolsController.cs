@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using NovaToolsHub.Models.ViewModels;
 using NovaToolsHub.Services;
+using NovaToolsHub.Helpers;
 using SixLabors.ImageSharp;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -66,6 +68,44 @@ public class ImageToolsController : Controller
     {
         var model = new AdvancedImageResizerViewModel();
         return View(model);
+    }
+
+    /// <summary>
+    /// GET: Simple Image Compressor tool (client-side only)
+    /// </summary>
+    [HttpGet]
+    [Route("Tools/Image/Compressor")]
+    public IActionResult Compressor()
+    {
+        var url = $"{Request.Scheme}://{Request.Host}/Tools/Image/Compressor";
+
+        var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+            "Image Compressor",
+            "Compress JPG and PNG images in your browser with adjustable quality and instant preview.",
+            url,
+            "UtilitySoftware"
+        );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "Are my images uploaded to the server when I compress them?",
+                "No. This image compressor works entirely in your browser using the canvas API. Your images are not uploaded or stored on NovaTools Hub servers."
+            ),
+            (
+                "Which image formats does this tool support?",
+                "You can compress common web image formats such as JPG, PNG, and WEBP. The compressed output is provided as a JPEG file."
+            ),
+            (
+                "Will compressing my image reduce its quality?",
+                "Yes, compression reduces file size by discarding some image detail. You can adjust the quality slider and optional max width to balance size and visual quality."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
+        return View();
     }
 
     /// <summary>

@@ -1,0 +1,68 @@
+@using System.Collections.Generic
+
+@{
+    var title = ViewData["Title"] as string ?? string.Empty;
+    var description = ViewData["Description"] as string;
+    var url = ViewData["Url"] as string ?? "#";
+    var iconHtml = ViewData["IconHtml"] as string;
+    var category = ViewData["Category"] as string;
+    var badges = ViewData["Badges"] as IEnumerable<string>;
+}
+
+<a href="@url" class="tool-card group no-underline relative overflow-hidden p-6 rounded-2xl bg-[var(--surface-raised)] border border-[var(--border-subtle)] hover:border-[var(--color-primary)] transition-all duration-300 hover:shadow-[var(--shadow-lg)] hover:-translate-y-1">
+    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition-opacity">
+        <svg class="w-20 h-20 text-[var(--color-primary)] transform rotate-12" fill="currentColor" viewBox="0 0 24 24">
+            <path
+                d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
+        </svg>
+    </div>
+
+    <div class="relative z-10">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="tool-icon w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white text-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                @if (!string.IsNullOrEmpty(iconHtml))
+                {
+                    @Html.Raw(iconHtml)
+                }
+            </div>
+            <div class="flex-1">
+                @if (!string.IsNullOrEmpty(category))
+                {
+                    <div class="text-xs font-semibold uppercase tracking-wide text-[var(--text-subtle)] mb-1">
+                        @category
+                    </div>
+                }
+                <h3 class="text-xl font-bold text-[var(--text-strong)] group-hover:text-[var(--color-primary)] transition-colors">
+                    @title
+                </h3>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(description))
+        {
+            <p class="text-[var(--text-default)] text-sm leading-relaxed mb-4">
+                @description
+            </p>
+        }
+
+        @if (badges != null)
+        {
+            <div class="flex flex-wrap gap-2 text-xs">
+                @foreach (var badge in badges)
+                {
+                    <span class="px-2.5 py-1 rounded-md bg-[var(--surface-base)] border border-[var(--border-subtle)] text-[var(--text-subtle)]">
+                        @badge
+                    </span>
+                }
+            </div>
+        }
+
+        <div class="mt-4 flex items-center text-[var(--color-primary)] font-semibold text-sm">
+            Launch tool
+            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+        </div>
+    </div>
+</a>

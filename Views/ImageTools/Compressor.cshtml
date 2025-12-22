@@ -1,0 +1,289 @@
+@{
+    ViewData["PageTitle"] = "Image Compressor | NovaTools Hub";
+    ViewData["MetaDescription"] = "Compress JPG and PNG images in your browser with adjustable quality and instant preview. No image upload to server.";
+}
+
+<div class="bg-[var(--color-bg)] min-h-screen">
+    <div class="container-custom section-padding">
+        <!-- Header -->
+        <div class="max-w-3xl mx-auto text-center mb-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wide">
+                Image Tools
+            </div>
+            <h1 class="mt-4 text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text-dark)]">
+                Image <span class="text-gradient">Compressor</span>
+            </h1>
+            <p class="mt-3 text-[var(--color-text-medium)] text-base md:text-lg">
+                Reduce image file size for web and sharing using a simple, privacy-friendly compressor that runs entirely in your browser.
+            </p>
+        </div>
+
+        <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left: Upload & Controls -->
+            <div class="lg:col-span-1 space-y-4">
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">1. Upload an Image</h2>
+                    <label for="imgInput"
+                           id="imgDropZone"
+                           class="border-2 border-dashed border-[var(--color-border)] rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5 transition-colors">
+                        <svg class="w-10 h-10 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <div class="text-sm">
+                            <span class="text-[var(--color-primary)] font-medium">Click to upload</span>
+                            <span class="text-[var(--color-text-medium)]"> or drag and drop</span>
+                        </div>
+                        <p class="text-xs text-[var(--text-subtle)]">
+                            JPG and PNG recommended. All processing stays in your browser.
+                        </p>
+                        <input id="imgInput" type="file" accept="image/png,image/jpeg,image/webp" class="sr-only" />
+                    </label>
+                    <p id="imgFileInfo" class="mt-3 text-xs text-[var(--text-subtle)]"></p>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">2. Compression Settings</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-wide text-[var(--text-subtle)]">
+                                Quality: <span id="qualityLabel" class="text-[var(--color-primary)]">80%</span>
+                            </label>
+                            <input id="qualitySlider" type="range" min="10" max="100" value="80" step="5"
+                                   class="w-full h-2 bg-[var(--color-border)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)]" />
+                            <div class="flex justify-between text-[0.65rem] text-[var(--text-subtle)] mt-1">
+                                <span>Smaller file</span>
+                                <span>Higher quality</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-wide text-[var(--text-subtle)]">
+                                Max Width (optional)
+                            </label>
+                            <input id="maxWidth" type="number" min="100" max="6000" class="form-input mt-1" placeholder="Leave blank to keep original" />
+                        </div>
+                    </div>
+                </div>
+
+                <button id="downloadCompressed" type="button" class="btn btn-primary w-full" disabled>
+                    Download Compressed Image
+                </button>
+
+                <p id="compressStatus" class="text-xs text-[var(--text-subtle)]"></p>
+            </div>
+
+            <!-- Right: Preview -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">Preview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="text-xs font-semibold uppercase tracking-wide text-[var(--text-subtle)] mb-2">Original</h3>
+                            <div class="border border-[var(--color-border)] rounded-xl bg-[var(--color-bg)] flex items-center justify-center min-h-[180px]">
+                                <img id="originalPreview" alt="Original preview" class="max-h-72 max-w-full hidden rounded-lg shadow-sm" />
+                                <p id="originalPlaceholder" class="text-xs text-[var(--text-subtle)]">
+                                    Upload an image to see its original size and quality.
+                                </p>
+                            </div>
+                            <p id="originalMeta" class="mt-2 text-[0.7rem] text-[var(--text-subtle)]"></p>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-semibold uppercase tracking-wide text-[var(--text-subtle)] mb-2">Compressed</h3>
+                            <div class="border border-[var(--color-border)] rounded-xl bg-[var(--color-bg)] flex items-center justify-center min-h-[180px]">
+                                <img id="compressedPreview" alt="Compressed preview" class="max-h-72 max-w-full hidden rounded-lg shadow-sm" />
+                                <p id="compressedPlaceholder" class="text-xs text-[var(--text-subtle)]">
+                                    Adjust quality to generate a compressed preview.
+                                </p>
+                            </div>
+                            <p id="compressedMeta" class="mt-2 text-[0.7rem] text-[var(--text-subtle)]"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">Image Compressor FAQ</h2>
+                    <dl class="space-y-3 text-xs text-[var(--text-subtle)]">
+                        <div>
+                            <dt class="font-semibold text-[var(--text-default)]">What is a good quality setting for web images?</dt>
+                            <dd class="mt-1">
+                                For many websites, a quality between 60 and 85 offers a good balance between visual clarity and file size.
+                                You can experiment with the slider and compare the original and compressed previews.
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="font-semibold text-[var(--text-default)]">Can I increase the resolution of my image?</dt>
+                            <dd class="mt-1">
+                                No. This tool focuses on compression and optional downsizing. It cannot upscale beyond the original resolution.
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="font-semibold text-[var(--text-default)]">Is it safe to compress sensitive images here?</dt>
+                            <dd class="mt-1">
+                                Processing happens locally in your browser, which is safer than uploading images to a remote server.
+                                Still, avoid working with highly sensitive content on shared or public devices.
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <!-- In-Content Ad -->
+                @await Html.PartialAsync("_AdInContent")
+                <partial name="_SocialSharing" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const imgInput = document.getElementById('imgInput');
+            const dropZone = document.getElementById('imgDropZone');
+            const fileInfo = document.getElementById('imgFileInfo');
+            const originalPreview = document.getElementById('originalPreview');
+            const compressedPreview = document.getElementById('compressedPreview');
+            const originalPlaceholder = document.getElementById('originalPlaceholder');
+            const compressedPlaceholder = document.getElementById('compressedPlaceholder');
+            const originalMeta = document.getElementById('originalMeta');
+            const compressedMeta = document.getElementById('compressedMeta');
+            const qualitySlider = document.getElementById('qualitySlider');
+            const qualityLabel = document.getElementById('qualityLabel');
+            const maxWidthInput = document.getElementById('maxWidth');
+            const downloadBtn = document.getElementById('downloadCompressed');
+            const statusEl = document.getElementById('compressStatus');
+
+            let originalImage = null;
+            let compressedBlobUrl = null;
+
+            function formatSize(bytes) {
+                if (!bytes) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB'];
+                const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
+                return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+            }
+
+            function clearCompressedPreview() {
+                if (compressedBlobUrl) {
+                    URL.revokeObjectURL(compressedBlobUrl);
+                    compressedBlobUrl = null;
+                }
+                compressedPreview.src = '';
+                compressedPreview.classList.add('hidden');
+                compressedPlaceholder.classList.remove('hidden');
+                compressedMeta.textContent = '';
+                downloadBtn.disabled = true;
+            }
+
+            function setImage(file) {
+                if (!file || !file.type.startsWith('image/')) {
+                    statusEl.textContent = 'Please select a valid image file (JPG or PNG).';
+                    return;
+                }
+                statusEl.textContent = '';
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        originalImage = img;
+                        originalPreview.src = img.src;
+                        originalPreview.classList.remove('hidden');
+                        originalPlaceholder.classList.add('hidden');
+                        originalMeta.textContent = `Dimensions: ${img.width}×${img.height} | Size: ${formatSize(file.size)}`;
+                        fileInfo.textContent = `Selected: ${file.name} (${formatSize(file.size)})`;
+                        clearCompressedPreview();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function compressImage() {
+                if (!originalImage) return;
+
+                clearCompressedPreview();
+                statusEl.textContent = 'Compressing image in your browser...';
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let width = originalImage.width;
+                let height = originalImage.height;
+                const maxWidth = parseInt(maxWidthInput.value || '0', 10);
+
+                if (maxWidth && width > maxWidth) {
+                    const ratio = maxWidth / width;
+                    width = maxWidth;
+                    height = Math.round(height * ratio);
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(originalImage, 0, 0, width, height);
+
+                const quality = parseInt(qualitySlider.value, 10) / 100;
+                const mimeType = 'image/jpeg';
+
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        statusEl.textContent = 'Failed to compress image. Please try a lower resolution or reload.';
+                        return;
+                    }
+                    compressedBlobUrl = URL.createObjectURL(blob);
+                    compressedPreview.src = compressedBlobUrl;
+                    compressedPreview.classList.remove('hidden');
+                    compressedPlaceholder.classList.add('hidden');
+                    compressedMeta.textContent = `Dimensions: ${width}×${height} | Size: ${formatSize(blob.size)}`;
+                    downloadBtn.disabled = false;
+                    statusEl.textContent = 'Compression complete. You can download the compressed image.';
+                }, mimeType, quality);
+            }
+
+            imgInput.addEventListener('change', (e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                    setImage(file);
+                }
+            });
+
+            // Drag & drop
+            ['dragenter', 'dragover'].forEach(evt => {
+                dropZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('border-[var(--color-primary)]', 'bg-[var(--color-primary)]/5');
+                });
+            });
+            ['dragleave', 'drop'].forEach(evt => {
+                dropZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('border-[var(--color-primary)]', 'bg-[var(--color-primary)]/5');
+                });
+            });
+            dropZone.addEventListener('drop', (e) => {
+                const file = e.dataTransfer?.files?.[0];
+                if (file) setImage(file);
+            });
+
+            qualitySlider.addEventListener('input', () => {
+                qualityLabel.textContent = qualitySlider.value + '%';
+                if (originalImage) compressImage();
+            });
+
+            maxWidthInput.addEventListener('change', () => {
+                if (originalImage) compressImage();
+            });
+
+            downloadBtn.addEventListener('click', () => {
+                if (!compressedBlobUrl) return;
+                const link = document.createElement('a');
+                link.href = compressedBlobUrl;
+                link.download = 'compressed-image.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        })();
+    </script>
+}
