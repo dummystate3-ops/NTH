@@ -4,14 +4,25 @@
     Position: Footer or sticky anchor (728x90 or responsive)
     
     SETUP INSTRUCTIONS:
-    1. Replace 'ca-pub-XXXXXXXXXXXXXXXX' with your AdSense publisher ID
-    2. Replace 'XXXXXXXXXX' with your ad slot ID
-    3. For Ezoic, replace the entire div with Ezoic placeholder ID
+    1. Configure AdSense IDs in appsettings.json:
+       "AdSense": {
+         "PublisherId": "ca-pub-XXXXXXXXXXXXXXXX",
+         "FooterSlotId": "XXXXXXXXXX"
+       }
+    2. For Ezoic, replace the entire div with your Ezoic placeholder
 *@
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 
 @{
     var adEnabled = ViewBag.EnableAds ?? true;
     var stickyAd = ViewBag.StickyAd ?? false;
+    var publisherId = Configuration["AdSense:PublisherId"];
+    var slotId = Configuration["AdSense:FooterSlotId"];
+    var environmentName = Configuration["Environment"];
+    var isProduction = !string.IsNullOrEmpty(environmentName) && !string.Equals(environmentName, "Development", StringComparison.OrdinalIgnoreCase);
+    var canRenderAds = adEnabled && isProduction && !string.IsNullOrEmpty(publisherId) && !string.IsNullOrEmpty(slotId);
 }
 
 @if (adEnabled)
@@ -20,13 +31,16 @@
         <div class="container-custom">
             <div class="text-xs text-center text-[var(--color-text-light)] mb-1">Advertisement</div>
             
-            @* Google AdSense - Footer Ad *@
-            <div class="flex justify-center">
-                <ins class="adsbygoogle"
-                     style="display:inline-block;width:728px;height:90px"
-                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                     data-ad-slot="XXXXXXXXXX"></ins>
-            </div>
+            @* Google AdSense - Footer Ad (only when configured for production) *@
+            @if (canRenderAds)
+            {
+                <div class="flex justify-center">
+                    <ins class="adsbygoogle"
+                         style="display:inline-block;width:728px;height:90px"
+                         data-ad-client="@publisherId"
+                         data-ad-slot="@slotId"></ins>
+                </div>
+            }
             
             @* Fallback for development/testing *@
             <div class="ad-placeholder mx-auto" style="background: #f0f0f0; border: 2px dashed #ccc; padding: 1.5rem; text-align: center; width: 728px; height: 90px; display: flex; align-items: center; justify-content: center;">
@@ -38,8 +52,11 @@
         </div>
     </div>
     
-    <script>
-        // Initialize AdSense
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    @if (canRenderAds)
+    {
+        <script>
+            // Queue AdSense rendering (script is loaded conditionally in _AdSenseScript)
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    }
 }
