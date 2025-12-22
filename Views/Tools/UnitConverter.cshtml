@@ -86,6 +86,21 @@
             </div>
         </div>
 
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="CurrencyConverter" class="pill-button">
+                    Currency Converter
+                </a>
+                <a asp-controller="Tools" asp-action="DateCalculator" class="pill-button">
+                    Date Calculator
+                </a>
+                <a asp-controller="Tools" asp-action="AgeCalculator" class="pill-button">
+                    Age Calculator
+                </a>
+            </div>
+        </div>
+
         <!-- In-Content Ad -->
         @await Html.PartialAsync("_AdInContent")
 

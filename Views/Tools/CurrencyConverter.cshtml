@@ -118,6 +118,27 @@
             </p>
         </div>
 
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related finance tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="UnitConverter" class="pill-button">
+                    Unit Converter
+                </a>
+                <a asp-controller="Business" asp-action="LoanCalculator" class="pill-button">
+                    Business Loan &amp; EMI
+                </a>
+                <a asp-controller="Business" asp-action="CompoundInterest" class="pill-button">
+                    Compound Interest
+                </a>
+                <a asp-controller="Business" asp-action="PakistanTaxCalculator" class="pill-button">
+                    Pakistan Salary Tax 2025-26
+                </a>
+                <a asp-controller="Business" asp-action="PakistanZakatCalculator" class="pill-button">
+                    Pakistan Zakat Calculator
+                </a>
+            </div>
+        </div>
+
         <!-- In-Content Ad -->
         @await Html.PartialAsync("_AdInContent")
 
