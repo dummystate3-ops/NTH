@@ -263,9 +263,39 @@
         </div>
     </div>
 
-    <!-- Related Tools, Ad & Social -->
+    <!-- Related Tools, FAQs, Ad & Social -->
     <div class="container-custom pb-12 border-t border-[var(--color-border)]">
         <div class="max-w-5xl mx-auto space-y-6">
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">Regex tester FAQs</h3>
+                <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Which regex engine does this tester use?</p>
+                        <p>
+                            The tool uses the JavaScript regular expression engine built into your browser. Most common tokens,
+                            groups, and flags behave like they do in JavaScript, but some advanced features from other flavors
+                            (like full PCRE) may not be available.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">What do the g, i, m, and s flags do?</p>
+                        <p>
+                            The g flag finds all matches instead of just the first, i ignores case, m lets ^ and $ match at line
+                            boundaries, and s allows the dot (.) to match newlines. You can toggle these in the flags dropdown
+                            above the pattern input.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Is it safe to paste production data here?</p>
+                        <p>
+                            While the highlighting runs in your browser, it is still best practice not to paste highly sensitive
+                            production logs, personal data, or credentials into any online regex tester. Use anonymized or
+                            representative sample text instead.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <h3 class="text-lg font-semibold mb-3">Related developer tools</h3>
                 <div class="flex flex-wrap gap-3 text-sm">

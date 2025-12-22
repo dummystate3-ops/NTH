@@ -6,23 +6,6 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section JsonLd {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "AI Writing Assistant & Summarizer",
-        "applicationCategory": "UtilitiesApplication",
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "description": "AI-powered writing assistant to draft content, summarize text, and improve your writing with instant suggestions."
-    }
-    </script>
-}
-
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
     <div class="container-custom">
         <div class="max-w-5xl mx-auto text-center">

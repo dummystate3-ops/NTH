@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using NovaToolsHub.Models.ViewModels;
 using NovaToolsHub.Services;
+using NovaToolsHub.Helpers;
 using System.IO;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace NovaToolsHub.Controllers
 {
@@ -28,12 +30,41 @@ namespace NovaToolsHub.Controllers
         // AI Writing Assistant/Summarizer
         public IActionResult AIWritingAssistant()
         {
+            var url = Url.Action("AIWritingAssistant", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "AI Writing Assistant & Summarizer - NovaTools Hub",
                 MetaDescription = "AI-powered writing assistant to draft content, summarize text, and improve your writing. Get instant AI suggestions and summaries.",
-                CanonicalUrl = Url.Action("AIWritingAssistant", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "AI Writing Assistant & Summarizer",
+                "AI-powered writing assistant to draft content, summarize text, and improve your writing with instant suggestions.",
+                url,
+                "ProductivityApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I use the AI writing assistant for?",
+                    "You can use the assistant to draft new content from prompts, summarize existing text to different lengths, and improve clarity, tone, or structure of your writing. It is ideal for emails, blog posts, landing page copy, and quick summaries."
+                ),
+                (
+                    "Is my text stored or reused when I use this tool?",
+                    "Prompts and responses are processed on the server to generate AI output, but the tool is not designed to store your content long term. As a best practice, avoid including highly sensitive personal data, passwords, or confidential production information in prompts."
+                ),
+                (
+                    "Is AI-generated content ready to publish without edits?",
+                    "AI output can be a strong starting point but may contain inaccuracies or phrasing that does not match your brand voice. Always review, fact-check, and edit AI-generated content before publishing or sending it to others."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 

@@ -197,9 +197,38 @@
         </div>
     </div>
 
-    <!-- Related Tools, Ad & Social -->
+    <!-- Related Tools, FAQs, Ad & Social -->
     <div class="container-custom pb-12 border-t border-[var(--color-border)]">
         <div class="max-w-5xl mx-auto space-y-6">
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">JSON formatter FAQs</h3>
+                <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Is my JSON data stored when I use this tool?</p>
+                        <p>
+                            Your JSON is processed for validation and formatting as part of your session. It is not intended to be
+                            stored long term, but as a security best practice you should avoid pasting highly sensitive secrets,
+                            tokens, or credentials into any online formatter.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Does the formatter change the meaning of my JSON?</p>
+                        <p>
+                            Formatting and minifying only affect whitespace and layout. The underlying key-value pairs and array
+                            structure remain the same. Always review the result before using it in production or committing it to
+                            version control.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Why is diff mode useful?</p>
+                        <p>
+                            Diff mode lets you compare two JSON payloads side by side in the Monaco editor, which is helpful for
+                            debugging API responses, config changes, or investigating production issues.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <h3 class="text-lg font-semibold mb-3">Related developer tools</h3>
                 <div class="flex flex-wrap gap-3 text-sm">

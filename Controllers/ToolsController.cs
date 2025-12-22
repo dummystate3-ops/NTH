@@ -475,12 +475,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult JsonFormatter()
         {
             SetSeoData("JSON Formatter", "Format, validate, and compare JSON payloads with instant insights.");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "JSON Formatter",
                 "Enterprise-grade JSON formatter with validation, minify, and diff capabilities for payload inspections.",
                 $"{Request.Scheme}://{Request.Host}/Tools/JsonFormatter",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I do with the JSON formatter tool?",
+                    "You can validate JSON, pretty-print it with consistent indentation, minify it for transport, and compare two JSON documents side by side in diff mode using the built-in Monaco editor."
+                ),
+                (
+                    "Is my JSON data sent anywhere or stored?",
+                    "Your JSON is processed in your browser session for formatting and validation and is not intended to be stored long term on NovaTools Hub servers. Avoid pasting highly sensitive production secrets or credentials into any online tool whenever possible."
+                ),
+                (
+                    "Does the formatter change the actual data?",
+                    "Formatting and minifying only change whitespace and ordering in most cases—they do not change the semantic content of the JSON object itself. Always review the output before using it in production or committing it to source control."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -488,12 +509,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult RegexTester()
         {
             SetSeoData("Regex Tester", "Test, debug, and visualize regular expressions with live matches and flags.");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Regex Tester",
                 "Enterprise-grade regex tester with live highlighting, capture groups, replacement previews, and preset patterns.",
                 $"{Request.Scheme}://{Request.Host}/Tools/RegexTester",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Which flavor of regular expressions does this tester use?",
+                    "The regex tester uses the JavaScript regular expression engine available in your browser. Most common tokens like character classes, quantifiers, groups, and basic lookahead work as in JavaScript, but some features from PCRE or other engines may not be supported."
+                ),
+                (
+                    "What are the global, case-insensitive, multiline, and single-line flags?",
+                    "The g flag finds all matches instead of just the first, i ignores case differences, m makes ^ and $ match the start and end of lines, and s lets the dot (.) match newlines as well. You can toggle these flags from the flags dropdown above the pattern input."
+                ),
+                (
+                    "Is it safe to test production data in the regex tester?",
+                    "The tool runs in your browser, but it is still best practice to avoid pasting highly sensitive personal or production data into any web-based tester. Use representative sample text whenever you can."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
