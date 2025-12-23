@@ -424,160 +424,22 @@
     <script>
         (function () {
             window.NovaToolsRegistry = [
-                {
-                    name: "Unit Converter",
-                    description: "Convert between length, weight, temperature, and more.",
-                    url: "@Url.Action("UnitConverter", "Tools")",
-                    category: "Converters",
-                    tags: ["units", "length", "weight", "temperature"]
-                },
-                {
-                    name: "Currency Converter",
-                    description: "Convert between major world currencies.",
-                    url: "@Url.Action("CurrencyConverter", "Tools")",
-                    category: "Finance",
-                    tags: ["fx", "exchange rate", "money"]
-                },
-                {
-                    name: "BMI Calculator",
-                    description: "Calculate your body mass index and health metrics.",
-                    url: "@Url.Action("BmiCalculator", "Tools")",
-                    category: "Health",
-                    tags: ["bmi", "health"]
-                },
-                {
-                    name: "Age Calculator",
-                    description: "Calculate age precisely in years, months, and days.",
-                    url: "@Url.Action("AgeCalculator", "Tools")",
-                    category: "Utility",
-                    tags: ["age", "birthday"]
-                },
-                {
-                    name: "Date Calculator",
-                    description: "Calculate differences and add/subtract days.",
-                    url: "@Url.Action("DateCalculator", "Tools")",
-                    category: "Utility",
-                    tags: ["dates", "time"]
-                },
-                {
-                    name: "Password Generator",
-                    description: "Create strong, secure passwords instantly.",
-                    url: "@Url.Action("PasswordGenerator", "Tools")",
-                    category: "Security",
-                    tags: ["password", "security"]
-                },
-                {
-                    name: "QR Code Generator",
-                    description: "Generate QR codes for text, URLs, and more.",
-                    url: "@Url.Action("QrCodeGenerator", "Tools")",
-                    category: "Sharing",
-                    tags: ["qr", "code"]
-                },
-                {
-                    name: "JSON Formatter",
-                    description: "Format, validate, and compare JSON payloads.",
-                    url: "@Url.Action("JsonFormatter", "Tools")",
-                    category: "Developer",
-                    tags: ["json", "dev"]
-                },
-                {
-                    name: "Regex Tester",
-                    description: "Test regex patterns with live matches.",
-                    url: "@Url.Action("RegexTester", "Tools")",
-                    category: "Developer",
-                    tags: ["regex", "pattern"]
-                },
-                {
-                    name: "Lorem Ipsum Generator",
-                    description: "Generate placeholder text for layouts and mocks.",
-                    url: "@Url.Action("LoremIpsum", "Tools")",
-                    category: "Content",
-                    tags: ["text", "content"]
-                },
-                {
-                    name: "Color Palette Generator",
-                    description: "Create palettes, gradients, and exportable swatches.",
-                    url: "@Url.Action("ColorPaletteGenerator", "Tools")",
-                    category: "Design",
-                    tags: ["color", "palette"]
-                },
-                {
-                    name: "PDF Merge Tool",
-                    description: "Combine multiple PDF documents into one file directly in your browser.",
-                    url: "@Url.Action("PdfMerge", "Tools")",
-                    category: "Documents",
-                    tags: ["pdf", "merge"]
-                },
-                {
-                    name: "Advanced Image Tool",
-                    description: "Crop, resize, compress, watermark, and batch download images.",
-                    url: "@Url.Action("AdvancedResizer", "ImageTools")",
-                    category: "Images",
-                    tags: ["resize", "crop", "images"]
-                },
-                {
-                    name: "Image Compressor",
-                    description: "Compress JPG and PNG images locally in your browser.",
-                    url: "@Url.Action("Compressor", "ImageTools")",
-                    category: "Images",
-                    tags: ["compress", "images"]
-                },
-                {
-                    name: "Background Remover",
-                    description: "Remove backgrounds with AI-powered segmentation.",
-                    url: "@Url.Action("BackgroundRemover", "ImageTools")",
-                    category: "Images",
-                    tags: ["background", "ai"]
-                },
-                {
-                    name: "Business Loan & EMI Calculator",
-                    description: "Calculate EMIs, payment schedules, and total interest.",
-                    url: "@Url.Action("LoanCalculator", "Business")",
-                    category: "Finance",
-                    tags: ["loan", "emi", "business"]
-                },
-                {
-                    name: "Compound Interest Calculator",
-                    description: "Project savings growth with compound interest.",
-                    url: "@Url.Action("CompoundInterest", "Business")",
-                    category: "Finance",
-                    tags: ["savings", "interest"]
-                },
-                {
-                    name: "Pakistan Salary Tax Calculator",
-                    description: "Estimate income tax for Pakistan salaried individuals (2025-26).",
-                    url: "@Url.Action("PakistanTaxCalculator", "Business")",
-                    category: "Pakistan",
-                    tags: ["tax", "pakistan"]
-                },
-                {
-                    name: "Pakistan Zakat Calculator",
-                    description: "Calculate zakat on gold, cash, savings, and investments in Pakistan.",
-                    url: "@Url.Action("PakistanZakatCalculator", "Business")",
-                    category: "Pakistan",
-                    tags: ["zakat", "pakistan"]
-                },
-                {
-                    name: "World Time Viewer",
-                    description: "View current time across major world cities.",
-                    url: "@Url.Action("WorldTime", "Productivity")",
-                    category: "Time",
-                    tags: ["world time", "clock"]
-                },
-                {
-                    name: "Time Zone Converter",
-                    description: "Convert time between different time zones.",
-                    url: "@Url.Action("TimeZoneConverter", "Productivity")",
-                    category: "Time",
-                    tags: ["zones", "time"]
-                },
-                {
-                    name: "AI Writing Assistant",
-                    description: "Draft content, summarize text, and improve writing with AI.",
-                    url: "@Url.Action("AIWritingAssistant", "Trending")",
-                    category: "AI",
-                    tags: ["ai", "writing"]
-                }
+@{
+    var tools = NovaToolsHub.Helpers.ToolRegistry.AllTools;
+    for (var i = 0; i &lt; tools.Count; i++)
+    {
+        var t = tools[i];
+        var json = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            name = t.Name,
+            description = t.Description,
+            url = Url.Action(t.Action, t.Controller),
+            category = t.Category,
+            tags = t.Tags ?? Array.Empty&lt;string&gt;()
+        });
+        <text>@Html.Raw(json)@(i &lt; tools.Count - 1 ? "," : "")</text>
+    }
+}
             ];
 
             const backdrop = document.getElementById('command-palette-backdrop');

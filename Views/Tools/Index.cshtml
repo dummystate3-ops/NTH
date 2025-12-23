@@ -97,105 +97,113 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @{
+                    var jsonTool = ToolRegistry.GetById("json-formatter")!;
                     var jsonCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "JSON Formatter",
-                        ["Description"] = "Format, validate, and minify JSON with instant diff reports.",
-                        ["Url"] = Url.Action("JsonFormatter", "Tools") ?? "#",
-                        ["IconHtml"] = "📄",
-                        ["Category"] = "Developer",
-                        ["Badges"] = new[] { "Validation" }
+                        ["Title"] = jsonTool.Name,
+                        ["Description"] = jsonTool.Description,
+                        ["Url"] = Url.Action(jsonTool.Action, jsonTool.Controller) ?? "#",
+                        ["IconHtml"] = jsonTool.IconHtml,
+                        ["Category"] = jsonTool.Category,
+                        ["Badges"] = jsonTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, jsonCard)
 
                 @{
+                    var regexTool = ToolRegistry.GetById("regex-tester")!;
                     var regexCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Regex Tester",
-                        ["Description"] = "Test and debug regular expressions with real-time matching.",
-                        ["Url"] = Url.Action("RegexTester", "Tools") ?? "#",
-                        ["IconHtml"] = "🔍",
-                        ["Category"] = "Developer",
-                        ["Badges"] = new[] { "Debug" }
+                        ["Title"] = regexTool.Name,
+                        ["Description"] = regexTool.Description,
+                        ["Url"] = Url.Action(regexTool.Action, regexTool.Controller) ?? "#",
+                        ["IconHtml"] = regexTool.IconHtml,
+                        ["Category"] = regexTool.Category,
+                        ["Badges"] = regexTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, regexCard)
 
                 @{
+                    var loremTool = ToolRegistry.GetById("lorem-ipsum")!;
                     var loremCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Lorem Ipsum Generator",
-                        ["Description"] = "Generate placeholder text for designs, mockups, and wireframes.",
-                        ["Url"] = Url.Action("LoremIpsum", "Tools") ?? "#",
-                        ["IconHtml"] = "📝",
-                        ["Category"] = "Content",
-                        ["Badges"] = new[] { "Text" }
+                        ["Title"] = loremTool.Name,
+                        ["Description"] = loremTool.Description,
+                        ["Url"] = Url.Action(loremTool.Action, loremTool.Controller) ?? "#",
+                        ["IconHtml"] = loremTool.IconHtml,
+                        ["Category"] = loremTool.Category,
+                        ["Badges"] = loremTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, loremCard)
 
                 @{
+                    var paletteTool = ToolRegistry.GetById("color-palette")!;
                     var paletteCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Color Palette Generator",
-                        ["Description"] = "Create color palettes and gradients with exportable swatches.",
-                        ["Url"] = Url.Action("ColorPaletteGenerator", "Tools") ?? "#",
-                        ["IconHtml"] = "🎨",
-                        ["Category"] = "Design",
-                        ["Badges"] = new[] { "Colors" }
+                        ["Title"] = paletteTool.Name,
+                        ["Description"] = paletteTool.Description,
+                        ["Url"] = Url.Action(paletteTool.Action, paletteTool.Controller) ?? "#",
+                        ["IconHtml"] = paletteTool.IconHtml,
+                        ["Category"] = paletteTool.Category,
+                        ["Badges"] = paletteTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, paletteCard)
 
                 @{
+                    var pdfMergeTool = ToolRegistry.GetById("pdf-merge")!;
                     var pdfMergeCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "PDF Merge Tool",
-                        ["Description"] = "Combine multiple PDF documents into a single file in your browser.",
-                        ["Url"] = Url.Action("PdfMerge", "Tools") ?? "#",
-                        ["IconHtml"] = "📚",
-                        ["Category"] = "Documents",
-                        ["Badges"] = new[] { "PDF", "Merge" }
+                        ["Title"] = pdfMergeTool.Name,
+                        ["Description"] = pdfMergeTool.Description,
+                        ["Url"] = Url.Action(pdfMergeTool.Action, pdfMergeTool.Controller) ?? "#",
+                        ["IconHtml"] = pdfMergeTool.IconHtml,
+                        ["Category"] = pdfMergeTool.Category,
+                        ["Badges"] = pdfMergeTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, pdfMergeCard)
 
                 @{
+                    var faviconTool = ToolRegistry.GetById("favicon-generator")!;
                     var faviconCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Favicon Generator",
-                        ["Description"] = "Create favicons and app icons from your logo or text.",
-                        ["Url"] = Url.Action("FaviconGenerator", "Tools") ?? "#",
-                        ["IconHtml"] = "🖼️",
-                        ["Category"] = "Assets",
-                        ["Badges"] = new[] { "Icons" }
+                        ["Title"] = faviconTool.Name,
+                        ["Description"] = faviconTool.Description,
+                        ["Url"] = Url.Action(faviconTool.Action, faviconTool.Controller) ?? "#",
+                        ["IconHtml"] = faviconTool.IconHtml,
+                        ["Category"] = faviconTool.Category,
+                        ["Badges"] = faviconTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, faviconCard)
 
                 @{
+                    var compressorTool = ToolRegistry.GetById("image-compressor")!;
                     var imageCompressorCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Image Compressor",
-                        ["Description"] = "Compress images locally with adjustable quality and preview.",
-                        ["Url"] = Url.Action("Compressor", "ImageTools") ?? "#",
-                        ["IconHtml"] = "🗜️",
-                        ["Category"] = "Images",
-                        ["Badges"] = new[] { "Optimization" }
+                        ["Title"] = compressorTool.Name,
+                        ["Description"] = compressorTool.Description,
+                        ["Url"] = Url.Action(compressorTool.Action, compressorTool.Controller) ?? "#",
+                        ["IconHtml"] = compressorTool.IconHtml,
+                        ["Category"] = compressorTool.Category,
+                        ["Badges"] = compressorTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, imageCompressorCard)
 
                 @{
+                    var qrTool = ToolRegistry.GetById("qr-generator")!;
                     var qrCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "QR Code Generator",
-                        ["Description"] = "Generate QR codes for URLs, text, and more.",
-                        ["Url"] = Url.Action("QrCodeGenerator", "Tools") ?? "#",
-                        ["IconHtml"] = "📱",
-                        ["Category"] = "Sharing",
-                        ["Badges"] = new[] { "QR", "Codes" }
+                        ["Title"] = qrTool.Name,
+                        ["Description"] = qrTool.Description,
+                        ["Url"] = Url.Action(qrTool.Action, qrTool.Controller) ?? "#",
+                        ["IconHtml"] = qrTool.IconHtml,
+                        ["Category"] = qrTool.Category,
+                        ["Badges"] = qrTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, qrCard)
@@ -217,118 +225,127 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @{
+                    var unitTool = ToolRegistry.GetById("unit-converter")!;
                     var unitCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Unit Converter",
-                        ["Description"] = "Convert between length, weight, volume, and more.",
-                        ["Url"] = Url.Action("UnitConverter", "Tools") ?? "#",
-                        ["IconHtml"] = "📏",
-                        ["Category"] = "Converters",
-                        ["Badges"] = new[] { "Units" }
+                        ["Title"] = unitTool.Name,
+                        ["Description"] = unitTool.Description,
+                        ["Url"] = Url.Action(unitTool.Action, unitTool.Controller) ?? "#",
+                        ["IconHtml"] = unitTool.IconHtml,
+                        ["Category"] = unitTool.Category,
+                        ["Badges"] = unitTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, unitCard)
 
                 @{
+                    var currencyTool = ToolRegistry.GetById("currency-converter")!;
                     var currencyCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Currency Converter",
-                        ["Description"] = "Convert between 150+ world currencies with live rates.",
-                        ["Url"] = Url.Action("CurrencyConverter", "Tools") ?? "#",
-                        ["IconHtml"] = "💱",
-                        ["Category"] = "Finance",
-                        ["Badges"] = new[] { "FX" }
+                        ["Title"] = currencyTool.Name,
+                        ["Description"] = currencyTool.Description,
+                        ["Url"] = Url.Action(currencyTool.Action, currencyTool.Controller) ?? "#",
+                        ["IconHtml"] = currencyTool.IconHtml,
+                        ["Category"] = currencyTool.Category,
+                        ["Badges"] = currencyTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, currencyCard)
 
                 @{
+                    var loanTool = ToolRegistry.GetById("loan-emi")!;
                     var loanEmiCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Loan & EMI Calculator",
-                        ["Description"] = "Calculate loan EMIs, schedules, and total interest.",
-                        ["Url"] = Url.Action("LoanCalculator", "Business") ?? "#",
-                        ["IconHtml"] = "💰",
-                        ["Category"] = "Finance",
-                        ["Badges"] = new[] { "Loans" }
+                        ["Title"] = loanTool.Name,
+                        ["Description"] = loanTool.Description,
+                        ["Url"] = Url.Action(loanTool.Action, loanTool.Controller) ?? "#",
+                        ["IconHtml"] = loanTool.IconHtml,
+                        ["Category"] = loanTool.Category,
+                        ["Badges"] = loanTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, loanEmiCard)
 
                 @{
+                    var compoundTool = ToolRegistry.GetById("compound-interest")!;
                     var compoundCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Compound Interest",
-                        ["Description"] = "Project savings growth with compound interest and contributions.",
-                        ["Url"] = Url.Action("CompoundInterest", "Business") ?? "#",
-                        ["IconHtml"] = "📈",
-                        ["Category"] = "Finance",
-                        ["Badges"] = new[] { "Savings" }
+                        ["Title"] = compoundTool.Name,
+                        ["Description"] = compoundTool.Description,
+                        ["Url"] = Url.Action(compoundTool.Action, compoundTool.Controller) ?? "#",
+                        ["IconHtml"] = compoundTool.IconHtml,
+                        ["Category"] = compoundTool.Category,
+                        ["Badges"] = compoundTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, compoundCard)
 
                 @{
+                    var pkTaxTool = ToolRegistry.GetById("pakistan-salary-tax")!;
                     var pkTaxCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Pakistan Salary Tax",
-                        ["Description"] = "Estimate Pakistan salary income tax for 2025-26.",
-                        ["Url"] = Url.Action("PakistanTaxCalculator", "Business") ?? "#",
-                        ["IconHtml"] = "🇵🇰",
-                        ["Category"] = "Pakistan",
-                        ["Badges"] = new[] { "Tax" }
+                        ["Title"] = pkTaxTool.Name,
+                        ["Description"] = pkTaxTool.Description,
+                        ["Url"] = Url.Action(pkTaxTool.Action, pkTaxTool.Controller) ?? "#",
+                        ["IconHtml"] = pkTaxTool.IconHtml,
+                        ["Category"] = pkTaxTool.Category,
+                        ["Badges"] = pkTaxTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, pkTaxCard)
 
                 @{
+                    var bmiTool = ToolRegistry.GetById("bmi-calculator")!;
                     var bmiCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "BMI Calculator",
-                        ["Description"] = "Calculate Body Mass Index for health insights.",
-                        ["Url"] = Url.Action("BmiCalculator", "Tools") ?? "#",
-                        ["IconHtml"] = "⚖️",
-                        ["Category"] = "Health",
-                        ["Badges"] = new[] { "BMI" }
+                        ["Title"] = bmiTool.Name,
+                        ["Description"] = bmiTool.Description,
+                        ["Url"] = Url.Action(bmiTool.Action, bmiTool.Controller) ?? "#",
+                        ["IconHtml"] = bmiTool.IconHtml,
+                        ["Category"] = bmiTool.Category,
+                        ["Badges"] = bmiTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, bmiCard)
 
                 @{
+                    var ageTool = ToolRegistry.GetById("age-calculator")!;
                     var ageCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Age Calculator",
-                        ["Description"] = "Calculate exact age in years, months, and days.",
-                        ["Url"] = Url.Action("AgeCalculator", "Tools") ?? "#",
-                        ["IconHtml"] = "🎂",
-                        ["Category"] = "Utility",
-                        ["Badges"] = new[] { "Age" }
+                        ["Title"] = ageTool.Name,
+                        ["Description"] = ageTool.Description,
+                        ["Url"] = Url.Action(ageTool.Action, ageTool.Controller) ?? "#",
+                        ["IconHtml"] = ageTool.IconHtml,
+                        ["Category"] = ageTool.Category,
+                        ["Badges"] = ageTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, ageCard)
 
                 @{
+                    var dateTool = ToolRegistry.GetById("date-calculator")!;
                     var dateCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Date Calculator",
-                        ["Description"] = "Calculate date differences or add/subtract days.",
-                        ["Url"] = Url.Action("DateCalculator", "Tools") ?? "#",
-                        ["IconHtml"] = "📅",
-                        ["Category"] = "Utility",
-                        ["Badges"] = new[] { "Dates" }
+                        ["Title"] = dateTool.Name,
+                        ["Description"] = dateTool.Description,
+                        ["Url"] = Url.Action(dateTool.Action, dateTool.Controller) ?? "#",
+                        ["IconHtml"] = dateTool.IconHtml,
+                        ["Category"] = dateTool.Category,
+                        ["Badges"] = dateTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, dateCard)
 
                 @{
+                    var passwordTool = ToolRegistry.GetById("password-generator")!;
                     var passwordCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Password Generator",
-                        ["Description"] = "Generate strong, secure passwords instantly.",
-                        ["Url"] = Url.Action("PasswordGenerator", "Tools") ?? "#",
-                        ["IconHtml"] = "🔒",
-                        ["Category"] = "Security",
-                        ["Badges"] = new[] { "Passwords" }
+                        ["Title"] = passwordTool.Name,
+                        ["Description"] = passwordTool.Description,
+                        ["Url"] = Url.Action(passwordTool.Action, passwordTool.Controller) ?? "#",
+                        ["IconHtml"] = passwordTool.IconHtml,
+                        ["Category"] = passwordTool.Category,
+                        ["Badges"] = passwordTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, passwordCard)
@@ -377,92 +394,99 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @{
+                    var equationTool = ToolRegistry.GetById("equation-solver")!;
                     var equationCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Equation Solver",
-                        ["Description"] = "Solve linear, quadratic, and cubic equations.",
-                        ["Url"] = Url.Action("EquationSolver", "Math") ?? "#",
-                        ["IconHtml"] = "📐",
-                        ["Category"] = "Math",
-                        ["Badges"] = new[] { "Equations" }
+                        ["Title"] = equationTool.Name,
+                        ["Description"] = equationTool.Description,
+                        ["Url"] = Url.Action(equationTool.Action, equationTool.Controller) ?? "#",
+                        ["IconHtml"] = equationTool.IconHtml,
+                        ["Category"] = equationTool.Category,
+                        ["Badges"] = equationTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, equationCard)
 
                 @{
+                    var problemTool = ToolRegistry.GetById("problem-solver")!;
                     var problemCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Problem Solver",
-                        ["Description"] = "General math problem solver.",
-                        ["Url"] = Url.Action("ProblemSolver", "Math") ?? "#",
-                        ["IconHtml"] = "🧩",
-                        ["Category"] = "Math",
-                        ["Badges"] = new[] { "Problems" }
+                        ["Title"] = problemTool.Name,
+                        ["Description"] = problemTool.Description,
+                        ["Url"] = Url.Action(problemTool.Action, problemTool.Controller) ?? "#",
+                        ["IconHtml"] = problemTool.IconHtml,
+                        ["Category"] = problemTool.Category,
+                        ["Badges"] = problemTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, problemCard)
 
                 @{
+                    var graphTool = ToolRegistry.GetById("graph-plotter")!;
                     var graphCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Graph Plotter",
-                        ["Description"] = "Plot and analyze 2D mathematical functions.",
-                        ["Url"] = Url.Action("GraphPlotter", "Math") ?? "#",
-                        ["IconHtml"] = "📈",
-                        ["Category"] = "Math",
-                        ["Badges"] = new[] { "Graphs" }
+                        ["Title"] = graphTool.Name,
+                        ["Description"] = graphTool.Description,
+                        ["Url"] = Url.Action(graphTool.Action, graphTool.Controller) ?? "#",
+                        ["IconHtml"] = graphTool.IconHtml,
+                        ["Category"] = graphTool.Category,
+                        ["Badges"] = graphTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, graphCard)
 
                 @{
+                    var evaluatorTool = ToolRegistry.GetById("expression-evaluator")!;
                     var evaluatorCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Evaluator",
-                        ["Description"] = "Evaluate complex mathematical expressions.",
-                        ["Url"] = Url.Action("ExpressionEvaluator", "Math") ?? "#",
-                        ["IconHtml"] = "🧮",
-                        ["Category"] = "Math",
-                        ["Badges"] = new[] { "Expressions" }
+                        ["Title"] = evaluatorTool.Name,
+                        ["Description"] = evaluatorTool.Description,
+                        ["Url"] = Url.Action(evaluatorTool.Action, evaluatorTool.Controller) ?? "#",
+                        ["IconHtml"] = evaluatorTool.IconHtml,
+                        ["Category"] = evaluatorTool.Category,
+                        ["Badges"] = evaluatorTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, evaluatorCard)
 
                 @{
+                    var permutationTool = ToolRegistry.GetById("permutation-combination")!;
                     var permutationCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Permutation",
-                        ["Description"] = "Calculate permutations and combinations.",
-                        ["Url"] = Url.Action("PermutationCombination", "Math") ?? "#",
-                        ["IconHtml"] = "🎲",
-                        ["Category"] = "Combinatorics",
-                        ["Badges"] = new[] { "nPr", "nCr" }
+                        ["Title"] = permutationTool.Name,
+                        ["Description"] = permutationTool.Description,
+                        ["Url"] = Url.Action(permutationTool.Action, permutationTool.Controller) ?? "#",
+                        ["IconHtml"] = permutationTool.IconHtml,
+                        ["Category"] = permutationTool.Category,
+                        ["Badges"] = permutationTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, permutationCard)
 
                 @{
+                    var cryptoTool = ToolRegistry.GetById("cryptography")!;
                     var cryptoCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Cryptography",
-                        ["Description"] = "Basic cryptographic ciphers tool.",
-                        ["Url"] = Url.Action("Cryptography", "Math") ?? "#",
-                        ["IconHtml"] = "🗝️",
-                        ["Category"] = "Security",
-                        ["Badges"] = new[] { "Ciphers" }
+                        ["Title"] = cryptoTool.Name,
+                        ["Description"] = cryptoTool.Description,
+                        ["Url"] = Url.Action(cryptoTool.Action, cryptoTool.Controller) ?? "#",
+                        ["IconHtml"] = cryptoTool.IconHtml,
+                        ["Category"] = cryptoTool.Category,
+                        ["Badges"] = cryptoTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, cryptoCard)
 
                 @{
+                    var indicatorTool = ToolRegistry.GetById("indicator-codes")!;
                     var indicatorCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Indicator Codes",
-                        ["Description"] = "Binary, decimal, and hex conversions.",
-                        ["Url"] = Url.Action("IndicatorCodes", "Math") ?? "#",
-                        ["IconHtml"] = "🔢",
-                        ["Category"] = "Developer",
-                        ["Badges"] = new[] { "Binary", "Hex" }
+                        ["Title"] = indicatorTool.Name,
+                        ["Description"] = indicatorTool.Description,
+                        ["Url"] = Url.Action(indicatorTool.Action, indicatorTool.Controller) ?? "#",
+                        ["IconHtml"] = indicatorTool.IconHtml,
+                        ["Category"] = indicatorTool.Category,
+                        ["Badges"] = indicatorTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, indicatorCard)
@@ -480,131 +504,141 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @{
+                    var imageResizerTool = ToolRegistry.GetById("image-resizer")!;
                     var imageResizerCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Image Resizer",
-                        ["Description"] = "Resize, crop, and batch process images.",
-                        ["Url"] = Url.Action("AdvancedResizer", "ImageTools") ?? "#",
-                        ["IconHtml"] = "🖼️",
-                        ["Category"] = "Images",
-                        ["Badges"] = new[] { "Batch" }
+                        ["Title"] = imageResizerTool.Name,
+                        ["Description"] = imageResizerTool.Description,
+                        ["Url"] = Url.Action(imageResizerTool.Action, imageResizerTool.Controller) ?? "#",
+                        ["IconHtml"] = imageResizerTool.IconHtml,
+                        ["Category"] = imageResizerTool.Category,
+                        ["Badges"] = imageResizerTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, imageResizerCard)
 
                 @{
+                    var todoTool = ToolRegistry.GetById("todo-list")!;
                     var todoCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "To-Do List",
-                        ["Description"] = "Simple yet effective task management.",
-                        ["Url"] = Url.Action("TodoList", "Productivity") ?? "#",
-                        ["IconHtml"] = "✅",
-                        ["Category"] = "Tasks",
-                        ["Badges"] = new[] { "Todos" }
+                        ["Title"] = todoTool.Name,
+                        ["Description"] = todoTool.Description,
+                        ["Url"] = Url.Action(todoTool.Action, todoTool.Controller) ?? "#",
+                        ["IconHtml"] = todoTool.IconHtml,
+                        ["Category"] = todoTool.Category,
+                        ["Badges"] = todoTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, todoCard)
 
                 @{
+                    var kanbanTool = ToolRegistry.GetById("kanban-board")!;
                     var kanbanCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Kanban Board",
-                        ["Description"] = "Visual project management with boards.",
-                        ["Url"] = Url.Action("KanbanBoard", "Productivity") ?? "#",
-                        ["IconHtml"] = "📋",
-                        ["Category"] = "Projects",
-                        ["Badges"] = new[] { "Kanban" }
+                        ["Title"] = kanbanTool.Name,
+                        ["Description"] = kanbanTool.Description,
+                        ["Url"] = Url.Action(kanbanTool.Action, kanbanTool.Controller) ?? "#",
+                        ["IconHtml"] = kanbanTool.IconHtml,
+                        ["Category"] = kanbanTool.Category,
+                        ["Badges"] = kanbanTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, kanbanCard)
 
                 @{
+                    var notesTool = ToolRegistry.GetById("notes")!;
                     var notesCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Notes",
-                        ["Description"] = "Quick notepad with auto-save.",
-                        ["Url"] = Url.Action("Notes", "Productivity") ?? "#",
-                        ["IconHtml"] = "📒",
-                        ["Category"] = "Writing",
-                        ["Badges"] = new[] { "Notes" }
+                        ["Title"] = notesTool.Name,
+                        ["Description"] = notesTool.Description,
+                        ["Url"] = Url.Action(notesTool.Action, notesTool.Controller) ?? "#",
+                        ["IconHtml"] = notesTool.IconHtml,
+                        ["Category"] = notesTool.Category,
+                        ["Badges"] = notesTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, notesCard)
 
                 @{
+                    var pomodoroTool = ToolRegistry.GetById("pomodoro")!;
                     var pomodoroCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Pomodoro",
-                        ["Description"] = "Focus timer technique.",
-                        ["Url"] = Url.Action("PomodoroTimer", "Productivity") ?? "#",
-                        ["IconHtml"] = "🍅",
-                        ["Category"] = "Focus",
-                        ["Badges"] = new[] { "Timer" }
+                        ["Title"] = pomodoroTool.Name,
+                        ["Description"] = pomodoroTool.Description,
+                        ["Url"] = Url.Action(pomodoroTool.Action, pomodoroTool.Controller) ?? "#",
+                        ["IconHtml"] = pomodoroTool.IconHtml,
+                        ["Category"] = pomodoroTool.Category,
+                        ["Badges"] = pomodoroTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, pomodoroCard)
 
                 @{
+                    var timeTrackerTool = ToolRegistry.GetById("time-tracker")!;
                     var timeTrackerCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Time Tracker",
-                        ["Description"] = "Track time for tasks and projects.",
-                        ["Url"] = Url.Action("TimeTracker", "Productivity") ?? "#",
-                        ["IconHtml"] = "⏱️",
-                        ["Category"] = "Time",
-                        ["Badges"] = new[] { "Tracking" }
+                        ["Title"] = timeTrackerTool.Name,
+                        ["Description"] = timeTrackerTool.Description,
+                        ["Url"] = Url.Action(timeTrackerTool.Action, timeTrackerTool.Controller) ?? "#",
+                        ["IconHtml"] = timeTrackerTool.IconHtml,
+                        ["Category"] = timeTrackerTool.Category,
+                        ["Badges"] = timeTrackerTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, timeTrackerCard)
 
                 @{
+                    var stopwatchTool = ToolRegistry.GetById("stopwatch")!;
                     var stopwatchCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Stopwatch",
-                        ["Description"] = "Precise timing with laps.",
-                        ["Url"] = Url.Action("Stopwatch", "Productivity") ?? "#",
-                        ["IconHtml"] = "⏱️",
-                        ["Category"] = "Time",
-                        ["Badges"] = new[] { "Timer" }
+                        ["Title"] = stopwatchTool.Name,
+                        ["Description"] = stopwatchTool.Description,
+                        ["Url"] = Url.Action(stopwatchTool.Action, stopwatchTool.Controller) ?? "#",
+                        ["IconHtml"] = stopwatchTool.IconHtml,
+                        ["Category"] = stopwatchTool.Category,
+                        ["Badges"] = stopwatchTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, stopwatchCard)
 
                 @{
+                    var worldTimeTool = ToolRegistry.GetById("world-time")!;
                     var worldTimeCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "World Time",
-                        ["Description"] = "Current time across global cities.",
-                        ["Url"] = Url.Action("WorldTime", "Productivity") ?? "#",
-                        ["IconHtml"] = "🌍",
-                        ["Category"] = "Time",
-                        ["Badges"] = new[] { "Zones" }
+                        ["Title"] = worldTimeTool.Name,
+                        ["Description"] = worldTimeTool.Description,
+                        ["Url"] = Url.Action(worldTimeTool.Action, worldTimeTool.Controller) ?? "#",
+                        ["IconHtml"] = worldTimeTool.IconHtml,
+                        ["Category"] = worldTimeTool.Category,
+                        ["Badges"] = worldTimeTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, worldTimeCard)
 
                 @{
+                    var tzConvTool = ToolRegistry.GetById("time-zone-converter")!;
                     var tzConvCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Time Zone Conv",
-                        ["Description"] = "Convert calls across time zones.",
-                        ["Url"] = Url.Action("TimeZoneConverter", "Productivity") ?? "#",
-                        ["IconHtml"] = "🌐",
-                        ["Category"] = "Time",
-                        ["Badges"] = new[] { "Zones" }
+                        ["Title"] = tzConvTool.Name,
+                        ["Description"] = tzConvTool.Description,
+                        ["Url"] = Url.Action(tzConvTool.Action, tzConvTool.Controller) ?? "#",
+                        ["IconHtml"] = tzConvTool.IconHtml,
+                        ["Category"] = tzConvTool.Category,
+                        ["Badges"] = tzConvTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, tzConvCard)
 
                 @{
+                    var ttsTool = ToolRegistry.GetById("text-to-speech")!;
                     var ttsCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Text-to-Speech",
-                        ["Description"] = "Convert text to spoken audio.",
-                        ["Url"] = Url.Action("TextToSpeech", "Productivity") ?? "#",
-                        ["IconHtml"] = "🗣️",
-                        ["Category"] = "Audio",
-                        ["Badges"] = new[] { "TTS" }
+                        ["Title"] = ttsTool.Name,
+                        ["Description"] = ttsTool.Description,
+                        ["Url"] = Url.Action(ttsTool.Action, ttsTool.Controller) ?? "#",
+                        ["IconHtml"] = ttsTool.IconHtml,
+                        ["Category"] = ttsTool.Category,
+                        ["Badges"] = ttsTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, ttsCard)
@@ -624,79 +658,85 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @{
+                    var profitTool = ToolRegistry.GetById("profit-margin")!;
                     var profitCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Profit Margin Calculator",
-                        ["Description"] = "Calculate profit margins, markups, and optimal pricing.",
-                        ["Url"] = Url.Action("ProfitMargin", "Business") ?? "#",
-                        ["IconHtml"] = "💰",
-                        ["Category"] = "Business",
-                        ["Badges"] = new[] { "Margin" }
+                        ["Title"] = profitTool.Name,
+                        ["Description"] = profitTool.Description,
+                        ["Url"] = Url.Action(profitTool.Action, profitTool.Controller) ?? "#",
+                        ["IconHtml"] = profitTool.IconHtml,
+                        ["Category"] = profitTool.Category,
+                        ["Badges"] = profitTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, profitCard)
 
                 @{
+                    var roiTool = ToolRegistry.GetById("roi-analysis")!;
                     var roiCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "ROI Analysis",
-                        ["Description"] = "Analyze return on investment for projects or campaigns.",
-                        ["Url"] = Url.Action("RoiAnalysis", "Business") ?? "#",
-                        ["IconHtml"] = "📈",
-                        ["Category"] = "Finance",
-                        ["Badges"] = new[] { "ROI" }
+                        ["Title"] = roiTool.Name,
+                        ["Description"] = roiTool.Description,
+                        ["Url"] = Url.Action(roiTool.Action, roiTool.Controller) ?? "#",
+                        ["IconHtml"] = roiTool.IconHtml,
+                        ["Category"] = roiTool.Category,
+                        ["Badges"] = roiTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, roiCard)
 
                 @{
+                    var loanBusinessTool = ToolRegistry.GetById("loan-emi")!;
                     var loanCalcCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Business Loan & EMI Calculator",
-                        ["Description"] = "Calculate loan payments, EMIs, and amortization schedules.",
-                        ["Url"] = Url.Action("LoanCalculator", "Business") ?? "#",
+                        ["Title"] = loanBusinessTool.Name,
+                        ["Description"] = loanBusinessTool.Description,
+                        ["Url"] = Url.Action(loanBusinessTool.Action, loanBusinessTool.Controller) ?? "#",
                         ["IconHtml"] = "💵",
-                        ["Category"] = "Finance",
-                        ["Badges"] = new[] { "Loans" }
+                        ["Category"] = loanBusinessTool.Category,
+                        ["Badges"] = loanBusinessTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, loanCalcCard)
 
                 @{
+                    var unbilledTool = ToolRegistry.GetById("unbilled-hours")!;
                     var unbilledCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Unbilled Hours",
-                        ["Description"] = "Estimate the value of unbilled work and time.",
-                        ["Url"] = Url.Action("UnbilledHours", "Business") ?? "#",
-                        ["IconHtml"] = "⏳",
-                        ["Category"] = "Billing",
-                        ["Badges"] = new[] { "Hours" }
+                        ["Title"] = unbilledTool.Name,
+                        ["Description"] = unbilledTool.Description,
+                        ["Url"] = Url.Action(unbilledTool.Action, unbilledTool.Controller) ?? "#",
+                        ["IconHtml"] = unbilledTool.IconHtml,
+                        ["Category"] = unbilledTool.Category,
+                        ["Badges"] = unbilledTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, unbilledCard)
 
                 @{
+                    var savingsTool = ToolRegistry.GetById("savings-comparison")!;
                     var savingsCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Savings Comparison",
-                        ["Description"] = "Compare savings or investment options side by side.",
-                        ["Url"] = Url.Action("SavingsComparison", "Business") ?? "#",
-                        ["IconHtml"] = "🛒",
-                        ["Category"] = "Finance",
-                        ["Badges"] = new[] { "Savings" }
+                        ["Title"] = savingsTool.Name,
+                        ["Description"] = savingsTool.Description,
+                        ["Url"] = Url.Action(savingsTool.Action, savingsTool.Controller) ?? "#",
+                        ["IconHtml"] = savingsTool.IconHtml,
+                        ["Category"] = savingsTool.Category,
+                        ["Badges"] = savingsTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, savingsCard)
 
                 @{
+                    var autoPlannerTool = ToolRegistry.GetById("automation-planner")!;
                     var autoPlannerCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Automation Planner",
-                        ["Description"] = "Estimate ROI from automating manual processes.",
-                        ["Url"] = Url.Action("AutomationPlanner", "Business") ?? "#",
-                        ["IconHtml"] = "🤖",
-                        ["Category"] = "Automation",
-                        ["Badges"] = new[] { "ROI" }
+                        ["Title"] = autoPlannerTool.Name,
+                        ["Description"] = autoPlannerTool.Description,
+                        ["Url"] = Url.Action(autoPlannerTool.Action, autoPlannerTool.Controller) ?? "#",
+                        ["IconHtml"] = autoPlannerTool.IconHtml,
+                        ["Category"] = autoPlannerTool.Category,
+                        ["Badges"] = autoPlannerTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, autoPlannerCard)
@@ -716,79 +756,85 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @{
+                    var quizTool = ToolRegistry.GetById("quiz-builder")!;
                     var quizCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Online Quiz Builder",
-                        ["Description"] = "Create interactive quizzes and assessments for students.",
-                        ["Url"] = Url.Action("QuizBuilder", "Academic") ?? "#",
-                        ["IconHtml"] = "❓",
-                        ["Category"] = "Study",
-                        ["Badges"] = new[] { "Quizzes" }
+                        ["Title"] = quizTool.Name,
+                        ["Description"] = quizTool.Description,
+                        ["Url"] = Url.Action(quizTool.Action, quizTool.Controller) ?? "#",
+                        ["IconHtml"] = quizTool.IconHtml,
+                        ["Category"] = quizTool.Category,
+                        ["Badges"] = quizTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, quizCard)
 
                 @{
+                    var flashcardsTool = ToolRegistry.GetById("flashcards")!;
                     var flashcardsCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Flashcard Generator",
-                        ["Description"] = "Create and study with digital flashcards.",
-                        ["Url"] = Url.Action("Flashcards", "Academic") ?? "#",
-                        ["IconHtml"] = "📇",
-                        ["Category"] = "Study",
-                        ["Badges"] = new[] { "Cards" }
+                        ["Title"] = flashcardsTool.Name,
+                        ["Description"] = flashcardsTool.Description,
+                        ["Url"] = Url.Action(flashcardsTool.Action, flashcardsTool.Controller) ?? "#",
+                        ["IconHtml"] = flashcardsTool.IconHtml,
+                        ["Category"] = flashcardsTool.Category,
+                        ["Badges"] = flashcardsTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, flashcardsCard)
 
                 @{
+                    var grammarTool = ToolRegistry.GetById("grammar-helper")!;
                     var grammarCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Grammar Helper",
-                        ["Description"] = "Check grammar and improve writing with AI assistance.",
-                        ["Url"] = Url.Action("GrammarHelper", "Academic") ?? "#",
-                        ["IconHtml"] = "✍️",
-                        ["Category"] = "Writing",
-                        ["Badges"] = new[] { "Grammar" }
+                        ["Title"] = grammarTool.Name,
+                        ["Description"] = grammarTool.Description,
+                        ["Url"] = Url.Action(grammarTool.Action, grammarTool.Controller) ?? "#",
+                        ["IconHtml"] = grammarTool.IconHtml,
+                        ["Category"] = grammarTool.Category,
+                        ["Badges"] = grammarTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, grammarCard)
 
                 @{
+                    var formulasTool = ToolRegistry.GetById("formula-reference")!;
                     var formulasCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Formula & Unit Reference",
-                        ["Description"] = "Reference for key math, physics, and chemistry formulas.",
-                        ["Url"] = Url.Action("FormulaReference", "Academic") ?? "#",
-                        ["IconHtml"] = "📚",
-                        ["Category"] = "Reference",
-                        ["Badges"] = new[] { "Formulas" }
+                        ["Title"] = formulasTool.Name,
+                        ["Description"] = formulasTool.Description,
+                        ["Url"] = Url.Action(formulasTool.Action, formulasTool.Controller) ?? "#",
+                        ["IconHtml"] = formulasTool.IconHtml,
+                        ["Category"] = formulasTool.Category,
+                        ["Badges"] = formulasTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, formulasCard)
 
                 @{
+                    var whiteboardTool = ToolRegistry.GetById("whiteboard")!;
                     var whiteboardCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Interactive Whiteboard",
-                        ["Description"] = "Draw diagrams and teach concepts on a digital whiteboard.",
-                        ["Url"] = Url.Action("Whiteboard", "Academic") ?? "#",
-                        ["IconHtml"] = "🖊️",
-                        ["Category"] = "Collaboration",
-                        ["Badges"] = new[] { "Board" }
+                        ["Title"] = whiteboardTool.Name,
+                        ["Description"] = whiteboardTool.Description,
+                        ["Url"] = Url.Action(whiteboardTool.Action, whiteboardTool.Controller) ?? "#",
+                        ["IconHtml"] = whiteboardTool.IconHtml,
+                        ["Category"] = whiteboardTool.Category,
+                        ["Badges"] = whiteboardTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, whiteboardCard)
 
                 @{
+                    var mindMapTool = ToolRegistry.GetById("mind-map")!;
                     var mindMapCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Mind Map Creator",
-                        ["Description"] = "Visualize and organize ideas with mind maps.",
-                        ["Url"] = Url.Action("MindMap", "Academic") ?? "#",
-                        ["IconHtml"] = "🧠",
-                        ["Category"] = "Planning",
-                        ["Badges"] = new[] { "Maps" }
+                        ["Title"] = mindMapTool.Name,
+                        ["Description"] = mindMapTool.Description,
+                        ["Url"] = Url.Action(mindMapTool.Action, mindMapTool.Controller) ?? "#",
+                        ["IconHtml"] = mindMapTool.IconHtml,
+                        ["Category"] = mindMapTool.Category,
+                        ["Badges"] = mindMapTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, mindMapCard)
@@ -808,66 +854,71 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @{
+                    var aiWriterTool = ToolRegistry.GetById("ai-writing-assistant")!;
                     var aiWriterCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "AI Writing Assistant",
-                        ["Description"] = "Draft content, summarize text, and improve writing with AI.",
-                        ["Url"] = Url.Action("AIWritingAssistant", "Trending") ?? "#",
-                        ["IconHtml"] = "🤖",
-                        ["Category"] = "AI",
-                        ["Badges"] = new[] { "Writing", "AI" }
+                        ["Title"] = aiWriterTool.Name,
+                        ["Description"] = aiWriterTool.Description,
+                        ["Url"] = Url.Action(aiWriterTool.Action, aiWriterTool.Controller) ?? "#",
+                        ["IconHtml"] = aiWriterTool.IconHtml,
+                        ["Category"] = aiWriterTool.Category,
+                        ["Badges"] = aiWriterTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, aiWriterCard)
 
                 @{
+                    var pollBuilderTool = ToolRegistry.GetById("poll-builder")!;
                     var pollBuilderCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Quick Poll Builder",
-                        ["Description"] = "Create instant polls and surveys with visual results.",
-                        ["Url"] = Url.Action("PollBuilder", "Trending") ?? "#",
-                        ["IconHtml"] = "📊",
-                        ["Category"] = "Engagement",
-                        ["Badges"] = new[] { "Polls" }
+                        ["Title"] = pollBuilderTool.Name,
+                        ["Description"] = pollBuilderTool.Description,
+                        ["Url"] = Url.Action(pollBuilderTool.Action, pollBuilderTool.Controller) ?? "#",
+                        ["IconHtml"] = pollBuilderTool.IconHtml,
+                        ["Category"] = pollBuilderTool.Category,
+                        ["Badges"] = pollBuilderTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, pollBuilderCard)
 
                 @{
+                    var rateCompTool = ToolRegistry.GetById("rate-comparison")!;
                     var rateCompCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Rate Comparison",
-                        ["Description"] = "Compare multiple currencies and units side by side.",
-                        ["Url"] = Url.Action("RateComparison", "Trending") ?? "#",
-                        ["IconHtml"] = "📉",
-                        ["Category"] = "Comparison",
-                        ["Badges"] = new[] { "Rates" }
+                        ["Title"] = rateCompTool.Name,
+                        ["Description"] = rateCompTool.Description,
+                        ["Url"] = Url.Action(rateCompTool.Action, rateCompTool.Controller) ?? "#",
+                        ["IconHtml"] = rateCompTool.IconHtml,
+                        ["Category"] = rateCompTool.Category,
+                        ["Badges"] = rateCompTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, rateCompCard)
 
                 @{
+                    var encryptionTool = ToolRegistry.GetById("encryption-tool")!;
                     var encryptionCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Encryption Tool",
-                        ["Description"] = "Encrypt and decrypt text securely in your browser.",
-                        ["Url"] = Url.Action("EncryptionTool", "Trending") ?? "#",
-                        ["IconHtml"] = "🔐",
-                        ["Category"] = "Security",
-                        ["Badges"] = new[] { "Crypto" }
+                        ["Title"] = encryptionTool.Name,
+                        ["Description"] = encryptionTool.Description,
+                        ["Url"] = Url.Action(encryptionTool.Action, encryptionTool.Controller) ?? "#",
+                        ["IconHtml"] = encryptionTool.IconHtml,
+                        ["Category"] = encryptionTool.Category,
+                        ["Badges"] = encryptionTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, encryptionCard)
 
                 @{
+                    var memeTool = ToolRegistry.GetById("meme-generator")!;
                     var memeCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Meme Generator",
-                        ["Description"] = "Create funny memes in your browser.",
-                        ["Url"] = Url.Action("MemeGenerator", "Trending") ?? "#",
-                        ["IconHtml"] = "🤣",
-                        ["Category"] = "Fun",
-                        ["Badges"] = new[] { "Memes" }
+                        ["Title"] = memeTool.Name,
+                        ["Description"] = memeTool.Description,
+                        ["Url"] = Url.Action(memeTool.Action, memeTool.Controller) ?? "#",
+                        ["IconHtml"] = memeTool.IconHtml,
+                        ["Category"] = memeTool.Category,
+                        ["Badges"] = memeTool.Badges
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, memeCard)
@@ -992,9 +1043,73 @@
                     if (!targetSelector) return;
                     const target = document.querySelector(targetSelector);
                     if (!target) return;
+
+                    // Optimistic active state on click
+                    buttons.forEach(b => b.classList.remove('is-active'));
+                    this.classList.add('is-active');
+
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
+        })();
+
+        // Highlight active section in quick-jump bar based on scroll position
+        (function () {
+            const sectionIds = [
+                'developer',
+                'converters',
+                'business',
+                'pakistan-finance',
+                'math',
+                'productivity',
+                'academic',
+                'trending'
+            ];
+
+            const sections = sectionIds
+                .map(id => document.getElementById(id))
+                .filter(Boolean);
+
+            if (!sections.length) return;
+
+            const buttonsById = {};
+            document.querySelectorAll('[data-target]').forEach(btn => {
+                const targetSelector = btn.getAttribute('data-target');
+                if (!targetSelector || !targetSelector.startsWith('#')) return;
+                const id = targetSelector.substring(1);
+                if (sectionIds.indexOf(id) !== -1) {
+                    buttonsById[id] = btn;
+                }
+            });
+
+            if (!Object.keys(buttonsById).length) return;
+
+            let activeId = null;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const id = entry.target.id;
+                    if (!id || !buttonsById[id] || id === activeId) return;
+
+                    activeId = id;
+
+                    Object.keys(buttonsById).forEach(key => {
+                        const btn = buttonsById[key];
+                        if (!btn) return;
+                        if (key === id) {
+                            btn.classList.add('is-active');
+                        } else {
+                            btn.classList.remove('is-active');
+                        }
+                    });
+                });
+            }, {
+                threshold: 0.35,
+                rootMargin: '-72px 0px -55% 0px'
+            });
+
+            sections.forEach(section => observer.observe(section));
         })();
     </script>
 }
