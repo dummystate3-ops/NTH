@@ -11,17 +11,33 @@ namespace NovaToolsHub.Controllers
     {
         private readonly ICurrencyService _currencyService;
         private readonly ILogger<ToolsController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public ToolsController(ICurrencyService currencyService, ILogger<ToolsController> logger)
+        public ToolsController(ICurrencyService currencyService, ILogger<ToolsController> logger, IConfiguration configuration)
         {
             _currencyService = currencyService;
             _logger = logger;
+            _configuration = configuration;
         }
 
-        // GET: Tools Dashboard
+        // GET: All Tools Catalog
         public IActionResult Index()
         {
-            SetSeoData("All Tools", "Browse all calculators and converters available on NovaTools Hub");
+            var baseUrl = _configuration["SiteSettings:BaseUrl"] ?? $"{Request.Scheme}://{Request.Host}";
+
+            ViewData["PageTitle"] = "All Tools - NovaTools Hub";
+            ViewData["MetaDescription"] = "Browse our complete collection of 48+ calculators and tools for business, education, productivity, conversions, and more.";
+            ViewData["CanonicalUrl"] = $"{baseUrl}/tools";
+
+            var webPageSchema = SeoHelper.GenerateWebPageSchema(
+                "All Tools - NovaTools Hub",
+                "Browse all calculators and tools including converters, math solvers, business calculators, and productivity tools.",
+                $"{baseUrl}/tools",
+                $"{baseUrl}/images/og-default.png"
+            );
+
+            ViewBag.JsonLdSchema = webPageSchema;
+
             return View();
         }
 

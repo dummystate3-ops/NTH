@@ -1,10 +1,11 @@
 @{
-    ViewData["PageTitle"] = "All Tools | NovaTools Hub";
-    ViewData["MetaDescription"] = "Browse all calculators and converters available on NovaTools Hub";
+    // Title, description, and canonical are provided by ToolsController.Index via ViewData
 }
 
 <div class="bg-[var(--color-bg)] min-h-screen">
     <div class="container-custom section-padding">
+        <div id="tool-search-status" class="mb-4 text-sm text-[var(--color-text-medium)] hidden"></div>
+
         <!-- Header -->
         <div class="text-center mb-20 space-y-6 fade-in">
             <span
@@ -911,3 +912,60 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Apply search filter when arriving with ?q=...
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+            if (!q) return;
+
+            const query = q.toLowerCase();
+            const cards = Array.from(document.querySelectorAll('.tool-card'));
+            if (!cards.length) return;
+
+            let matchCount = 0;
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    card.classList.remove('hidden');
+                    matchCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const status = document.getElementById('tool-search-status');
+            if (status) {
+                status.classList.remove('hidden');
+                if (matchCount > 0) {
+                    status.textContent = `Showing ${matchCount} tool${matchCount === 1 ? '' : 's'} matching "${q}".`;
+                } else {
+                    status.textContent = `No tools found matching "${q}". Showing all tools.`;
+                    cards.forEach(card => card.classList.remove('hidden'));
+                }
+            }
+        })();
+
+        // Add animation on scroll for tool cards
+        (function () {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.tool-card').forEach(el => {
+                observer.observe(el);
+            });
+        })();
+    </script>
+}
