@@ -426,7 +426,7 @@
             window.NovaToolsRegistry = [
 @{
     var tools = NovaToolsHub.Helpers.ToolRegistry.AllTools;
-    for (var i = 0; i &lt; tools.Count; i++)
+    for (var i = 0; i < tools.Count; i++)
     {
         var t = tools[i];
         var json = System.Text.Json.JsonSerializer.Serialize(new
@@ -435,9 +435,9 @@
             description = t.Description,
             url = Url.Action(t.Action, t.Controller),
             category = t.Category,
-            tags = t.Tags ?? Array.Empty&lt;string&gt;()
+            tags = t.Tags ?? Array.Empty<string>()
         });
-        <text>@Html.Raw(json)@(i &lt; tools.Count - 1 ? "," : "")</text>
+        <text>@Html.Raw(json)@(i < tools.Count - 1 ? "," : "")</text>
     }
 }
             ];
