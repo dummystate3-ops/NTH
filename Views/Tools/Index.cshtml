@@ -125,6 +125,34 @@
                 @await Html.PartialAsync("_ToolCard", null, regexCard)
 
                 @{
+                    var jwtTool = ToolRegistry.GetById("jwt-decoder")!;
+                    var jwtCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = jwtTool.Name,
+                        ["Description"] = jwtTool.Description,
+                        ["Url"] = Url.Action(jwtTool.Action, jwtTool.Controller) ?? "#",
+                        ["IconHtml"] = jwtTool.IconHtml,
+                        ["Category"] = jwtTool.Category,
+                        ["Badges"] = jwtTool.Badges
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, jwtCard)
+
+                @{
+                    var hashTool = ToolRegistry.GetById("hash-generator")!;
+                    var hashCard = new ViewDataDictionary(ViewData)
+                    {
+                        ["Title"] = hashTool.Name,
+                        ["Description"] = hashTool.Description,
+                        ["Url"] = Url.Action(hashTool.Action, hashTool.Controller) ?? "#",
+                        ["IconHtml"] = hashTool.IconHtml,
+                        ["Category"] = hashTool.Category,
+                        ["Badges"] = hashTool.Badges
+                    };
+                }
+                @await Html.PartialAsync("_ToolCard", null, hashCard)
+
+                @{
                     var loremTool = ToolRegistry.GetById("lorem-ipsum")!;
                     var loremCard = new ViewDataDictionary(ViewData)
                     {
