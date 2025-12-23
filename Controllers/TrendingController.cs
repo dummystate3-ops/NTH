@@ -181,12 +181,41 @@ namespace NovaToolsHub.Controllers
         // Currency/Unit Rate Comparison
         public IActionResult RateComparison()
         {
+            var url = Url.Action("RateComparison", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Currency & Rate Comparison Tool - NovaTools Hub",
                 MetaDescription = "Compare multiple currencies and units side-by-side. Real-time exchange rates and unit conversions for easy comparison.",
-                CanonicalUrl = Url.Action("RateComparison", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Currency & Rate Comparison Tool",
+                "Compare multiple currencies and units side-by-side with real-time exchange rates and unit conversions.",
+                url,
+                "FinanceApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What does the rate comparison tool do?",
+                    "The tool lets you pick a base currency, add multiple target currencies with separate amounts, and compare the converted values side-by-side using current or fallback exchange rates."
+                ),
+                (
+                    "Are the rates real-time and suitable for trading?",
+                    "Rates are fetched from a backend provider and may be cached or fall back to sample data when a live provider is unavailable. They are useful for general comparison and planning, but not for precise trading or large financial transfers."
+                ),
+                (
+                    "Can I download or share the comparison results?",
+                    "Yes. You can copy the comparison table to your clipboard or download it as a CSV file to share or analyze in spreadsheets and reports."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
@@ -219,24 +248,82 @@ namespace NovaToolsHub.Controllers
         // Quick Poll/Survey Builder
         public IActionResult PollBuilder()
         {
+            var url = Url.Action("PollBuilder", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Quick Poll & Survey Builder - NovaTools Hub",
                 MetaDescription = "Create instant polls and surveys with visual results. Build engaging polls with charts and share results easily.",
-                CanonicalUrl = Url.Action("PollBuilder", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Quick Poll & Survey Builder",
+                "Create instant polls and surveys with visual charts, vote tracking, and exportable results.",
+                url,
+                "UtilitiesApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How does the poll builder store and track votes?",
+                    "Poll questions, options, and vote counts are stored on the server with minimal metadata. A browser cookie is used to limit duplicate voting from the same device, but it does not provide strong identity verification."
+                ),
+                (
+                    "Can I share a poll with other people?",
+                    "Yes. After creating a poll you receive a poll ID that you can share. Anyone with the ID can load the poll, submit a vote, and see aggregated results, depending on which view mode they use."
+                ),
+                (
+                    "Can I export poll results for reporting?",
+                    "You can export results as CSV and download chart images. This makes it easy to embed poll outcomes in slides, reports, or documentation."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
         // Data Privacy Tool (Encrypt/Decrypt)
         public IActionResult EncryptionTool()
         {
+            var url = Url.Action("EncryptionTool", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Data Encryption & Privacy Tool - NovaTools Hub",
                 MetaDescription = "Encrypt and decrypt text securely in your browser. AES encryption for protecting sensitive data. All processing happens locally.",
-                CanonicalUrl = Url.Action("EncryptionTool", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Data Encryption & Privacy Tool",
+                "Encrypt and decrypt text securely in your browser using AES encryption and the Web Crypto API.",
+                url,
+                "SecurityApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Is my text sent to a server when I use the encryption tool?",
+                    "The tool is designed so that encryption and decryption happen in your browser using the Web Crypto API. The ciphertext you see can be copied or downloaded, but your plaintext and password are not intended to be stored or transmitted to NovaTools Hub servers."
+                ),
+                (
+                    "What happens if I forget my encryption password?",
+                    "There is no password recovery mechanism. If you forget or lose the password you used to encrypt your text, the data cannot be decrypted. Always store critical passwords in a secure password manager."
+                ),
+                (
+                    "Is this tool suitable for highly sensitive production data?",
+                    "This tool is intended for educational use and basic protection. While it uses strong AES-256-GCM encryption, production systems handling highly sensitive data should rely on audited security architectures and dedicated key management, not just a browser-based utility."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 

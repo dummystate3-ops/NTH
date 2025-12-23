@@ -6,23 +6,6 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section JsonLd {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Quick Poll & Survey Builder",
-        "applicationCategory": "UtilitiesApplication",
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "description": "Create instant polls and surveys with visual results and charts."
-    }
-    </script>
-}
-
 <!-- Page Header -->
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
     <div class="container-custom">
@@ -122,6 +105,34 @@
             <p class="text-blue-800">
                 <strong>🔒 Privacy:</strong> Polls and votes are stored on the server with minimal metadata. Voter tracking is limited to a cookie to prevent duplicate votes.
             </p>
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Poll builder FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How do I share a poll with participants?</p>
+                    <p>
+                        After creating a poll you receive a poll ID. Share this ID with your audience so they can load the poll,
+                        cast a vote, and view aggregated results depending on which view mode they use.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can people vote more than once?</p>
+                    <p>
+                        The tool uses a browser cookie to reduce duplicate voting from the same device, but it is not a strong
+                        identity check. For high-stakes surveys you should combine this with your own participant controls.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How can I use poll results in reports?</p>
+                    <p>
+                        You can export results as CSV and download chart images directly from the results view. This makes it easy
+                        to embed charts and tables in presentations, documents, or dashboards.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- In-Content Ad -->

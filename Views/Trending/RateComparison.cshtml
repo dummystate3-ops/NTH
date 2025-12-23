@@ -7,23 +7,6 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section JsonLd {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Currency & Rate Comparison Tool",
-        "applicationCategory": "FinanceApplication",
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "description": "Compare multiple currencies and units side-by-side with real-time exchange rates."
-    }
-    </script>
-}
-
 <!-- Page Header -->
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
     <div class="container-custom">
@@ -125,6 +108,35 @@
             <p class="text-blue-800">
                 <strong>📈 Rate Info:</strong> Rates are fetched from our backend service. When a live provider is unavailable, fallback mock rates are used. Historical changes (24h/7d) are illustrative.
             </p>
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Rate comparison FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What is this rate comparison tool best used for?</p>
+                    <p>
+                        It is ideal for quickly comparing how different currencies convert from a common base amount, or for
+                        preparing rough estimates for reports and budget planning. It is not a replacement for your bank or broker’s
+                        official rate.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Are the historical change percentages exact?</p>
+                    <p>
+                        The 24h and 7d change values are illustrative and may use cached or fallback data. They are useful for
+                        spotting general trends rather than precise historical performance.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I export the comparison results?</p>
+                    <p>
+                        Yes. You can copy results to your clipboard or download them as a CSV file to open in Excel, Google Sheets,
+                        or other analysis tools.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- In-Content Ad -->
