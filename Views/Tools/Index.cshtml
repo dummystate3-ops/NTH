@@ -54,6 +54,19 @@
             </div>
         </div>
 
+        <div class="mt-10 mb-12">
+            <div class="flex flex-wrap justify-center gap-2">
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#developer">Developer</button>
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#converters">Converters &amp; Calculators</button>
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#business">Business &amp; Finance</button>
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#pakistan-finance">Pakistan Finance</button>
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#math">Math &amp; Education</button>
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#productivity">Productivity</button>
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#academic">Academic</button>
+                <button type="button" class="pill-button text-xs md:text-sm" data-target="#trending">Trending &amp; AI</button>
+            </div>
+        </div>
+
         <!-- Developer Tools Section -->
         <div id="developer" class="mb-24 scroll-mt-24">
             <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
@@ -174,7 +187,7 @@
         </div>
 
         <!-- Converters Section -->
-        <div class="mb-24 scroll-mt-24">
+        <div id="converters" class="mb-24 scroll-mt-24">
             <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
                 <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">🔄
                 </div>
@@ -307,7 +320,7 @@
         </div>
 
         <!-- Pakistan Finance Highlight -->
-        <div class="mb-24 scroll-mt-24">
+        <div id="pakistan-finance" class="mb-24 scroll-mt-24">
             <div class="card bg-gradient-to-r from-emerald-50 to-sky-50 dark:from-emerald-900/20 dark:to-sky-900/20 border border-emerald-200 dark:border-emerald-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6">
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-md">
@@ -844,23 +857,7 @@
                 @await Html.PartialAsync("_ToolCard", null, memeCard)
             </div>
         </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Secure
-                        browser-based encryption.</p>
-                </a>
-
-                <a asp-controller="Trending" asp-action="MemeGenerator"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🤣</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Meme Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create funny
-                        memes.</p>
-                </a>
+                    
             </div>
         </div>
 
@@ -940,9 +937,9 @@
             if (status) {
                 status.classList.remove('hidden');
                 if (matchCount > 0) {
-                    status.textContent = `Showing ${matchCount} tool${matchCount === 1 ? '' : 's'} matching "${q}".`;
+                    status.textContent = `Showing ${matchCount} tool${matchCount === 1 ? '' : 's'} matching \"${q}\".`;
                 } else {
-                    status.textContent = `No tools found matching "${q}". Showing all tools.`;
+                    status.textContent = `No tools found matching \"${q}\". Showing all tools.`;
                     cards.forEach(card => card.classList.remove('hidden'));
                 }
             }
@@ -965,6 +962,22 @@
 
             document.querySelectorAll('.tool-card').forEach(el => {
                 observer.observe(el);
+            });
+        })();
+
+        // Top-level section quick-jump buttons
+        (function () {
+            const buttons = document.querySelectorAll('[data-target]');
+            if (!buttons.length) return;
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const targetSelector = this.getAttribute('data-target');
+                    if (!targetSelector) return;
+                    const target = document.querySelector(targetSelector);
+                    if (!target) return;
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
             });
         })();
     </script>
