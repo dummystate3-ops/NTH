@@ -21,6 +21,16 @@
 <!-- Tool Section -->
 <section class="section-padding">
     <div class="container-custom max-w-4xl">
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Trending & AI Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#trending"),
+                ("Encryption Tool", Url.Action("EncryptionTool", "Trending") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         <form id="encryptionForm">
             @Html.AntiForgeryToken()
         </form>
