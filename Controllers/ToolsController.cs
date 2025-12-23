@@ -182,8 +182,24 @@ namespace NovaToolsHub.Controllers
             var faqs = new List<(string Question, string Answer)>
             {
                 (
-                    "Is BMI a perfect measure of health for everyone?",
-                    "No. BMI is a simple height and weight ratio and does not }
+                    "Is BMI a good indicator of my overall health?",
+                    "BMI is a quick screening tool based on height and weight, but it does not distinguish between muscle and fat or account for factors like age, sex, and body composition. Use it as a starting point, not a final diagnosis."
+                ),
+                (
+                    "Can I use this BMI calculator for children or athletes?",
+                    "For children and highly active or muscular individuals, BMI can be misleading and often underestimates or overestimates body fat. In these cases, growth charts, body composition tests, and professional medical advice are more appropriate."
+                ),
+                (
+                    "What should I do if my BMI is outside the \"normal\" range?",
+                    "Treat the result as a prompt to have a conversation with a qualified healthcare professional. Only a full medical assessment can take into account your overall health, lifestyle, and risk factors."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
+            return View();
+        }
 
         [HttpPost]
         public IActionResult CalculateBmi([FromBody] BmiRequest request)
