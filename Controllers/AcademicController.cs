@@ -9,7 +9,6 @@ namespace NovaToolsHub.Controllers
     public class AcademicController : Controller
     {
         private readonly IAiService _aiService;
-        private readonly ILogger<AcademicController> _logger;iService _aiService;
         private readonly ILogger<AcademicController> _logger;
 
         public AcademicController(IAiService aiService, ILogger<AcademicController> logger)
@@ -36,7 +35,7 @@ namespace NovaToolsHub.Controllers
                 "EducationalApplication"
             );
 
-            var faqs = new List&lt;(string Question, string Answer)&gt;
+            var faqs = new List<(string Question, string Answer)>
             {
                 (
                     "Where are my quizzes saved?",

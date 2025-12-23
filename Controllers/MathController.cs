@@ -7,9 +7,9 @@ namespace NovaToolsHub.Controllers
 {
     public class MathController : Controller
     {
-        // <<summary>
+        /// <summary>
         /// Equation Solver - Solves linear, quadratic, and cubic equations
-        / </</summary>
+        /// </summary>
         public IActionResult EquationSolver()
         {
             var model = new BasePageViewModel
@@ -36,7 +36,16 @@ namespace NovaToolsHub.Controllers
                 ),
                 (
                     "Does the equation solver show step-by-step working?",
-                    "Yes. For linear and quadratic equations the solver shows each step,
+                    "Yes. For linear and quadratic equations the solver shows each step, including isolating the variable and applying the quadratic formula when necessary."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
+            return View(model);
+        }
+
         /// <summary>
         /// Permutation & Combination Calculator
         /// </summary>

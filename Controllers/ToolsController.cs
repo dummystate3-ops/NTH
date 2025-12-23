@@ -116,7 +116,13 @@ namespace NovaToolsHub.Controllers
                     "Can I use this currency converter for financial or tax decisions?",
                     "This converter is intended for informational purposes only. It is helpful for quick estimates, but you should always rely on official statements or your bank's quoted rates for binding financial, accounting, or tax decisions."
                 )
- }
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> ConvertCurrency([FromBody] CurrencyConversionRequest request)
