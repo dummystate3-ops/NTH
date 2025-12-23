@@ -102,27 +102,11 @@ public class HomeController : Controller
     }
 
     /// <summary>
-    /// All tools page showing complete tool list
+    /// Legacy All Tools route - permanently redirects to /Tools
     /// </summary>
     public IActionResult AllTools()
     {
-        var model = new BasePageViewModel
-        {
-            PageTitle = "All Tools - NovaTools Hub",
-            MetaDescription = "Browse our complete collection of 48+ calculators and tools for business, education, productivity, conversions, and more.",
-            CanonicalUrl = $"{_configuration["SiteSettings:BaseUrl"]}/tools"
-        };
-
-        var baseUrl = _configuration["SiteSettings:BaseUrl"] ?? "https://localhost:5001";
-        ViewBag.JsonLdSchema = SeoHelper.GenerateWebPageSchema(
-            "All Tools - NovaTools Hub",
-            "Browse all calculators and tools including converters, math solvers, business calculators, and productivity tools.",
-            $"{baseUrl}/tools",
-            $"{baseUrl}/images/og-default.png"
-        );
-
-        SetSeoData(model);
-        return View(model);
+        return RedirectToActionPermanent("Index", "Tools");
     }
 
     /// <summary>

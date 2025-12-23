@@ -197,18 +197,18 @@ Keep the overall hero concept but refine:
   - Use the new `_ToolCard` component.
   - Add small category labels/badges to hint at the breadth of the hub.
 
-### 5.3 All Tools Hub (`Views/Home/AllTools.cshtml`)
+### 5.3 All Tools Hub (`Views/Tools/Index.cshtml`)
 
 Treat this as the **canonical catalog**:
 
-- Replace `??` and `[*]` icons with canonical SVGs from the icon set.
+- Replace any placeholder icons with canonical SVGs from the icon set.
 - Use collapsible sections on mobile (accordions for each category).
 - Make the header stats bar reusable (shared `MetricCard` patterns).
 - Each category:
   - Starts with a `SectionHeader`.
   - Contains a grid of `ToolCard`s.
 
-Consider consolidating `Views/Tools/Index.cshtml` to use the same underlying data and components, or reposition `Tools/Index` as a curated “Featured Collections” view rather than a full catalog duplicate.
+`Views/Tools/Index.cshtml` now serves as the single All Tools hub; there is no separate `Views/Home/AllTools.cshtml` page. Any previous duplication between the two should be consolidated into this one canonical catalog.
 
 ### 5.4 Tool Detail Templates
 

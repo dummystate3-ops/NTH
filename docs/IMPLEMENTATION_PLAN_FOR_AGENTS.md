@@ -354,7 +354,10 @@ Example: “Loan Calculator” under `/Business/LoanCalculator`.
      - `public IActionResult LoanCalculator() => View();`
    - Do not add parameters unless already used in similar actions.
 
-3. Create the view:
+3. Confirm strategy docs are present:
+   - `docs/UI_UX_AUDIT_REPORT.md`
+   - `docs/UI_REDESIGN_PLAN.md`
+   - `docs/SEO_STRATEGY.md`reate the view:
    - `Views/Business/LoanCalculator.cshtml`
    - Base it on an existing calculator template (e.g., `Views/Tools/BmiCalculator.cshtml` or `UnitConverter.cshtml` for layout).
    - Include:
@@ -364,7 +367,7 @@ Example: “Loan Calculator” under `/Business/LoanCalculator`.
      - JSON-LD block using SEO helper.
 
 4. Integrate into All Tools and hubs:
-   - Add a card in `Views/Home/AllTools.cshtml` under the appropriate category (e.g., Business & Finance).
+   - Add a card in `Views/Tools/Index.cscshtml` under the appropriate category (e.g., Business & Finance).
    - Add a card in `Views/Tools/Index.cshtml` if relevant.
 
 **Guardrails**:

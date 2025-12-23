@@ -78,7 +78,7 @@
 - Canonical URLs do not match actual routes for Math and Productivity tools. Canonicals use hyphenated slugs (for example, "/math/equation-solver"), but routing uses action names ("/math/equationsolver"). Canonical tags currently point to 404s, which can hurt indexing.
 
 ### Medium
-- All Tools hub page is incomplete. It omits multiple live tools (JSON Formatter, Regex Tester, Color Palette Generator, Lorem Ipsum, Background Remover). Users cannot discover these from the main hub.
+- All Tools hub page was previously incomplete. It omitted multiple live tools (JSON Formatter, Regex Tester, Color Palette Generator, Lorem Ipsum, Background Remover), making discovery harder from the main hub. This has since been addressed by consolidating and enriching `Views/Tools/Index.cshtml` as the canonical All Tools catalog.
 - Widespread text encoding corruption in multiple views (math symbols, arrows, and special characters render as garbled bytes such as "xı", "û", or box characters). This affects instructional content and formulas, and in some cases could confuse user input.
 - Stale image resizer JS file (wwwroot/js/image-resizer.js) expects batch response fields that are no longer returned by the controller (result.results and batchKey). If this file is referenced in the future, batch flows will break.
 
@@ -107,14 +107,14 @@ These are implemented but missing from discovery surfaces:
 
 ## Status Updates (Completed in this session)
 - Sitemap cleaned to remove non-existent routes and include all current tools, including image tools and missing business/trending pages.
-- All Tools hub now includes Developer & Content tools and Background Remover.
+- All Tools hub is now represented by `Views/Tools/Index.cshtml` and includes Developer & Content tools and Background Remover.
 - Navigation now links category cards to the All Tools page fragments, adds Academic category, and removes hard-coded total count.
 
 ## Evidence (Key References)
 - `Controllers/SitemapController.cs`
 - `Controllers/MathController.cs`
 - `Controllers/ProductivityController.cs`
-- `Views/Home/AllTools.cshtml`
+- `Views/Tools/Index.cshtml`
 - `Views/Math/EquationSolver.cshtml`
 - `Views/Academic/FormulaReference.cshtml`
 - `wwwroot/js/image-resizer.js`

@@ -1,10 +1,11 @@
 @{
-    ViewData["PageTitle"] = "All Tools | NovaTools Hub";
-    ViewData["MetaDescription"] = "Browse all calculators and converters available on NovaTools Hub";
+    // Title, description, and canonical are provided by ToolsController.Index via ViewData
 }
 
 <div class="bg-[var(--color-bg)] min-h-screen">
     <div class="container-custom section-padding">
+        <div id="tool-search-status" class="mb-4 text-sm text-[var(--color-text-medium)] hidden"></div>
+
         <!-- Header -->
         <div class="text-center mb-20 space-y-6 fade-in">
             <span
@@ -53,6 +54,35 @@
             </div>
         </div>
 
+        <div class="mt-10 mb-12">
+            <div class="flex flex-wrap justify-center gap-2">
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#developer">
+                    <span>💻</span><span>Developer</span>
+                </button>
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#converters">
+                    <span>🔄</span><span>Converters &amp; Calculators</span>
+                </button>
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#business">
+                    <span>💰</span><span>Business &amp; Finance</span>
+                </button>
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#pakistan-finance">
+                    <span>🇵🇰</span><span>Pakistan Finance</span>
+                </button>
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#math">
+                    <span>📐</span><span>Math &amp; Education</span>
+                </button>
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#productivity">
+                    <span>⚡</span><span>Productivity</span>
+                </button>
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#academic">
+                    <span>🎓</span><span>Academic</span>
+                </button>
+                <button type="button" class="pill-button text-xs md:text-sm flex items-center gap-1.5" data-target="#trending">
+                    <span>🚀</span><span>Trending &amp; AI</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Developer Tools Section -->
         <div id="developer" class="mb-24 scroll-mt-24">
             <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
@@ -95,12 +125,12 @@
                 @{
                     var loremCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Lorem Ipsum",
-                        ["Description"] = "Generate placeholder text for designs with customizable styles.",
+                        ["Title"] = "Lorem Ipsum Generator",
+                        ["Description"] = "Generate placeholder text for designs, mockups, and wireframes.",
                         ["Url"] = Url.Action("LoremIpsum", "Tools") ?? "#",
                         ["IconHtml"] = "📝",
                         ["Category"] = "Content",
-                        ["Badges"] = new[] { "Design" }
+                        ["Badges"] = new[] { "Text" }
                     };
                 }
                 @await Html.PartialAsync("_ToolCard", null, loremCard)
@@ -108,8 +138,8 @@
                 @{
                     var paletteCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Color Palette",
-                        ["Description"] = "Build harmonious color schemes with harmony modes.",
+                        ["Title"] = "Color Palette Generator",
+                        ["Description"] = "Create color palettes and gradients with exportable swatches.",
                         ["Url"] = Url.Action("ColorPaletteGenerator", "Tools") ?? "#",
                         ["IconHtml"] = "🎨",
                         ["Category"] = "Design",
@@ -134,8 +164,8 @@
                 @{
                     var faviconCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Favicon Gen",
-                        ["Description"] = "Create multi-platform icons from text or images.",
+                        ["Title"] = "Favicon Generator",
+                        ["Description"] = "Create favicons and app icons from your logo or text.",
                         ["Url"] = Url.Action("FaviconGenerator", "Tools") ?? "#",
                         ["IconHtml"] = "🖼️",
                         ["Category"] = "Assets",
@@ -160,8 +190,8 @@
                 @{
                     var qrCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "QR Code Gen",
-                        ["Description"] = "Generate customizable QR codes for any purpose.",
+                        ["Title"] = "QR Code Generator",
+                        ["Description"] = "Generate QR codes for URLs, text, and more.",
                         ["Url"] = Url.Action("QrCodeGenerator", "Tools") ?? "#",
                         ["IconHtml"] = "📱",
                         ["Category"] = "Sharing",
@@ -173,7 +203,7 @@
         </div>
 
         <!-- Converters Section -->
-        <div class="mb-24 scroll-mt-24">
+        <div id="converters" class="mb-24 scroll-mt-24">
             <div class="flex items-center gap-4 mb-10 pb-4 border-b border-[var(--color-border)]">
                 <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-2xl shadow-sm">🔄
                 </div>
@@ -202,8 +232,8 @@
                 @{
                     var currencyCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Currency",
-                        ["Description"] = "Real-time exchange rates for 150+ world currencies.",
+                        ["Title"] = "Currency Converter",
+                        ["Description"] = "Convert between 150+ world currencies with live rates.",
                         ["Url"] = Url.Action("CurrencyConverter", "Tools") ?? "#",
                         ["IconHtml"] = "💱",
                         ["Category"] = "Finance",
@@ -215,8 +245,8 @@
                 @{
                     var loanEmiCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Loan & EMI",
-                        ["Description"] = "Calculate business loan EMIs and amortization schedules.",
+                        ["Title"] = "Loan & EMI Calculator",
+                        ["Description"] = "Calculate loan EMIs, schedules, and total interest.",
                         ["Url"] = Url.Action("LoanCalculator", "Business") ?? "#",
                         ["IconHtml"] = "💰",
                         ["Category"] = "Finance",
@@ -241,7 +271,7 @@
                 @{
                     var pkTaxCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Pakistan Tax",
+                        ["Title"] = "Pakistan Salary Tax",
                         ["Description"] = "Estimate Pakistan salary income tax for 2025-26.",
                         ["Url"] = Url.Action("PakistanTaxCalculator", "Business") ?? "#",
                         ["IconHtml"] = "🇵🇰",
@@ -280,8 +310,8 @@
                 @{
                     var dateCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Date Calc",
-                        ["Description"] = "Calculate duration between dates or future dates.",
+                        ["Title"] = "Date Calculator",
+                        ["Description"] = "Calculate date differences or add/subtract days.",
                         ["Url"] = Url.Action("DateCalculator", "Tools") ?? "#",
                         ["IconHtml"] = "📅",
                         ["Category"] = "Utility",
@@ -293,7 +323,7 @@
                 @{
                     var passwordCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Password Gen",
+                        ["Title"] = "Password Generator",
                         ["Description"] = "Generate strong, secure passwords instantly.",
                         ["Url"] = Url.Action("PasswordGenerator", "Tools") ?? "#",
                         ["IconHtml"] = "🔒",
@@ -306,7 +336,7 @@
         </div>
 
         <!-- Pakistan Finance Highlight -->
-        <div class="mb-24 scroll-mt-24">
+        <div id="pakistan-finance" class="mb-24 scroll-mt-24">
             <div class="card bg-gradient-to-r from-emerald-50 to-sky-50 dark:from-emerald-900/20 dark:to-sky-900/20 border border-emerald-200 dark:border-emerald-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6">
                 <div class="flex items-start gap-4">
                     <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-md">
@@ -596,8 +626,8 @@
                 @{
                     var profitCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Profit Margin",
-                        ["Description"] = "Calculate margins and pricing.",
+                        ["Title"] = "Profit Margin Calculator",
+                        ["Description"] = "Calculate profit margins, markups, and optimal pricing.",
                         ["Url"] = Url.Action("ProfitMargin", "Business") ?? "#",
                         ["IconHtml"] = "💰",
                         ["Category"] = "Business",
@@ -610,7 +640,7 @@
                     var roiCard = new ViewDataDictionary(ViewData)
                     {
                         ["Title"] = "ROI Analysis",
-                        ["Description"] = "Analyze return on investment.",
+                        ["Description"] = "Analyze return on investment for projects or campaigns.",
                         ["Url"] = Url.Action("RoiAnalysis", "Business") ?? "#",
                         ["IconHtml"] = "📈",
                         ["Category"] = "Finance",
@@ -622,8 +652,8 @@
                 @{
                     var loanCalcCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Loan Calc",
-                        ["Description"] = "Calculate loan payments and amortization.",
+                        ["Title"] = "Business Loan & EMI Calculator",
+                        ["Description"] = "Calculate loan payments, EMIs, and amortization schedules.",
                         ["Url"] = Url.Action("LoanCalculator", "Business") ?? "#",
                         ["IconHtml"] = "💵",
                         ["Category"] = "Finance",
@@ -636,7 +666,7 @@
                     var unbilledCard = new ViewDataDictionary(ViewData)
                     {
                         ["Title"] = "Unbilled Hours",
-                        ["Description"] = "Track value of unbilled work.",
+                        ["Description"] = "Estimate the value of unbilled work and time.",
                         ["Url"] = Url.Action("UnbilledHours", "Business") ?? "#",
                         ["IconHtml"] = "⏳",
                         ["Category"] = "Billing",
@@ -648,8 +678,8 @@
                 @{
                     var savingsCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Savings Comp",
-                        ["Description"] = "Compare products for best value.",
+                        ["Title"] = "Savings Comparison",
+                        ["Description"] = "Compare savings or investment options side by side.",
                         ["Url"] = Url.Action("SavingsComparison", "Business") ?? "#",
                         ["IconHtml"] = "🛒",
                         ["Category"] = "Finance",
@@ -661,8 +691,8 @@
                 @{
                     var autoPlannerCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Auto Planner",
-                        ["Description"] = "Estimate ROI from automation.",
+                        ["Title"] = "Automation Planner",
+                        ["Description"] = "Estimate ROI from automating manual processes.",
                         ["Url"] = Url.Action("AutomationPlanner", "Business") ?? "#",
                         ["IconHtml"] = "🤖",
                         ["Category"] = "Automation",
@@ -688,8 +718,8 @@
                 @{
                     var quizCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Quiz Builder",
-                        ["Description"] = "Create interactive quizzes.",
+                        ["Title"] = "Online Quiz Builder",
+                        ["Description"] = "Create interactive quizzes and assessments for students.",
                         ["Url"] = Url.Action("QuizBuilder", "Academic") ?? "#",
                         ["IconHtml"] = "❓",
                         ["Category"] = "Study",
@@ -701,8 +731,8 @@
                 @{
                     var flashcardsCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Flashcards",
-                        ["Description"] = "Study with digital flashcards.",
+                        ["Title"] = "Flashcard Generator",
+                        ["Description"] = "Create and study with digital flashcards.",
                         ["Url"] = Url.Action("Flashcards", "Academic") ?? "#",
                         ["IconHtml"] = "📇",
                         ["Category"] = "Study",
@@ -715,7 +745,7 @@
                     var grammarCard = new ViewDataDictionary(ViewData)
                     {
                         ["Title"] = "Grammar Helper",
-                        ["Description"] = "Improve writing with AI.",
+                        ["Description"] = "Check grammar and improve writing with AI assistance.",
                         ["Url"] = Url.Action("GrammarHelper", "Academic") ?? "#",
                         ["IconHtml"] = "✍️",
                         ["Category"] = "Writing",
@@ -727,8 +757,8 @@
                 @{
                     var formulasCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Formulas",
-                        ["Description"] = "Math, physics, chemistry guide.",
+                        ["Title"] = "Formula & Unit Reference",
+                        ["Description"] = "Reference for key math, physics, and chemistry formulas.",
                         ["Url"] = Url.Action("FormulaReference", "Academic") ?? "#",
                         ["IconHtml"] = "📚",
                         ["Category"] = "Reference",
@@ -740,8 +770,8 @@
                 @{
                     var whiteboardCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Whiteboard",
-                        ["Description"] = "Interactive drawing board.",
+                        ["Title"] = "Interactive Whiteboard",
+                        ["Description"] = "Draw diagrams and teach concepts on a digital whiteboard.",
                         ["Url"] = Url.Action("Whiteboard", "Academic") ?? "#",
                         ["IconHtml"] = "🖊️",
                         ["Category"] = "Collaboration",
@@ -753,8 +783,8 @@
                 @{
                     var mindMapCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Mind Map",
-                        ["Description"] = "Visualize and organize ideas.",
+                        ["Title"] = "Mind Map Creator",
+                        ["Description"] = "Visualize and organize ideas with mind maps.",
                         ["Url"] = Url.Action("MindMap", "Academic") ?? "#",
                         ["IconHtml"] = "🧠",
                         ["Category"] = "Planning",
@@ -780,8 +810,8 @@
                 @{
                     var aiWriterCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "AI Writer",
-                        ["Description"] = "Draft content with AI.",
+                        ["Title"] = "AI Writing Assistant",
+                        ["Description"] = "Draft content, summarize text, and improve writing with AI.",
                         ["Url"] = Url.Action("AIWritingAssistant", "Trending") ?? "#",
                         ["IconHtml"] = "🤖",
                         ["Category"] = "AI",
@@ -793,8 +823,8 @@
                 @{
                     var pollBuilderCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Poll Builder",
-                        ["Description"] = "Instant polls and surveys.",
+                        ["Title"] = "Quick Poll Builder",
+                        ["Description"] = "Create instant polls and surveys with visual results.",
                         ["Url"] = Url.Action("PollBuilder", "Trending") ?? "#",
                         ["IconHtml"] = "📊",
                         ["Category"] = "Engagement",
@@ -806,8 +836,8 @@
                 @{
                     var rateCompCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Rate Comp",
-                        ["Description"] = "Compare currencies and units.",
+                        ["Title"] = "Rate Comparison",
+                        ["Description"] = "Compare multiple currencies and units side by side.",
                         ["Url"] = Url.Action("RateComparison", "Trending") ?? "#",
                         ["IconHtml"] = "📉",
                         ["Category"] = "Comparison",
@@ -819,8 +849,8 @@
                 @{
                     var encryptionCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Encryption",
-                        ["Description"] = "Secure browser-based encryption.",
+                        ["Title"] = "Encryption Tool",
+                        ["Description"] = "Encrypt and decrypt text securely in your browser.",
                         ["Url"] = Url.Action("EncryptionTool", "Trending") ?? "#",
                         ["IconHtml"] = "🔐",
                         ["Category"] = "Security",
@@ -832,8 +862,8 @@
                 @{
                     var memeCard = new ViewDataDictionary(ViewData)
                     {
-                        ["Title"] = "Meme Gen",
-                        ["Description"] = "Create funny memes.",
+                        ["Title"] = "Meme Generator",
+                        ["Description"] = "Create funny memes in your browser.",
                         ["Url"] = Url.Action("MemeGenerator", "Trending") ?? "#",
                         ["IconHtml"] = "🤣",
                         ["Category"] = "Fun",
@@ -843,23 +873,7 @@
                 @await Html.PartialAsync("_ToolCard", null, memeCard)
             </div>
         </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Secure
-                        browser-based encryption.</p>
-                </a>
-
-                <a asp-controller="Trending" asp-action="MemeGenerator"
-                    class="tool-card group p-8 bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div
-                            class="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 text-white flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            🤣</div>
-                        <h3
-                            class="text-xl font-bold text-[var(--color-text-dark)] group-hover:text-[var(--color-primary)] transition-colors">
-                            Meme Gen</h3>
-                    </div>
-                    <p class="text-[var(--color-text-medium)] mb-6 text-sm leading-relaxed min-h-[40px]">Create funny
-                        memes.</p>
-                </a>
+                    
             </div>
         </div>
 
@@ -911,3 +925,76 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Apply search filter when arriving with ?q=...
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+            if (!q) return;
+
+            const query = q.toLowerCase();
+            const cards = Array.from(document.querySelectorAll('.tool-card'));
+            if (!cards.length) return;
+
+            let matchCount = 0;
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    card.classList.remove('hidden');
+                    matchCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const status = document.getElementById('tool-search-status');
+            if (status) {
+                status.classList.remove('hidden');
+                if (matchCount > 0) {
+                    status.textContent = `Showing ${matchCount} tool${matchCount === 1 ? '' : 's'} matching \"${q}\".`;
+                } else {
+                    status.textContent = `No tools found matching \"${q}\". Showing all tools.`;
+                    cards.forEach(card => card.classList.remove('hidden'));
+                }
+            }
+        })();
+
+        // Add animation on scroll for tool cards
+        (function () {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.tool-card').forEach(el => {
+                observer.observe(el);
+            });
+        })();
+
+        // Top-level section quick-jump buttons
+        (function () {
+            const buttons = document.querySelectorAll('[data-target]');
+            if (!buttons.length) return;
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const targetSelector = this.getAttribute('data-target');
+                    if (!targetSelector) return;
+                    const target = document.querySelector(targetSelector);
+                    if (!target) return;
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        })();
+    </script>
+}
