@@ -132,6 +132,27 @@
                     </dl>
                 </div>
 
+                <div class="card">
+                    <h2 class="text-lg font-semibold mb-3">Related image tools</h2>
+                    <div class="flex flex-wrap gap-3 text-xs md:text-sm">
+                        <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="pill-button">
+                            Advanced Image Tool
+                        </a>
+                        <a asp-controller="ImageTools" asp-action="BackgroundRemover" class="pill-button">
+                            Background Remover
+                        </a>
+                        <a asp-controller="ImageTools" asp-action="Compressor" class="pill-button">
+                            Image Compressor
+                        </a>
+                        <a asp-controller="Tools" asp-action="FaviconGenerator" class="pill-button">
+                            Favicon Generator
+                        </a>
+                        <a asp-controller="Tools" asp-action="ColorPaletteGenerator" class="pill-button">
+                            Color Palette Generator
+                        </a>
+                    </div>
+                </div>
+
                 <!-- In-Content Ad -->
                 @await Html.PartialAsync("_AdInContent")
                 <partial name="_SocialSharing" />

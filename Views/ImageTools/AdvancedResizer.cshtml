@@ -724,6 +724,27 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-8 card">
+                <h3 class="text-xl font-semibold mb-4">Related image tools</h3>
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="pill-button">
+                        Advanced Image Tool
+                    </a>
+                    <a asp-controller="ImageTools" asp-action="Compressor" class="pill-button">
+                        Image Compressor
+                    </a>
+                    <a asp-controller="ImageTools" asp-action="BackgroundRemover" class="pill-button">
+                        Background Remover
+                    </a>
+                    <a asp-controller="Tools" asp-action="FaviconGenerator" class="pill-button">
+                        Favicon Generator
+                    </a>
+                    <a asp-controller="Tools" asp-action="ColorPaletteGenerator" class="pill-button">
+                        Color Palette Generator
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
