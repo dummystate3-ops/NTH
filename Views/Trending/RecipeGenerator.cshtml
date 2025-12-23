@@ -20,25 +20,21 @@
     </div>
 </section>
 
-<nav class="bg-[var(--color-bg)] border-b border-[var(--color-border)]" aria-label="Breadcrumb">
-    <div class="container-custom py-3">
-        <ol class="flex items-center space-x-2 text-sm text-[var(--color-text-medium)]">
-            <li><a href="/" class="hover:text-[var(--color-primary)] transition">Home</a></li>
-            <li class="flex items-center">
-                <svg class="w-4 h-4 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                <a href="/Trending" class="hover:text-[var(--color-primary)] transition">Trending Tools</a>
-            </li>
-            <li class="flex items-center">
-                <svg class="w-4 h-4 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                <span class="text-[var(--color-text-dark)] font-medium">AI Recipe Generator</span>
-            </li>
-        </ol>
-    </div>
-</nav>
+
 
 <!-- Tool Section -->
 <section class="section-padding recipe-generator-page">
     <div class="container-custom max-w-5xl">
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Trending & AI Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#trending"),
+                ("AI Recipe Generator", Url.Action("RecipeGenerator", "Trending") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         <form id="recipeForm">
             @Html.AntiForgeryToken()
         </form>
