@@ -330,12 +330,41 @@ namespace NovaToolsHub.Controllers
         // Meme Generator
         public IActionResult MemeGenerator()
         {
+            var url = Url.Action("MemeGenerator", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Meme Generator - Create & Share Memes - NovaTools Hub",
                 MetaDescription = "Create custom memes with our easy meme generator. Add text to images, download, and share your memes instantly.",
-                CanonicalUrl = Url.Action("MemeGenerator", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Meme Generator",
+                "Create custom memes by uploading images or using colorful templates, then adding caption text and exporting the result.",
+                url,
+                "EntertainmentApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How does the meme generator work?",
+                    "You can upload your own image or start from a built-in gradient template, add top and bottom captions, tweak font, outline, and colors, and then generate a shareable meme image to download."
+                ),
+                (
+                    "Are my images stored on NovaTools Hub servers?",
+                    "Uploads are used to render your meme and to provide a download link. Generated images are stored temporarily and cleaned up after a short period. As a best practice, avoid uploading highly sensitive or private photos."
+                ),
+                (
+                    "Can I use the memes commercially or share them on social media?",
+                    "Technically the tool exports standard image files that you can download and share. You are responsible for respecting copyright, trademarks, and platform policies when using source images and distributing the resulting memes."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
@@ -406,12 +435,41 @@ namespace NovaToolsHub.Controllers
         // Recipe Generator
         public IActionResult RecipeGenerator()
         {
+            var url = Url.Action("RecipeGenerator", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "AI Recipe Generator - NovaTools Hub",
                 MetaDescription = "Generate delicious recipes from your ingredients. AI-powered recipe suggestions with complete instructions and ingredient lists.",
-                CanonicalUrl = Url.Action("RecipeGenerator", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "AI Recipe Generator",
+                "Turn your ingredients into chef-style recipes with step-by-step instructions, tags, and basic nutrition estimates.",
+                url,
+                "LifestyleApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I expect from the AI recipe generator?",
+                    "You can paste in ingredients you have on hand, choose dietary and cuisine preferences, and the tool will suggest a complete recipe with steps, timing, and basic nutrition estimates. It is ideal for inspiration and meal ideas."
+                ),
+                (
+                    "Are my ingredients or prompts stored?",
+                    "Requests are processed to generate the recipe, and saved recipes are stored only in your browser via localStorage for your convenience. The tool is not intended to keep a permanent history of your inputs on NovaTools Hub servers."
+                ),
+                (
+                    "Is the generated recipe nutritionally or medically accurate?",
+                    "No. Nutrition values and cooking guidance are approximate and may not reflect your exact ingredients, equipment, or health needs. Always verify allergens, doneness, and nutrition with trusted sources, especially for medical or dietary restrictions."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 

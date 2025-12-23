@@ -66,6 +66,38 @@ public class ImageToolsController : Controller
     [Route("Tools/Image/AdvancedResizer")]
     public IActionResult AdvancedResizer()
     {
+        var url = $"{Request.Scheme}://{Request.Host}/Tools/Image/AdvancedResizer";
+
+        ViewBag.PageTitle = "Advance Image Tool - NovaTools Hub";
+        ViewBag.MetaDescription = "Advance Image Tool: crop, resize, compress, watermark, and batch process images with flexible per-tab controls.";
+        ViewBag.CanonicalUrl = url;
+
+        var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+            "Advanced Image Tool",
+            "All-in-one image tool for cropping, resizing, compressing, watermarking, and batch processing images for web and apps.",
+            url,
+            "UtilitySoftware"
+        );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What can I do with the advanced image tool?",
+                "You can resize, crop, compress, rotate, adjust brightness and contrast, and add text watermarks to images. In batch mode, you can apply the same settings to up to dozens of images at once."
+            ),
+            (
+                "Are my images uploaded to the server when I use this tool?",
+                "Single-image and preview operations rely on your browser, while full processing and batch exports may use the server-side image pipeline configured for NovaTools Hub. Processed files are stored temporarily for download and are cleaned up automatically after a short period."
+            ),
+            (
+                "Is this suitable for production brand assets?",
+                "The tool is designed for everyday optimization of screenshots, marketing assets, and UI images. For critical brand archives, keep an original source copy and treat these exports as optimized derivatives for web or app delivery."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
         var model = new AdvancedImageResizerViewModel();
         return View(model);
     }
@@ -113,12 +145,40 @@ public class ImageToolsController : Controller
     /// </summary>
     [HttpGet]
     [Route("Tools/Image/BackgroundRemover")]
-    [Route("ImageTools/BackgroundRemover")]
     public IActionResult BackgroundRemover()
     {
-        ViewBag.IsGeneralModelLoaded = _backgroundRemovalService.IsGeneralModelLoaded;
-        ViewBag.IsPortraitModelLoaded = _backgroundRemovalService.IsPortraitModelLoaded;
-        // ViewBag.ModelPath removed - no longer displayed in UI (security)
+        var url = $"{Request.Scheme}://{Request.Host}/Tools/Image/BackgroundRemover";
+
+        ViewBag.PageTitle = "Background Remover - AI Image Background Removal | NovaTools Hub";
+        ViewBag.MetaDescription = "Free AI-powered background removal tool. Remove backgrounds from images instantly using machine learning. No signup required.";
+        ViewBag.CanonicalUrl = url;
+
+        var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+            "AI Background Remover",
+            "Remove image backgrounds with an AI-powered background remover and fine-tune with an interactive editor.",
+            url,
+            "UtilitySoftware"
+        );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What types of images work best with the background remover?",
+                "High-contrast photos where the subject stands out clearly from the background work best. Portraits, product shots, and simple scenes are usually easier for the AI model than very busy or low-contrast images."
+            ),
+            (
+                "Are my uploaded images stored or reused?",
+                "Images are processed for background removal and editing and may be cached briefly to support download and undo, but are not intended to be stored long term. Avoid uploading highly sensitive or regulated content."
+            ),
+            (
+                "Can I change the background after removing it?",
+                "Yes. After removal you can place the subject on a transparent background, choose a solid color, or upload another image as the new background and export the final composition."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
         return View();
     }
 

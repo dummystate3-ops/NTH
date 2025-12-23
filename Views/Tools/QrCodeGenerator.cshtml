@@ -241,6 +241,29 @@
     <div class="container-custom pb-10">
         <div class="max-w-3xl mx-auto space-y-6">
             <div class="card">
+                <h3 class="text-xl font-semibold mb-4">QR code generator FAQs</h3>
+                <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Can I change the size of the QR code without regenerating the content?</p>
+                        <p>
+                            Yes. Size controls only affect the rendered image dimensions, not the encoded text. You can switch between small, medium, large, and XL to fit print or screen needs without retyping your data.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Will all phones be able to scan these QR codes?</p>
+                        <p>
+                            Most modern smartphone cameras and QR reader apps can scan standard QR codes generated here. For the best results, keep sufficient contrast between foreground and background and avoid placing codes on very busy images.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Is there a limit to how much data I can encode?</p>
+                        <p>
+                            Larger payloads create denser codes that are harder to scan, especially when printed small. For long URLs, consider using a link shortener first so the QR code stays simple and reliable.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
                 <h3 class="text-lg font-semibold mb-3">Related content &amp; developer tools</h3>
                 <div class="flex flex-wrap gap-3 text-sm">
                     <a asp-controller="Tools" asp-action="PasswordGenerator" class="pill-button">

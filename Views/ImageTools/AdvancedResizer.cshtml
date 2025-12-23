@@ -661,29 +661,69 @@
         </div>
     </div>
 
-    <!-- How It Works -->
-    <div class="container-custom py-10 border-t border-[var(--color-border)]">
+    <!-- How It Works Section -->
+    <div class="container-custom py-8 border-t border-[var(--color-border)]">
         <div class="max-w-5xl mx-auto">
-            <h2 class="text-xl font-bold text-[var(--color-text)] mb-6 text-center">How It Works</h2>
+            <h2 class="text-xl md:text-2xl font-bold text-[var(--color-text)] mb-4 text-center">How the Advance Image Tool fits into your workflow</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div
-                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
-                    <div
-                        class="w-10 h-10 mx-auto rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-lg">
-                        1</div>
-                    <h3 class="font-semibold text-[var(--color-text)]">Upload</h3>
-                    <p class="text-xs text-[var(--color-text-medium)]">Drag and drop or click to upload your image (PNG,
-                        JPG, WEBP, GIF)</p>
+                <div class="card">
+                    <h3 class="font-semibold mb-2">1. Prepare assets</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Export images from Figma, Sketch, or your design tool, then drop them here to standardize formats, sizes, and quality.
+                    </p>
                 </div>
-                <div
-                    class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
-                    <div
-                        class="w-10 h-10 mx-auto rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-lg">
-                        2</div>
-                    <h3 class="font-semibold text-[var(--color-text)]">Configure</h3>
-                    <p class="text-xs text-[var(--color-text-medium)]">Choose resize, crop, compression, effects and
-                        watermark settings</p>
+                <div class="card">
+                    <h3 class="font-semibold mb-2">2. Apply per-tab rules</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Use separate tabs for social, app, and web exports so each target gets the right format, size, and quality profile.
+                    </p>
                 </div>
+                <div class="card">
+                    <h3 class="font-semibold mb-2">3. Export in one go</h3>
+                    <p class="text-sm text-[var(--color-text-medium)]">
+                        Download all variants at once so you can hand off to devs, upload to a CMS, or drop into your marketing stack.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="container-custom pb-10">
+        <div class="max-w-3xl mx-auto">
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">Advanced image tool FAQs</h3>
+                <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Is there a limit to how many images I can process at once?</p>
+                        <p>
+                            The batch mode is designed for practical sets of assets such as a release of marketing images or UI exports. Extremely large batches may be limited by your browser and network, so it is usually best to work in smaller groups.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Will editing operations reduce my image quality?</p>
+                        <p>
+                            Resizing and compression always involve some trade-offs. Use higher quality settings and avoid repeatedly re-saving the same file if you want to preserve as much detail as possible. Keep an original copy for archival use.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Does the tool change my original files?</p>
+                        <p>
+                            No. The original files you upload remain unchanged on your device. The tool creates new, processed versions that you can download, rename, and organize separately from your source assets.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Sharing -->
+    <div class="container-custom pb-10">
+        <div class="max-w-3xl mx-auto">
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
                 <div
                     class="text-center space-y-3 p-5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]">
                     <div

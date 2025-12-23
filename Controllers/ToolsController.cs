@@ -448,26 +448,72 @@ namespace NovaToolsHub.Controllers
         // QR Code Generator
         public IActionResult QrCodeGenerator()
         {
-            SetSeoData("QR Code Generator", "Generate QR codes for URLs, text, contact info, and more");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+            var url = Url.Action("QrCodeGenerator", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/QrCodeGenerator";
+
+            SetSeoData("QR Code Generator", "Generate QR codes for URLs, text, contact info, and more.");
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "QR Code Generator",
-                "Generate QR codes for URLs, text, contact info, and more. Free online QR code creator.",
-                $"{Request.Scheme}://{Request.Host}/Tools/QrCodeGenerator",
+                "Generate QR codes for URLs, text, contact info, WiFi, and more. Free online QR code creator.",
+                url,
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I encode with this QR code generator?",
+                    "You can generate QR codes for website links, plain text, email addresses, phone numbers, SMS messages, WiFi network details, and vCard-style contact information."
+                ),
+                (
+                    "Are my QR code contents stored on NovaTools Hub?",
+                    "The QR image is rendered in your browser based on the text you enter. The content is not intended to be stored long term on NovaTools Hub servers, but you should still avoid encoding highly sensitive secrets or credentials."
+                ),
+                (
+                    "Will my QR codes keep working forever?",
+                    "The QR image itself does not expire, but any links or services it points to might change over time. Always test your QR codes after printing and periodically re-check important codes that link to external pages."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
         // Color Palette Generator
         public IActionResult ColorPaletteGenerator()
         {
+            var url = Url.Action("ColorPaletteGenerator", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/ColorPaletteGenerator";
+
             SetSeoData("Color Palette Generator", "Generate harmonious color schemes, gradients, and export-ready palettes for your next project.");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Color Palette Generator",
                 "Create designer-friendly color palettes with complementary, analogous, triadic, tetradic, monochromatic, and split-complementary modes.",
-                $"{Request.Scheme}://{Request.Host}/Tools/ColorPaletteGenerator",
+                url,
                 "DesignApplication"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I use these color palettes for?",
+                    "The generator is designed for UI themes, branding systems, charts, illustrations, and any project where you need cohesive colors with good contrast and role labels like primary, secondary, and accent."
+                ),
+                (
+                    "Does the tool help with accessibility and contrast?",
+                    "Yes. It calculates luminance and contrast ratios between the lightest and darkest colors and surfaces helpful text color suggestions, so you can quickly see whether your palette is likely to meet basic readability guidelines."
+                ),
+                (
+                    "Where are my saved palettes stored?",
+                    "Saved palettes are stored locally in your browser using localStorage so they are available on the same device. They are not synced to a server or shared with other users."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -542,16 +588,39 @@ namespace NovaToolsHub.Controllers
         // Favicon Generator
         public IActionResult FaviconGenerator()
         {
+            var url = Url.Action("FaviconGenerator", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/FaviconGenerator";
+
             SetSeoData(
                 "Favicon Generator",
                 "Create crisp favicons and PWA icons from any logo with enterprise-grade presets."
             );
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Favicon Generator",
                 "Generate favicon.ico files and multi-size PWA icons with safe padding, rounded corners, and gradient backgrounds.",
-                $"{Request.Scheme}://{Request.Host}/Tools/FaviconGenerator",
+                url,
                 "DesignApplication"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What icon sizes does the favicon generator support?",
+                    "You can generate a full favicon set including classic ICO sizes (16x16, 32x32, 48x48) and larger PNG icons for modern browsers and PWA manifests, such as 64, 128, 180, 256, and 512 pixels."
+                ),
+                (
+                    "Are my uploaded logos stored on your servers?",
+                    "Uploaded images are processed to generate the icon set and are not intended to be stored long term. As with any online tool, avoid uploading highly sensitive or confidential brand assets if your policies do not allow it."
+                ),
+                (
+                    "How do I use the generated icons in my site or app?",
+                    "After downloading the ZIP, place the icons in your web root (for example under /images/icons/), reference favicon.ico and touch icons in your HTML head, and update your web app manifest to point at the larger PNG sizes."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -894,16 +963,39 @@ namespace NovaToolsHub.Controllers
 
         public IActionResult LoremIpsum()
         {
+            var url = Url.Action("LoremIpsum", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/LoremIpsum";
+
             SetSeoData(
                 "Lorem Ipsum Generator - Placeholder Text Generator",
                 "Generate Lorem Ipsum placeholder text for your designs and mockups. Customize paragraphs, words, or lists with classic or modern styles."
             );
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Lorem Ipsum Generator",
                 "Generate placeholder text for mockups, wireframes, and design prototypes with customizable length and format.",
-                $"{Request.Scheme}://{Request.Host}/Tools/LoremIpsum",
+                url,
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What is Lorem Ipsum text used for?",
+                    "Lorem Ipsum is filler text used in design, layout, and prototyping so you can focus on typography, spacing, and hierarchy without being distracted by real content."
+                ),
+                (
+                    "Does this generator create unique or translated Lorem Ipsum?",
+                    "The default mode uses the classic Latin-like Lorem Ipsum source text. You can also mix in modern or \"hipster\" style words for more playful placeholder copy when needed."
+                ),
+                (
+                    "Is any of the generated text stored or tracked?",
+                    "No. The text is generated in your browser session and displayed on the page. It is not stored on the server or tied to your identity."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 

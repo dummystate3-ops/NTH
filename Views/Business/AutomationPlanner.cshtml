@@ -8,15 +8,6 @@
 
 @section Head {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Task Automation ROI Planner",
-        "applicationCategory": "BusinessApplication",
-        "description": "Estimate time savings and ROI from automating business tasks"
-    }
-    </script>
 }
 
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -189,6 +180,31 @@
             <h3 class="text-xl font-bold mb-4">ROI Comparison</h3>
             <div class="relative" style="height: 400px;">
                 <canvas id="roiChart"></canvas>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">Task automation ROI planner FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What kinds of tasks should I add first?</p>
+                    <p>
+                        Start with repetitive, rules-based tasks that consume many hours per week, such as manual data entry, report generation, or routine approvals. These often yield the fastest ROI when automated.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How accurate are the ROI and payback numbers?</p>
+                    <p>
+                        The calculations are only as accurate as your inputs. If you underestimate hours or omit ongoing vendor costs, the ROI will be overstated. Use conservative assumptions and revisit them as you learn more about each automation project.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I export my automation plan for stakeholders?</p>
+                    <p>
+                        Yes. Use the export button to download a CSV with all tasks, savings, ROI, and payback details. You can then refine the plan in a spreadsheet or slide deck for reviews and approvals.
+                    </p>
+                </div>
             </div>
         </div>
 

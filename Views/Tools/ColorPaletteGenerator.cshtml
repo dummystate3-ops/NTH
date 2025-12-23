@@ -260,6 +260,29 @@
     <div class="container-custom pb-12 border-t border-[var(--color-border)] pt-8">
         <div class="max-w-3xl mx-auto space-y-6">
             <div class="card">
+                <h3 class="text-xl font-semibold mb-4">Color palette generator FAQs</h3>
+                <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">How many colors should I use in a UI palette?</p>
+                        <p>
+                            Many design systems use 3–5 core colors plus a few neutrals. Start with primary, secondary, and accent roles, then add neutrals for backgrounds and borders. You can always expand once the basics feel consistent.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">Can I save and reuse palettes across sessions?</p>
+                        <p>
+                            Yes. The tool stores recent palettes in your browser so you can revisit and reapply them later on the same device. Use the history panel to bring back a palette and adjust it for new projects.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text)] mb-1">How do I export palettes to my codebase?</p>
+                        <p>
+                            You can copy CSS variables directly, download a JSON representation, or copy individual HEX, RGB, or HSL values for use in Tailwind, design tokens, or custom theme files.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
                 <h3 class="text-lg font-semibold mb-3">Related design &amp; asset tools</h3>
                 <div class="flex flex-wrap gap-3 text-sm">
                     <a asp-controller="Tools" asp-action="FaviconGenerator" class="pill-button">

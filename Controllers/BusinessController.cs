@@ -12,58 +12,156 @@ public class BusinessController : Controller
 {
     public IActionResult ProfitMargin()
     {
+        var url = Url.Action("ProfitMargin", "Business", null, Request.Scheme) ?? string.Empty;
+
         var model = new BasePageViewModel
         {
             PageTitle = "Profit Margin & Pricing Calculator - NovaTools Hub",
             MetaDescription = "Calculate profit margins, markup percentages, and optimal pricing for your products and services. Free business calculator tool.",
-            CanonicalUrl = "/business/profitmargin"
+            CanonicalUrl = url
         };
-        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+
+        var financialSchema = SeoHelper.GenerateFinancialServiceSchema(
             "Profit Margin Calculator",
             "Calculate profit margins, markup percentages, and optimal pricing for your products and services.",
-            $"{Request.Scheme}://{Request.Host}/Business/ProfitMargin"
+            url
         );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What can I use the profit margin calculator for?",
+                "You can use this tool to compare cost price and selling price, calculate profit per unit, profit margin and markup percentage, and estimate total profit for different quantities. It helps you sense-check pricing for products, services, or packages."
+            ),
+            (
+                "Are my pricing and cost numbers stored anywhere?",
+                "No. All profit and pricing calculations run directly in your browser. The inputs you enter are not sent to or stored on NovaTools Hub servers, but you should still avoid typing highly sensitive account details into any calculator."
+            ),
+            (
+                "Is this calculator a substitute for accounting or tax advice?",
+                "No. The results are for planning and educational purposes only. They do not take into account taxes, overhead allocation, discounts, or industry-specific rules. Always consult your accountant or finance team before making major pricing decisions."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{financialSchema},{faqSchema}]";
 
         return View(model);
     }
 
     public IActionResult RoiAnalysis()
     {
+        var url = Url.Action("RoiAnalysis", "Business", null, Request.Scheme) ?? string.Empty;
+
         var model = new BasePageViewModel
         {
             PageTitle = "ROI Analysis Calculator - NovaTools Hub",
             MetaDescription = "Calculate return on investment (ROI) for your business projects and investments. Visualize ROI trends and payback periods.",
-            CanonicalUrl = "/business/roianalysis"
+            CanonicalUrl = url
         };
-        ViewBag.JsonLdSchema = SeoHelper.GenerateFinancialServiceSchema(
+
+        var financialSchema = SeoHelper.GenerateFinancialServiceSchema(
             "ROI Analysis Calculator",
             "Calculate return on investment (ROI) for your business projects and investments. Visualize ROI trends and payback periods.",
-            $"{Request.Scheme}://{Request.Host}/Business/RoiAnalysis"
+            url
         );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What does this ROI calculator help me understand?",
+                "The calculator estimates total returns, net profit, overall ROI percentage, annualized ROI, and payback period over a time horizon you choose. It is useful for comparing projects, tools, or automation initiatives at a high level."
+            ),
+            (
+                "Are my investment figures sent to your servers?",
+                "ROI calculations are performed in your browser after you enter the inputs. The tool is not designed to store your amounts long term, but as a best practice you should avoid entering very sensitive financial account information into any website."
+            ),
+            (
+                "Can I rely on this ROI analysis for investment decisions?",
+                "Treat the output as an approximate model only. The calculator assumes consistent returns and does not account for taxes, financing, risk, or detailed cash-flow timing. For real-world investment or budgeting decisions, review the numbers with your finance team or advisor."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{financialSchema},{faqSchema}]";
 
         return View(model);
     }
 
     public IActionResult UnbilledHours()
     {
+        var url = Url.Action("UnbilledHours", "Business", null, Request.Scheme) ?? string.Empty;
+
         var model = new BasePageViewModel
         {
             PageTitle = "Unbilled Hours Estimator - NovaTools Hub",
             MetaDescription = "Track and estimate the value of unbilled hours for consulting, freelancing, and service businesses.",
-            CanonicalUrl = "/business/unbilledhours"
+            CanonicalUrl = url
         };
+
+        var financialSchema = SeoHelper.GenerateFinancialServiceSchema(
+            "Unbilled Hours Estimator",
+            "Track and estimate the value of unbilled hours for consulting, freelancing, and service businesses.",
+            url
+        );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What does the unbilled hours estimator do?",
+                "It helps you log client or project work that has not yet been invoiced, calculate total unbilled hours, and estimate the value of that work based on your hourly rate so you can protect revenue and cash flow."
+            ),
+            (
+                "Where is my unbilled hours data stored, and can I clear it?",
+                "Entries are stored locally in your browser using localStorage so they persist between visits on the same device. You can remove individual entries or clear all data at any time using the controls in the tool."
+            ),
+            (
+                "Does this replace a full time tracking or invoicing system?",
+                "No. This is a lightweight helper for estimating unbilled work. For full time tracking, invoicing, and client reporting, you should use dedicated accounting, billing, or project management software."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{financialSchema},{faqSchema}]";
 
         return View(model);
     }
 
     public IActionResult SavingsComparison()
     {
+        var url = Url.Action("SavingsComparison", "Business", null, Request.Scheme) ?? string.Empty;
+
         var model = new BasePageViewModel
         {
             PageTitle = "Product Savings Comparison - NovaTools Hub",
             MetaDescription = "Compare multiple product options side-by-side to find the best value. Analyze costs, features, and savings potential.",
-            CanonicalUrl = "/business/savingscomparison"
+            CanonicalUrl = url
         };
+
+        var financialSchema = SeoHelper.GenerateFinancialServiceSchema(
+            "Product Savings Comparison Tool",
+            "Compare multiple product options side-by-side to find the best value over 1, 3, and 5 years.",
+            url
+        );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "What can I compare with the product savings tool?",
+                "You can compare subscriptions, SaaS plans, payment tiers, or other recurring services by entering setup costs, monthly fees, and optional annual discounts to see the total cost over different time horizons."
+            ),
+            (
+                "Are my comparison inputs uploaded or stored?",
+                "No. All comparisons, charts, and recommendations are calculated in your browser. The values you enter are not sent to NovaTools Hub servers."
+            ),
+            (
+                "How should I interpret the savings recommendation?",
+                "The recommendation is based purely on projected total cost over time. It does not account for qualitative factors such as support quality, feature depth, integration needs, or contract terms, so always review those before making a final decision."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{financialSchema},{faqSchema}]";
 
         return View(model);
     }
@@ -148,12 +246,39 @@ public class BusinessController : Controller
 
     public IActionResult AutomationPlanner()
     {
+        var url = Url.Action("AutomationPlanner", "Business", null, Request.Scheme) ?? string.Empty;
+
         var model = new BasePageViewModel
         {
             PageTitle = "Task Automation ROI Planner - NovaTools Hub",
             MetaDescription = "Estimate time savings and ROI from automating business tasks. Plan your automation strategy with data-driven insights.",
-            CanonicalUrl = "/business/automationplanner"
+            CanonicalUrl = url
         };
+
+        var financialSchema = SeoHelper.GenerateFinancialServiceSchema(
+            "Task Automation ROI Planner",
+            "Estimate time savings, annual savings, and ROI from automating recurring business tasks.",
+            url
+        );
+
+        var faqs = new List<(string Question, string Answer)>
+        {
+            (
+                "How does the task automation ROI planner estimate savings?",
+                "The planner uses your current hours per week, hourly rate, expected percentage of time saved, and automation cost to estimate hours saved per year, annual savings, ROI percentage, and payback period in months."
+            ),
+            (
+                "Is my automation planning data stored on your servers?",
+                "Task entries are stored locally in your browser using localStorage so that you can revisit them later on the same device. They are not sent to NovaTools Hub servers, and you can clear them at any time using the in-tool controls or your browser settings."
+            ),
+            (
+                "Can I use this tool as a final business case for automation?",
+                "Treat the output as a starting point for discussions. It does not automatically include every cost such as change management, ongoing vendor fees, or quality impacts. Always review the assumptions with stakeholders before approving an automation project."
+            )
+        };
+
+        var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+        ViewBag.JsonLdSchema = $"[{financialSchema},{faqSchema}]";
 
         return View(model);
     }

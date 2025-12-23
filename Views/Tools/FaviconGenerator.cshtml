@@ -338,6 +338,29 @@
 <div class="container-custom pb-12 border-t border-[var(--color-border)] mt-8">
     <div class="max-w-4xl mx-auto space-y-6">
         <div class="card">
+            <h3 class="text-xl font-semibold mb-4">Favicon generator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Do I need both ICO and PNG files for my site?</p>
+                    <p>
+                        Most modern browsers prefer PNG icons referenced in the HTML head and manifest, but many still fall back to favicon.ico in the root. Generating both gives you broad compatibility with minimal effort.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Why does the builder recommend padding and rounded corners?</p>
+                    <p>
+                        Padding and gentle rounding help your logo look clean at small sizes and avoid clipping on high-DPI devices. The presets aim to keep key shapes readable from browser tabs to mobile home screens.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I change my favicon later without breaking anything?</p>
+                    <p>
+                        Yes. You can regenerate icons and replace the files on your server. Browsers may cache favicons aggressively, so you might need to hard refresh or bump filenames or query strings to see the change immediately.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
             <h3 class="text-lg font-semibold mb-3">Related brand &amp; asset tools</h3>
             <div class="flex flex-wrap gap-3 text-sm">
                 <a asp-controller="Tools" asp-action="ColorPaletteGenerator" class="pill-button">
