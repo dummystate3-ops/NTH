@@ -161,7 +161,7 @@ public static class ToolRegistry
         new ToolDefinition
         {
             Id = "loan-emi",
-            Name = "Loan & EMI Calculator",
+            Name = "Business Loan & EMI Calculator",
             Description = "Calculate loan EMIs, schedules, and total interest.",
             Controller = "Business",
             Action = "LoanCalculator",
