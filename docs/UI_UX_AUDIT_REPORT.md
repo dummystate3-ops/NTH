@@ -33,8 +33,7 @@ This audit sampled the UI across:
   - `Views/Shared/_AdInContent.cshtml`, `_AdSidebar.cshtml`, `_AdFooter.cshtml`
 - **Home & Hubs**
   - `Views/Home/Index.cshtml`
-  - `Views/Home/AllTools.cshtml`
-  - `Views/Tools/Index.cshtml`
+  - `Views/Tools/Index.cshtml` (canonical All Tools hub)
 - **Representative tools**
   - `Views/Tools/UnitConverter.cshtml` (standard calculator)
   - `Views/ImageTools/…` (already audited separately)
@@ -81,14 +80,13 @@ Severity levels: **High**, **Medium**, **Low** (from the perspective of perceive
 **[V-01] Placeholder and inconsistent icons** – **High**
 
 - **Symptoms**
-  - `Views/Home/AllTools.cshtml` uses `??` and `[*]` as category and tool icons in several sections.
+  - The All Tools experiences previously used placeholder icons such as `??` and `[*]` for some categories and tools.
   - Many tool tiles use emojis as primary icons, while other parts of the UI use line-based SVGs (e.g., in `_Layout`, `_Navigation`).
 - **Impact**
   - Undermines the “enterprise grade” perception; looks unfinished and inconsistent.
   - Emoji icons do not scale predictably across platforms and can clash with the otherwise refined, system-style iconography.
 - **References**
-  - `Views/Home/AllTools.cshtml` (multiple sections)
-  - `Views/Tools/Index.cshtml` (emoji-heavy tiles)
+  - `Views/Tools/Index.cshtml` (All Tools hub and emoji-heavy tiles)
 - **Recommendation**
   - Adopt a consistent icon set (e.g., a curated set of inline SVGs or a small icon library) and remove all `??` / `[*]` placeholders and most emojis.
   - Define icon styles in the design system (weights, stroke width, size) and implement via shared partials or components.
@@ -128,8 +126,8 @@ Severity levels: **High**, **Medium**, **Low** (from the perspective of perceive
 **[L-01] No global tool search / quick-jump** – **High**
 
 - **Symptoms**
-  - Users must scroll through long lists in `Home/AllTools` or `Tools/Index` to find a tool.
-  - There is no global search bar, type-ahead, or “command palette” to jump to a specific tool by name or keyword.
+  - Historically, users had to scroll through long lists in the All Tools views to find a tool.
+  - There was no global search bar, type-ahead, or “command palette” to jump to a specific tool by name or keyword.
 - **Impact**
   - As the catalog grows, discoverability and return-user efficiency suffer.
   - Competing multi-tool sites almost always offer a prominent “Search tools…” input.

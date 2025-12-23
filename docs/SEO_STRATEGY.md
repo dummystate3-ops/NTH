@@ -48,7 +48,7 @@ To reach an **enterprise-grade SEO posture**, the site needs:
 
 ## 3. Tools Portfolio – SEO Value Assessment
 
-This section focuses on **search demand and competitive landscape**, not internal analytics. Categories and assessments use current tools from `MAJOR_TOOLS_AUDIT_REPORT.md` and `Views/Home/AllTools.cshtml`.
+This section focuses on **search demand and competitive landscape**, not internal analytics. Categories and assessments use current tools from `MAJOR_TOOLS_AUDIT_REPORT.md` and the All Tools hub at `Views/Tools/Index.cshtml`.
 
 ### 3.1 High-Value / High-Demand Tool Types (Global)
 
