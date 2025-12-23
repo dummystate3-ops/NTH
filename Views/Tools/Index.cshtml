@@ -992,9 +992,73 @@
                     if (!targetSelector) return;
                     const target = document.querySelector(targetSelector);
                     if (!target) return;
+
+                    // Optimistic active state on click
+                    buttons.forEach(b => b.classList.remove('is-active'));
+                    this.classList.add('is-active');
+
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
+        })();
+
+        // Highlight active section in quick-jump bar based on scroll position
+        (function () {
+            const sectionIds = [
+                'developer',
+                'converters',
+                'business',
+                'pakistan-finance',
+                'math',
+                'productivity',
+                'academic',
+                'trending'
+            ];
+
+            const sections = sectionIds
+                .map(id => document.getElementById(id))
+                .filter(Boolean);
+
+            if (!sections.length) return;
+
+            const buttonsById = {};
+            document.querySelectorAll('[data-target]').forEach(btn => {
+                const targetSelector = btn.getAttribute('data-target');
+                if (!targetSelector || !targetSelector.startsWith('#')) return;
+                const id = targetSelector.substring(1);
+                if (sectionIds.indexOf(id) !== -1) {
+                    buttonsById[id] = btn;
+                }
+            });
+
+            if (!Object.keys(buttonsById).length) return;
+
+            let activeId = null;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const id = entry.target.id;
+                    if (!id || !buttonsById[id] || id === activeId) return;
+
+                    activeId = id;
+
+                    Object.keys(buttonsById).forEach(key => {
+                        const btn = buttonsById[key];
+                        if (!btn) return;
+                        if (key === id) {
+                            btn.classList.add('is-active');
+                        } else {
+                            btn.classList.remove('is-active');
+                        }
+                    });
+                });
+            }, {
+                threshold: 0.35,
+                rootMargin: '-72px 0px -55% 0px'
+            });
+
+            sections.forEach(section => observer.observe(section));
         })();
     </script>
 }
