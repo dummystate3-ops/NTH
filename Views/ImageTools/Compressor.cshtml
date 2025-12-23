@@ -1,10 +1,15 @@
-@{
-    ViewData["PageTitle"] = "Image Compressor | NovaTools Hub";
-    ViewData["MetaDescription"] = "Compress JPG and PNG images in your browser with adjustable quality and instant preview. No image upload to server.";
-}
-
 <div class="bg-[var(--color-bg)] min-h-screen">
     <div class="container-custom section-padding">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Image Compressor", Url.Action("Compressor", "ImageTools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="max-w-3xl mx-auto text-center mb-10">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wide">
@@ -101,26 +106,27 @@
                 </div>
 
                 <div class="card">
-                    <h2 class="text-lg font-semibold mb-3">Image Compressor FAQ</h2>
+                    <h2 class="text-lg font-semibold mb-3">Image compressor FAQs</h2>
                     <dl class="space-y-3 text-xs text-[var(--text-subtle)]">
                         <div>
-                            <dt class="font-semibold text-[var(--text-default)]">What is a good quality setting for web images?</dt>
+                            <dt class="font-semibold text-[var(--text-default)]">Are my images uploaded to the server when I compress them?</dt>
                             <dd class="mt-1">
-                                For many websites, a quality between 60 and 85 offers a good balance between visual clarity and file size.
-                                You can experiment with the slider and compare the original and compressed previews.
+                                No. This image compressor runs entirely in your browser using the canvas API. Your images are processed locally
+                                and are not uploaded to or stored on NovaTools Hub servers.
                             </dd>
                         </div>
                         <div>
-                            <dt class="font-semibold text-[var(--text-default)]">Can I increase the resolution of my image?</dt>
+                            <dt class="font-semibold text-[var(--text-default)]">Which image formats does this tool support?</dt>
                             <dd class="mt-1">
-                                No. This tool focuses on compression and optional downsizing. It cannot upscale beyond the original resolution.
+                                You can compress common web image formats such as JPG, PNG, and WEBP. The compressed output is generated as a JPEG
+                                file that balances compatibility with file size.
                             </dd>
                         </div>
                         <div>
-                            <dt class="font-semibold text-[var(--text-default)]">Is it safe to compress sensitive images here?</dt>
+                            <dt class="font-semibold text-[var(--text-default)]">Will compressing my image reduce its quality?</dt>
                             <dd class="mt-1">
-                                Processing happens locally in your browser, which is safer than uploading images to a remote server.
-                                Still, avoid working with highly sensitive content on shared or public devices.
+                                Yes. Compression reduces file size by discarding some image detail. Use the quality slider and optional max width
+                                setting to find a sweet spot between visual quality and smaller file size for your use case.
                             </dd>
                         </div>
                     </dl>

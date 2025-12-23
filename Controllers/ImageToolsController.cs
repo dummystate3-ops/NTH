@@ -111,6 +111,10 @@ public class ImageToolsController : Controller
     {
         var url = $"{Request.Scheme}://{Request.Host}/Tools/Image/Compressor";
 
+        ViewBag.PageTitle = "Image Compressor | NovaTools Hub";
+        ViewBag.MetaDescription = "Compress JPG and PNG images in your browser with adjustable quality and instant preview. No image upload to server.";
+        ViewBag.CanonicalUrl = url;
+
         var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
             "Image Compressor",
             "Compress JPG and PNG images in your browser with adjustable quality and instant preview.",

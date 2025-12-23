@@ -1,9 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Background Remover - AI Image Background Removal | NovaToolsHub";
-    ViewData["Description"] = "Free AI-powered background removal tool. Remove backgrounds from images instantly using machine learning. No signup required.";
-}
-
-@section Head {
+﻿@section Head {
     <style>
         .upload-zone {
             border: 3px dashed var(--color-border);
@@ -245,6 +240,16 @@
 }
 
 <div class="container mx-auto px-4 py-8 max-w-6xl">
+    @{
+        var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+        {
+            ("Home", Url.Action("Index", "Home") ?? "/"),
+            ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+            ("Background Remover", Url.Action("BackgroundRemover", "ImageTools") ?? "#")
+        };
+    }
+    <partial name="_Breadcrumb" model="breadcrumb" />
+
     <!-- Header -->
     <div class="text-center mb-8">
         <div
@@ -584,21 +589,24 @@
             <h3 class="text-xl font-semibold mb-4">Background remover FAQs</h3>
             <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
                 <div>
-                    <p class="font-semibold text-[var(--color-text)] mb-1">What image formats does the background remover support?</p>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What types of images work best with the background remover?</p>
                     <p>
-                        The tool is optimized for common web formats like JPG, PNG, and WebP up to the size limits shown in the uploader. Very large images may be resized internally to keep performance smooth.
+                        High-contrast photos where the subject stands out clearly from the background work best. Portraits, product shots, and
+                        simple scenes are usually easier for the AI model than very busy or low-contrast images.
                     </p>
                 </div>
                 <div>
-                    <p class="font-semibold text-[var(--color-text)] mb-1">Will the transparent PNG preserve full resolution?</p>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Are my uploaded images stored or reused?</p>
                     <p>
-                        Yes. The processed output keeps the original resolution where possible, so you can safely use the result in design tools, presentations, or product pages without losing detail.
+                        Images are processed for background removal and editing and may be cached briefly to support download and undo, but are not
+                        intended to be stored long term. Avoid uploading highly sensitive or regulated content.
                     </p>
                 </div>
                 <div>
-                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I fine-tune the edges after removal?</p>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I change the background after removing it?</p>
                     <p>
-                        The Magic Editor tab lets you adjust scale and position, change backgrounds, and experiment with different colors or scenes. For pixel-level touch-ups you can export and refine further in a dedicated image editor.
+                        Yes. After removal you can place the subject on a transparent background, choose a solid color, or upload another image as
+                        the new background and export the final composition from the Magic Editor tab.
                     </p>
                 </div>
             </div>

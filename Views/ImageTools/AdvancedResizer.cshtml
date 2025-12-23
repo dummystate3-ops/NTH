@@ -10,6 +10,16 @@
 
     <!-- Header Section -->
     <div class="container-custom py-6 lg:py-8">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Advanced Image Tool", Url.Action("AdvancedResizer", "ImageTools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <div class="max-w-4xl mx-auto text-center space-y-4">
             <div
                 class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-sm font-medium">
