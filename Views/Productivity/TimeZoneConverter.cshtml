@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Time Zone Converter",
-    "applicationCategory": "UtilityApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -155,6 +138,34 @@
             <p>
                 <strong>Meeting Scheduler:</strong> Perfect for scheduling international meetings and coordinating across time zones.
             </p>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">Time zone converter FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Does this converter handle daylight saving time?</p>
+                <p>
+                    Yes. The converter uses your browser&rsquo;s built-in time zone database (IANA zones),
+                    which automatically applies daylight saving time rules for each region.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Is it reliable for scheduling international meetings?</p>
+                <p>
+                    It is designed to give you a quick, accurate view of how a given time translates across time zones,
+                    which is ideal for scheduling calls and meetings. For critical events, you can cross‑check with your calendar app as well.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Why might another app show a slightly different time?</p>
+                <p>
+                    Differences usually come from mismatched system time, outdated time zone rules on a device, or using a different reference
+                    time zone. Make sure your device&rsquo;s clock and time zone are correct when comparing tools.
+                </p>
+            </div>
         </div>
     </div>
 </div>

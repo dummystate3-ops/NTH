@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using NovaToolsHub.Models.ViewModels;
 using NovaToolsHub.Services;
+using NovaToolsHub.Helpers;
 using System.IO;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace NovaToolsHub.Controllers
 {
@@ -28,12 +30,41 @@ namespace NovaToolsHub.Controllers
         // AI Writing Assistant/Summarizer
         public IActionResult AIWritingAssistant()
         {
+            var url = Url.Action("AIWritingAssistant", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "AI Writing Assistant & Summarizer - NovaTools Hub",
                 MetaDescription = "AI-powered writing assistant to draft content, summarize text, and improve your writing. Get instant AI suggestions and summaries.",
-                CanonicalUrl = Url.Action("AIWritingAssistant", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "AI Writing Assistant & Summarizer",
+                "AI-powered writing assistant to draft content, summarize text, and improve your writing with instant suggestions.",
+                url,
+                "ProductivityApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I use the AI writing assistant for?",
+                    "You can use the assistant to draft new content from prompts, summarize existing text to different lengths, and improve clarity, tone, or structure of your writing. It is ideal for emails, blog posts, landing page copy, and quick summaries."
+                ),
+                (
+                    "Is my text stored or reused when I use this tool?",
+                    "Prompts and responses are processed on the server to generate AI output, but the tool is not designed to store your content long term. As a best practice, avoid including highly sensitive personal data, passwords, or confidential production information in prompts."
+                ),
+                (
+                    "Is AI-generated content ready to publish without edits?",
+                    "AI output can be a strong starting point but may contain inaccuracies or phrasing that does not match your brand voice. Always review, fact-check, and edit AI-generated content before publishing or sending it to others."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
@@ -150,12 +181,41 @@ namespace NovaToolsHub.Controllers
         // Currency/Unit Rate Comparison
         public IActionResult RateComparison()
         {
+            var url = Url.Action("RateComparison", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Currency & Rate Comparison Tool - NovaTools Hub",
                 MetaDescription = "Compare multiple currencies and units side-by-side. Real-time exchange rates and unit conversions for easy comparison.",
-                CanonicalUrl = Url.Action("RateComparison", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Currency & Rate Comparison Tool",
+                "Compare multiple currencies and units side-by-side with real-time exchange rates and unit conversions.",
+                url,
+                "FinanceApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What does the rate comparison tool do?",
+                    "The tool lets you pick a base currency, add multiple target currencies with separate amounts, and compare the converted values side-by-side using current or fallback exchange rates."
+                ),
+                (
+                    "Are the rates real-time and suitable for trading?",
+                    "Rates are fetched from a backend provider and may be cached or fall back to sample data when a live provider is unavailable. They are useful for general comparison and planning, but not for precise trading or large financial transfers."
+                ),
+                (
+                    "Can I download or share the comparison results?",
+                    "Yes. You can copy the comparison table to your clipboard or download it as a CSV file to share or analyze in spreadsheets and reports."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
@@ -188,36 +248,123 @@ namespace NovaToolsHub.Controllers
         // Quick Poll/Survey Builder
         public IActionResult PollBuilder()
         {
+            var url = Url.Action("PollBuilder", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Quick Poll & Survey Builder - NovaTools Hub",
                 MetaDescription = "Create instant polls and surveys with visual results. Build engaging polls with charts and share results easily.",
-                CanonicalUrl = Url.Action("PollBuilder", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Quick Poll & Survey Builder",
+                "Create instant polls and surveys with visual charts, vote tracking, and exportable results.",
+                url,
+                "UtilitiesApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How does the poll builder store and track votes?",
+                    "Poll questions, options, and vote counts are stored on the server with minimal metadata. A browser cookie is used to limit duplicate voting from the same device, but it does not provide strong identity verification."
+                ),
+                (
+                    "Can I share a poll with other people?",
+                    "Yes. After creating a poll you receive a poll ID that you can share. Anyone with the ID can load the poll, submit a vote, and see aggregated results, depending on which view mode they use."
+                ),
+                (
+                    "Can I export poll results for reporting?",
+                    "You can export results as CSV and download chart images. This makes it easy to embed poll outcomes in slides, reports, or documentation."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
         // Data Privacy Tool (Encrypt/Decrypt)
         public IActionResult EncryptionTool()
         {
+            var url = Url.Action("EncryptionTool", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Data Encryption & Privacy Tool - NovaTools Hub",
                 MetaDescription = "Encrypt and decrypt text securely in your browser. AES encryption for protecting sensitive data. All processing happens locally.",
-                CanonicalUrl = Url.Action("EncryptionTool", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Data Encryption & Privacy Tool",
+                "Encrypt and decrypt text securely in your browser using AES encryption and the Web Crypto API.",
+                url,
+                "SecurityApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Is my text sent to a server when I use the encryption tool?",
+                    "The tool is designed so that encryption and decryption happen in your browser using the Web Crypto API. The ciphertext you see can be copied or downloaded, but your plaintext and password are not intended to be stored or transmitted to NovaTools Hub servers."
+                ),
+                (
+                    "What happens if I forget my encryption password?",
+                    "There is no password recovery mechanism. If you forget or lose the password you used to encrypt your text, the data cannot be decrypted. Always store critical passwords in a secure password manager."
+                ),
+                (
+                    "Is this tool suitable for highly sensitive production data?",
+                    "This tool is intended for educational use and basic protection. While it uses strong AES-256-GCM encryption, production systems handling highly sensitive data should rely on audited security architectures and dedicated key management, not just a browser-based utility."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
         // Meme Generator
         public IActionResult MemeGenerator()
         {
+            var url = Url.Action("MemeGenerator", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "Meme Generator - Create & Share Memes - NovaTools Hub",
                 MetaDescription = "Create custom memes with our easy meme generator. Add text to images, download, and share your memes instantly.",
-                CanonicalUrl = Url.Action("MemeGenerator", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Meme Generator",
+                "Create custom memes by uploading images or using colorful templates, then adding caption text and exporting the result.",
+                url,
+                "EntertainmentApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How does the meme generator work?",
+                    "You can upload your own image or start from a built-in gradient template, add top and bottom captions, tweak font, outline, and colors, and then generate a shareable meme image to download."
+                ),
+                (
+                    "Are my images stored on NovaTools Hub servers?",
+                    "Uploads are used to render your meme and to provide a download link. Generated images are stored temporarily and cleaned up after a short period. As a best practice, avoid uploading highly sensitive or private photos."
+                ),
+                (
+                    "Can I use the memes commercially or share them on social media?",
+                    "Technically the tool exports standard image files that you can download and share. You are responsible for respecting copyright, trademarks, and platform policies when using source images and distributing the resulting memes."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 
@@ -288,12 +435,41 @@ namespace NovaToolsHub.Controllers
         // Recipe Generator
         public IActionResult RecipeGenerator()
         {
+            var url = Url.Action("RecipeGenerator", "Trending", null, Request.Scheme) ?? string.Empty;
+
             var model = new BasePageViewModel
             {
                 PageTitle = "AI Recipe Generator - NovaTools Hub",
                 MetaDescription = "Generate delicious recipes from your ingredients. AI-powered recipe suggestions with complete instructions and ingredient lists.",
-                CanonicalUrl = Url.Action("RecipeGenerator", "Trending", null, Request.Scheme) ?? string.Empty
+                CanonicalUrl = url
             };
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "AI Recipe Generator",
+                "Turn your ingredients into chef-style recipes with step-by-step instructions, tags, and basic nutrition estimates.",
+                url,
+                "LifestyleApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I expect from the AI recipe generator?",
+                    "You can paste in ingredients you have on hand, choose dietary and cuisine preferences, and the tool will suggest a complete recipe with steps, timing, and basic nutrition estimates. It is ideal for inspiration and meal ideas."
+                ),
+                (
+                    "Are my ingredients or prompts stored?",
+                    "Requests are processed to generate the recipe, and saved recipes are stored only in your browser via localStorage for your convenience. The tool is not intended to keep a permanent history of your inputs on NovaTools Hub servers."
+                ),
+                (
+                    "Is the generated recipe nutritionally or medically accurate?",
+                    "No. Nutrition values and cooking guidance are approximate and may not reflect your exact ingredients, equipment, or health needs. Always verify allergens, doneness, and nutrition with trusted sources, especially for medical or dietary restrictions."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View(model);
         }
 

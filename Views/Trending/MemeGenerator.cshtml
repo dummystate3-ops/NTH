@@ -7,16 +7,7 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section JsonLd {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "CreativeWork",
-        "name": "Meme Generator",
-        "description": "Create custom memes with text overlays. Add top and bottom text to images and share your memes."
-    }
-    </script>
-}
+
 
 <!-- Page Header -->
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -157,6 +148,31 @@
             <p class="text-blue-800">
                 <strong>💡 Tip:</strong> Upload your own images or start from a colorful template. The final render happens on our server for crisp outlines, but your files are deleted after download.
             </p>
+        </div>
+
+        <!-- FAQs -->
+        <div class="card mt-8">
+            <h3 class="text-xl font-semibold mb-4">Meme generator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Why does the tool render memes on the server instead of only in the browser?</p>
+                    <p>
+                        Server-side rendering helps produce sharper text outlines and more consistent results across devices, especially for large images or templates with gradients and overlays.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How long are generated memes kept before deletion?</p>
+                    <p>
+                        Generated images are stored temporarily to support download and sharing links and are cleaned up on a rolling basis. For long-term use, download and store your memes locally or in your own cloud drive.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I edit a meme after I download it?</p>
+                    <p>
+                        Once you download an image, it becomes a standard PNG file. To make further edits, you would upload it again or use an external image editor to tweak text or visuals.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- In-Content Ad -->

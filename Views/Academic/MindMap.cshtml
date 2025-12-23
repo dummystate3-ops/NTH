@@ -9,16 +9,6 @@
 @section Head {
     <link rel="stylesheet" href="~/lib/jsmind/jsmind.css" asp-append-version="true">
     <script src="~/lib/jsmind/jsmind.min.js" asp-append-version="true"></script>
-    
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "LearningResource",
-        "name": "Mind Map Creator",
-        "learningResourceType": "Interactive Tool",
-        "description": "Create interactive mind maps to visualize and organize ideas"
-    }
-    </script>
 }
 
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -33,6 +23,17 @@
 
 <section class="section-padding">
     <div class="container-custom max-w-6xl">
+        
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Academic & Teacher Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#academic"),
+                ("Mind Map Creator", Url.Action("MindMap", "Academic") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         
         <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-8">
             <div class="flex items-start gap-3">
@@ -99,6 +100,53 @@
                         <p class="text-sm text-[var(--color-text-light)]">No saved maps yet</p>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Mind map creator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Where are my mind maps saved?</p>
+                    <p>
+                        Mind maps are stored in your browser’s local storage on this device. They are available when you return
+                        to the same browser, but they are not automatically synced to other devices or user accounts.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I export or import mind maps?</p>
+                    <p>
+                        Yes. You can export a mind map as a JSON file and later import it back into the tool, or share the file
+                        with someone else who can load it into their own browser to view and edit the same map.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Is the tool suitable for very large mind maps?</p>
+                    <p>
+                        You can create fairly large diagrams, but extremely complex maps may become harder to navigate or a bit
+                        slower to render in the browser. For best usability, keep each map focused on a specific topic or project.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related tools -->
+        <div class="mt-6 card">
+            <h3 class="text-xl font-semibold mb-4">Related planning tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Academic" asp-action="Whiteboard" class="pill-button">
+                    Interactive Whiteboard
+                </a>
+                <a asp-controller="Academic" asp-action="QuizBuilder" class="pill-button">
+                    Quiz Builder
+                </a>
+                <a asp-controller="Academic" asp-action="Flashcards" class="pill-button">
+                    Flashcard Generator
+                </a>
+                <a asp-controller="Productivity" asp-action="KanbanBoard" class="pill-button">
+                    Kanban Board
+                </a>
             </div>
         </div>
 

@@ -6,22 +6,7 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section Head {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Profit Margin & Pricing Calculator",
-        "applicationCategory": "FinancialApplication",
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "description": "Calculate profit margins, markup percentages, and optimal pricing for products and services"
-    }
-    </script>
-}
+
 
 <!-- Page Header -->
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -220,6 +205,31 @@
                     <h4 class="font-semibold mb-2">🎯 Pricing Strategy</h4>
                     <p class="text-sm text-[var(--color-text-medium)]">
                         Consider market rates, competition, value provided, and operating expenses when setting prices.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">Profit margin calculator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Is profit margin the same as markup?</p>
+                    <p>
+                        No. Profit margin is profit divided by selling price, while markup is profit divided by cost. Two prices can have the same profit in currency terms but very different margins and markups. The calculator shows both so you can compare.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can this tool handle multiple products or tiers?</p>
+                    <p>
+                        This page focuses on one scenario at a time, but you can quickly change quantities, costs, or prices to model several products or plans and export a simple text report for your records or spreadsheets.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Do these results include taxes or overhead?</p>
+                    <p>
+                        The outputs are based only on the cost and selling price you enter. They do not automatically include taxes, payment processing fees, shipping, or other overhead, so you should factor those in separately when making pricing decisions.
                     </p>
                 </div>
             </div>

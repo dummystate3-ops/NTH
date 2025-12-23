@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Time Tracker",
-    "applicationCategory": "BusinessApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-6xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -128,6 +111,35 @@
                     <i class="fas fa-inbox text-4xl mb-3"></i>
                     <p>No time entries yet. Start tracking!</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">Time tracker FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Where is my time tracking data stored?</p>
+                <p>
+                    Projects and time entries are stored in your browser&rsquo;s local storage. They persist on this device
+                    and browser, but are not synced between different devices or user accounts.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Can I export my tracked time?</p>
+                <p>
+                    Yes. You can export your entries as a CSV file and open it in Excel, Google Sheets, or other tools
+                    for reporting, invoicing, or further analysis.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Is this suitable for client billing?</p>
+                <p>
+                    The timer is useful for everyday tracking and lightweight timesheets. For strict billing or
+                    compliance use cases, you may want to cross‑check with your primary time tracking or invoicing
+                    system.
+                </p>
             </div>
         </div>
     </div>

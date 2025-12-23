@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Kanban Board",
-    "applicationCategory": "BusinessApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-7xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -114,6 +97,35 @@
             <div class="text-center p-3 bg-green-50 dark:bg-gray-700 rounded-lg">
                 <p class="text-2xl font-bold text-green-600" id="doneStat">0</p>
                 <p class="text-sm text-gray-600 dark:text-gray-400">Completed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">Kanban board FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">How are my Kanban cards stored?</p>
+                <p>
+                    Cards are stored in a workspace associated with your browser using NovaTools Hub&rsquo;s productivity API.
+                    This allows you to reopen the board in the same browser and continue where you left off, without a
+                    traditional login system.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Is this Kanban board meant for team projects?</p>
+                <p>
+                    It is best suited for personal workflows, lightweight planning, and small experiments. It does not
+                    include advanced team features such as user roles, permissions, or real‑time multi-user collaboration.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Can I share my board with others?</p>
+                <p>
+                    There is no built-in shared account or invite system. If you need to collaborate, you can export
+                    summaries or screenshots and use a dedicated team project management tool alongside this board.
+                </p>
             </div>
         </div>
     </div>

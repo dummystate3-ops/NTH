@@ -7,15 +7,6 @@
 }
 
 @section Head {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Interactive Whiteboard",
-        "applicationCategory": "EducationalApplication",
-        "description": "Digital whiteboard for drawing diagrams and visual collaboration"
-    }
-    </script>
 }
 
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -30,6 +21,17 @@
 
 <section class="section-padding">
     <div class="container-custom max-w-6xl">
+        
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Academic & Teacher Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#academic"),
+                ("Interactive Whiteboard", Url.Action("Whiteboard", "Academic") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         
         <div class="card mb-6">
             <div class="flex flex-wrap items-center gap-4">
@@ -80,6 +82,53 @@
             <h3 class="text-lg font-bold mb-4">Saved Drawings</h3>
             <div id="savedDrawings" class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <p class="text-sm text-[var(--color-text-light)] col-span-full">No saved drawings yet</p>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Whiteboard FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Where are my whiteboard drawings stored?</p>
+                    <p>
+                        Saved drawings are stored in your browser’s local storage as image data. They remain available in this
+                        browser on this device but are not synced to other devices or user accounts.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I export my whiteboard as an image?</p>
+                    <p>
+                        Yes. You can export the current whiteboard as a PNG file and download it. This is useful for including
+                        diagrams or sketches in notes, slides, or documentation.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Does this whiteboard support real-time collaboration?</p>
+                    <p>
+                        No. The current version is designed for individual use within a single browser session. It does not
+                        provide multi-user, real-time collaboration features like shared boards or live cursors.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related tools -->
+        <div class="mt-6 card">
+            <h3 class="text-xl font-semibold mb-4">Related visual tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Academic" asp-action="MindMap" class="pill-button">
+                    Mind Map Creator
+                </a>
+                <a asp-controller="Productivity" asp-action="KanbanBoard" class="pill-button">
+                    Kanban Board
+                </a>
+                <a asp-controller="Productivity" asp-action="Notes" class="pill-button">
+                    Online Notepad
+                </a>
+                <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="pill-button">
+                    Advance Image Tool
+                </a>
             </div>
         </div>
 

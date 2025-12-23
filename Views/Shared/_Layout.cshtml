@@ -159,11 +159,25 @@
                                type="search"
                                autocomplete="off"
                                placeholder="Search tools…"
-                               class="w-48 lg:w-64 pl-3 pr-8 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] text-sm text-[var(--color-text-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" />
+                               class="w-40 xl:w-56 pl-3 pr-8 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] text-sm text-[var(--color-text-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent" />
                         <svg class="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-[var(--color-text-medium)] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"></path>
                         </svg>
                     </form>
+
+                    <!-- Command palette trigger -->
+                    <button type="button"
+                            id="command-palette-trigger"
+                            class="ml-2 hidden xl:inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[var(--color-border)] text-xs text-[var(--color-text-medium)] hover:bg-[var(--color-bg)] hover:text-[var(--color-text-dark)]"
+                            aria-label="Open quick tool search (Ctrl+K)">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"></path>
+                        </svg>
+                        <span class="flex items-center gap-1">
+                            <span class="px-1 rounded border border-[var(--color-border)]">Ctrl</span>
+                            <span class="px-1 rounded border border-[var(--color-border)]">K</span>
+                        </span>
+                    </button>
                     
                     <!-- Theme Toggle -->
                     <button class="theme-toggle p-2 rounded-lg hover:bg-[var(--color-bg)] transition-colors" aria-label="Toggle theme">
@@ -320,6 +334,45 @@
         </div>
     </footer>
 
+    <!-- Command Palette Overlay -->
+    <div id="command-palette-backdrop"
+         class="hidden fixed inset-0 bg-black/40 z-50 flex items-start justify-center pt-24 backdrop-blur-sm">
+        <div class="w-full max-w-xl mx-4 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-2xl overflow-hidden"
+             role="dialog" aria-modal="true" aria-labelledby="command-palette-title">
+            <div class="border-b border-[var(--color-border)] px-4 py-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-[var(--color-text-medium)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"></path>
+                </svg>
+                <input id="command-palette-input"
+                       type="search"
+                       autocomplete="off"
+                       placeholder="Search tools by name, category, or keyword…"
+                       class="flex-1 bg-transparent border-none outline-none text-sm text-[var(--color-text-dark)]"
+                       aria-labelledby="command-palette-title" />
+                <button type="button"
+                        id="command-palette-close"
+                        class="text-xs text-[var(--color-text-medium)] hover:text-[var(--color-text-dark)] px-2 py-1 rounded-md hover:bg-[var(--color-bg)]">
+                    Esc
+                </button>
+            </div>
+            <div class="max-h-80 overflow-y-auto" id="command-palette-results" aria-label="Tool results">
+                <!-- Results populated by JS -->
+            </div>
+            <div class="px-4 py-2 border-t border-[var(--color-border)] text-[0.7rem] text-[var(--color-text-medium)] flex items-center justify-between">
+                <div>
+                    <span class="font-semibold text-[var(--color-text-dark)]">Tips:</span>
+                    <span class="ml-1">Type to filter, ↑/↓ to move, Enter to open, Esc to close.</span>
+                </div>
+                <div class="hidden sm:flex items-center gap-1">
+                    <span class="px-1.5 py-0.5 rounded border border-[var(--color-border)] text-[0.65rem]">Ctrl</span>
+                    <span>+</span>
+                    <span class="px-1.5 py-0.5 rounded border border-[var(--color-border)] text-[0.65rem]">K</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="~/js/performance.js" asp-append-version="true" defer></script>
     <script src="~/js/theme.js" asp-append-version="true"></script>
@@ -364,6 +417,333 @@
                     performGlobalSearch(q);
                 });
             }
+        })();
+    </script>
+
+    <!-- Command palette tool registry & behavior -->
+    <script>
+        (function () {
+            window.NovaToolsRegistry = [
+                {
+                    name: "Unit Converter",
+                    description: "Convert between length, weight, temperature, and more.",
+                    url: "@Url.Action("UnitConverter", "Tools")",
+                    category: "Converters",
+                    tags: ["units", "length", "weight", "temperature"]
+                },
+                {
+                    name: "Currency Converter",
+                    description: "Convert between major world currencies.",
+                    url: "@Url.Action("CurrencyConverter", "Tools")",
+                    category: "Finance",
+                    tags: ["fx", "exchange rate", "money"]
+                },
+                {
+                    name: "BMI Calculator",
+                    description: "Calculate your body mass index and health metrics.",
+                    url: "@Url.Action("BmiCalculator", "Tools")",
+                    category: "Health",
+                    tags: ["bmi", "health"]
+                },
+                {
+                    name: "Age Calculator",
+                    description: "Calculate age precisely in years, months, and days.",
+                    url: "@Url.Action("AgeCalculator", "Tools")",
+                    category: "Utility",
+                    tags: ["age", "birthday"]
+                },
+                {
+                    name: "Date Calculator",
+                    description: "Calculate differences and add/subtract days.",
+                    url: "@Url.Action("DateCalculator", "Tools")",
+                    category: "Utility",
+                    tags: ["dates", "time"]
+                },
+                {
+                    name: "Password Generator",
+                    description: "Create strong, secure passwords instantly.",
+                    url: "@Url.Action("PasswordGenerator", "Tools")",
+                    category: "Security",
+                    tags: ["password", "security"]
+                },
+                {
+                    name: "QR Code Generator",
+                    description: "Generate QR codes for text, URLs, and more.",
+                    url: "@Url.Action("QrCodeGenerator", "Tools")",
+                    category: "Sharing",
+                    tags: ["qr", "code"]
+                },
+                {
+                    name: "JSON Formatter",
+                    description: "Format, validate, and compare JSON payloads.",
+                    url: "@Url.Action("JsonFormatter", "Tools")",
+                    category: "Developer",
+                    tags: ["json", "dev"]
+                },
+                {
+                    name: "Regex Tester",
+                    description: "Test regex patterns with live matches.",
+                    url: "@Url.Action("RegexTester", "Tools")",
+                    category: "Developer",
+                    tags: ["regex", "pattern"]
+                },
+                {
+                    name: "Lorem Ipsum Generator",
+                    description: "Generate placeholder text for layouts and mocks.",
+                    url: "@Url.Action("LoremIpsum", "Tools")",
+                    category: "Content",
+                    tags: ["text", "content"]
+                },
+                {
+                    name: "Color Palette Generator",
+                    description: "Create palettes, gradients, and exportable swatches.",
+                    url: "@Url.Action("ColorPaletteGenerator", "Tools")",
+                    category: "Design",
+                    tags: ["color", "palette"]
+                },
+                {
+                    name: "PDF Merge Tool",
+                    description: "Combine multiple PDF documents into one file directly in your browser.",
+                    url: "@Url.Action("PdfMerge", "Tools")",
+                    category: "Documents",
+                    tags: ["pdf", "merge"]
+                },
+                {
+                    name: "Advanced Image Tool",
+                    description: "Crop, resize, compress, watermark, and batch download images.",
+                    url: "@Url.Action("AdvancedResizer", "ImageTools")",
+                    category: "Images",
+                    tags: ["resize", "crop", "images"]
+                },
+                {
+                    name: "Image Compressor",
+                    description: "Compress JPG and PNG images locally in your browser.",
+                    url: "@Url.Action("Compressor", "ImageTools")",
+                    category: "Images",
+                    tags: ["compress", "images"]
+                },
+                {
+                    name: "Background Remover",
+                    description: "Remove backgrounds with AI-powered segmentation.",
+                    url: "@Url.Action("BackgroundRemover", "ImageTools")",
+                    category: "Images",
+                    tags: ["background", "ai"]
+                },
+                {
+                    name: "Business Loan & EMI Calculator",
+                    description: "Calculate EMIs, payment schedules, and total interest.",
+                    url: "@Url.Action("LoanCalculator", "Business")",
+                    category: "Finance",
+                    tags: ["loan", "emi", "business"]
+                },
+                {
+                    name: "Compound Interest Calculator",
+                    description: "Project savings growth with compound interest.",
+                    url: "@Url.Action("CompoundInterest", "Business")",
+                    category: "Finance",
+                    tags: ["savings", "interest"]
+                },
+                {
+                    name: "Pakistan Salary Tax Calculator",
+                    description: "Estimate income tax for Pakistan salaried individuals (2025-26).",
+                    url: "@Url.Action("PakistanTaxCalculator", "Business")",
+                    category: "Pakistan",
+                    tags: ["tax", "pakistan"]
+                },
+                {
+                    name: "Pakistan Zakat Calculator",
+                    description: "Calculate zakat on gold, cash, savings, and investments in Pakistan.",
+                    url: "@Url.Action("PakistanZakatCalculator", "Business")",
+                    category: "Pakistan",
+                    tags: ["zakat", "pakistan"]
+                },
+                {
+                    name: "World Time Viewer",
+                    description: "View current time across major world cities.",
+                    url: "@Url.Action("WorldTime", "Productivity")",
+                    category: "Time",
+                    tags: ["world time", "clock"]
+                },
+                {
+                    name: "Time Zone Converter",
+                    description: "Convert time between different time zones.",
+                    url: "@Url.Action("TimeZoneConverter", "Productivity")",
+                    category: "Time",
+                    tags: ["zones", "time"]
+                },
+                {
+                    name: "AI Writing Assistant",
+                    description: "Draft content, summarize text, and improve writing with AI.",
+                    url: "@Url.Action("AIWritingAssistant", "Trending")",
+                    category: "AI",
+                    tags: ["ai", "writing"]
+                }
+            ];
+
+            const backdrop = document.getElementById('command-palette-backdrop');
+            const input = document.getElementById('command-palette-input');
+            const resultsContainer = document.getElementById('command-palette-results');
+            const closeButton = document.getElementById('command-palette-close');
+            const triggerButton = document.getElementById('command-palette-trigger');
+
+            if (!backdrop || !input || !resultsContainer) {
+                return;
+            }
+
+            let filteredTools = window.NovaToolsRegistry.slice();
+            let activeIndex = 0;
+
+            function renderResults() {
+                resultsContainer.innerHTML = '';
+                if (!filteredTools.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'px-4 py-3 text-sm text-[var(--color-text-medium)]';
+                    empty.textContent = 'No tools found. Try a different keyword.';
+                    resultsContainer.appendChild(empty);
+                    return;
+                }
+
+                filteredTools.forEach((tool, index) => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className =
+                        'w-full text-left px-4 py-2.5 flex flex-col gap-1 text-sm border-b border-[var(--color-border)] ' +
+                        (index === activeIndex ? 'bg-[var(--color-bg)]' : 'bg-transparent');
+                    item.dataset.index = index.toString();
+
+                    const firstRow = document.createElement('div');
+                    firstRow.className = 'flex items-center justify-between gap-2';
+
+                    const title = document.createElement('div');
+                    title.className = 'font-semibold text-[var(--color-text-dark)]';
+                    title.textContent = tool.name;
+
+                    const category = document.createElement('span');
+                    category.className = 'text-[0.7rem] px-2 py-0.5 rounded-full bg-[var(--surface-base)] border border-[var(--border-subtle)] text-[var(--text-subtle)]';
+                    category.textContent = tool.category;
+
+                    firstRow.appendChild(title);
+                    firstRow.appendChild(category);
+
+                    const desc = document.createElement('div');
+                    desc.className = 'text-xs text-[var(--color-text-medium)] line-clamp-2';
+                    desc.textContent = tool.description;
+
+                    item.appendChild(firstRow);
+                    item.appendChild(desc);
+
+                    item.addEventListener('click', function () {
+                        window.location.href = tool.url;
+                    });
+
+                    resultsContainer.appendChild(item);
+                });
+            }
+
+            function openPalette() {
+                backdrop.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                filteredTools = window.NovaToolsRegistry.slice();
+                activeIndex = 0;
+                renderResults();
+                setTimeout(function () {
+                    input.focus();
+                    input.select();
+                }, 10);
+            }
+
+            function closePalette() {
+                backdrop.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+
+            function updateFilter() {
+                const q = input.value.trim().toLowerCase();
+                if (!q) {
+                    filteredTools = window.NovaToolsRegistry.slice();
+                } else {
+                    filteredTools = window.NovaToolsRegistry.filter(function (tool) {
+                        const haystack =
+                            (tool.name + ' ' + tool.description + ' ' + tool.category + ' ' + (tool.tags || []).join(' '))
+                                .toLowerCase();
+                        return haystack.indexOf(q) !== -1;
+                    });
+                }
+                activeIndex = 0;
+                renderResults();
+            }
+
+            document.addEventListener('keydown', function (event) {
+                const target = event.target;
+                const tag = target && target.tagName ? target.tagName.toLowerCase() : '';
+
+                const isInputLike = tag === 'input' || tag === 'textarea' || target.isContentEditable;
+                const isCtrlK = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k';
+
+                if (isCtrlK && !event.shiftKey) {
+                    event.preventDefault();
+                    if (backdrop.classList.contains('hidden')) {
+                        openPalette();
+                    } else {
+                        closePalette();
+                    }
+                    return;
+                }
+
+                if (backdrop.classList.contains('hidden')) {
+                    return;
+                }
+
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    closePalette();
+                    return;
+                }
+
+                if (isInputLike && target !== input) {
+                    return;
+                }
+
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    if (filteredTools.length) {
+                        activeIndex = (activeIndex + 1) % filteredTools.length;
+                        renderResults();
+                    }
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    if (filteredTools.length) {
+                        activeIndex = (activeIndex - 1 + filteredTools.length) % filteredTools.length;
+                        renderResults();
+                    }
+                } else if (event.key === 'Enter') {
+                    if (document.activeElement === input) {
+                        event.preventDefault();
+                        if (filteredTools[activeIndex]) {
+                            window.location.href = filteredTools[activeIndex].url;
+                        }
+                    }
+                }
+            });
+
+            input.addEventListener('input', function () {
+                updateFilter();
+            });
+
+            closeButton?.addEventListener('click', function () {
+                closePalette();
+            });
+
+            triggerButton?.addEventListener('click', function (e) {
+                e.preventDefault();
+                openPalette();
+            });
+
+            backdrop.addEventListener('click', function (e) {
+                if (e.target === backdrop) {
+                    closePalette();
+                }
+            });
         })();
     </script>
     

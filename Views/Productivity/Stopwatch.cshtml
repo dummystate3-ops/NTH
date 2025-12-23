@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Online Stopwatch",
-    "applicationCategory": "UtilityApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -111,7 +94,36 @@
             <p><strong>Lap:</strong> Record intermediate times without stopping the timer. Perfect for tracking multiple rounds or intervals.</p>
             <p><strong>Stop:</strong> Pause the timer to review your time. Click Start again to continue.</p>
             <p><strong>Reset:</strong> Clear the timer and all lap times to start fresh.</p>
-            <p><strong>Precision:</strong> Accurate to 1/100th of a second (10 milliseconds).</p>
+            <p><strong>Precision:</strong> Accurate to 1/100th of a second (10 milliseconds) in typical browsers.</p>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">Stopwatch FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">How precise is this online stopwatch?</p>
+                <p>
+                    The stopwatch updates every 10 milliseconds using browser timers. This is more than precise enough
+                    for workouts, study sessions, and everyday timing, but it is not intended for laboratory‑grade or
+                    official competition use.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Are lap times kept if I refresh or close the page?</p>
+                <p>
+                    No. The current timer state and lap list are stored only in memory while the page is open. Refreshing
+                    or closing the tab clears the stopwatch and all lap records.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Can I control the stopwatch with the keyboard?</p>
+                <p>
+                    Yes. You can press the Space bar to start or stop the timer, press L to add a lap while it is running,
+                    and press R to reset the stopwatch.
+                </p>
+            </div>
         </div>
     </div>
 </div>

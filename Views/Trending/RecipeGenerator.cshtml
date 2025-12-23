@@ -7,41 +7,7 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section JsonLd {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": ["SoftwareApplication", "WebApplication"],
-        "name": "AI Recipe Generator - NovaTools Hub",
-        "applicationCategory": "LifestyleApplication",
-        "operatingSystem": "Any",
-        "description": "Generate personalized, chef-style recipes from your ingredients using AI.",
-        "url": "@(Model.CanonicalUrl ?? "https://NovaToolsHub.com/Trending/RecipeGenerator")",
-        "author": {
-            "@@type": "Organization",
-            "name": "NovaTools Hub",
-            "url": "https://NovaToolsHub.com"
-        },
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "aggregateRating": {
-            "@@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "150"
-        },
-        "featureList": [
-            "AI-Powered Recipe Generation",
-            "Dietary Restriction Support",
-            "Cooking Time Optimization",
-            "Nutrition Insights",
-            "Recipe Saving & Sharing"
-        ]
-    }
-    </script>
-}
+
 
 <!-- Page Header -->
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -284,6 +250,30 @@
                 <div>
                     <h3 class="font-bold text-lg text-blue-900 mb-2">Powered by NovaCalc AI</h3>
                     <p class="text-blue-800">We reuse the Writing Assistant service behind the scenes. When an AI provider key is configured, chef notes come from the same LLM. Without a key, we fall back to a smart rule-based generator so you always get cooking guidance.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-8">
+            <h3 class="text-xl font-semibold mb-4">AI recipe generator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I use this tool for strict medical or allergy diets?</p>
+                    <p>
+                        No. The generator does not replace advice from a doctor or dietitian. Always double-check ingredients and preparation steps for allergens, intolerances, and medical restrictions before cooking or serving.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Does the nutrition panel reflect my exact ingredients?</p>
+                    <p>
+                        Nutrition estimates are based on typical ingredient profiles and standard portions. Brands, cooking methods, and substitutions can significantly change actual nutrition, so treat the panel as a rough guide only.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I save and reuse recipes I like?</p>
+                    <p>
+                        Yes. Use the save feature to keep favorite recipes in your browser. They are stored locally, so they will be available on the same device until you clear site data or remove them manually.
+                    </p>
                 </div>
             </div>
         </div>

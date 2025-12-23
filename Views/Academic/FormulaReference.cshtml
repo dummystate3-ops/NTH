@@ -7,15 +7,6 @@
 }
 
 @section Head {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "LearningResource",
-        "name": "Formula & Unit Reference",
-        "learningResourceType": "Reference Guide",
-        "description": "Comprehensive reference for mathematical, physics, and chemistry formulas"
-    }
-    </script>
 }
 
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -30,6 +21,17 @@
 
 <section class="section-padding">
     <div class="container-custom max-w-6xl">
+        
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Academic & Teacher Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#academic"),
+                ("Formula & Unit Reference", Url.Action("FormulaReference", "Academic") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         
         <div class="mb-8">
             <div class="flex flex-wrap gap-2">
@@ -59,6 +61,56 @@
 
         <div id="formulasContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Formulas will be loaded here -->
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Formula reference FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I rely on this page as my only formula reference?</p>
+                    <p>
+                        This page is designed as a convenient quick reference for many commonly used formulas. For exams, graded
+                        assignments, or research, you should always cross-check against your textbook, course notes, or official
+                        reference materials.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Do you cover every possible formula?</p>
+                    <p>
+                        No. The reference focuses on frequently used formulas across mathematics, physics, chemistry, and geometry.
+                        It is not an exhaustive list of all formulas in those subjects and is meant to complement, not replace,
+                        your primary study resources.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How should I cite information from this tool?</p>
+                    <p>
+                        Formulas themselves are standard and usually do not require citation, but any explanations or wording
+                        should be cited from your primary learning resources, such as textbooks, lecture notes, or official
+                        reference documents, rather than from this summary tool.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related tools -->
+        <div class="mt-6 card">
+            <h3 class="text-xl font-semibold mb-4">Related math & study tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Math" asp-action="EquationSolver" class="pill-button">
+                    Equation Solver
+                </a>
+                <a asp-controller="Math" asp-action="PermutationCombination" class="pill-button">
+                    Permutation &amp; Combination
+                </a>
+                <a asp-controller="Math" asp-action="IndicatorCodes" class="pill-button">
+                    Indicator Codes Reference
+                </a>
+                <a asp-controller="Academic" asp-action="MindMap" class="pill-button">
+                    Mind Map Creator
+                </a>
+            </div>
         </div>
 
     </div>

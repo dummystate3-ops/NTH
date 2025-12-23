@@ -1,31 +1,20 @@
 @model NovaToolsHub.Models.ViewModels.BasePageViewModel
-@{
-    ViewData["Title"] = Model.PageTitle;
-    ViewData["MetaDescription"] = Model.MetaDescription;
-    ViewData["CanonicalUrl"] = Model.CanonicalUrl;
-}
-
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Expression Evaluator",
-    "applicationCategory": "EducationalApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
 
 <!-- Load math.js library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
 
 <div class="container mx-auto px-4 py-8 max-w-4xl">
+    @{
+        var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+        {
+            ("Home", Url.Action("Index", "Home") ?? "/"),
+            ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+            ("Math & Education", (Url.Action("Index", "Tools") ?? "/Tools") + "#math"),
+            ("Expression Evaluator", Url.Action("ExpressionEvaluator", "Math") ?? "#")
+        };
+    }
+    <partial name="_Breadcrumb" model="breadcrumbs" />
+
     <!-- Header -->
     <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
@@ -116,7 +105,7 @@
     <!-- Info Section -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-            Supported Functions & Operators
+            Supported Functions &amp; Operators
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600 dark:text-gray-300">
             <div>
@@ -142,7 +131,7 @@
                 </ul>
             </div>
             <div>
-                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Logarithmic & Exponential</h3>
+                <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Logarithmic &amp; Exponential</h3>
                 <ul class="space-y-1 text-sm">
                     <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">log(x)</code> Natural log (ln)</li>
                     <li><code class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">log10(x)</code> Base 10 log</li>
@@ -181,6 +170,24 @@
                 <li><code>log(e^2)</code> → 2</li>
                 <li><code>max(5, 10, 3) + min(8, 2, 6)</code> → 12</li>
             </ul>
+        </div>
+    </div>
+
+    <!-- Related tools -->
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Related math tools
+        </h2>
+        <div class="flex flex-wrap gap-3 text-sm">
+            <a asp-controller="Math" asp-action="EquationSolver" class="pill-button">
+                Equation Solver
+            </a>
+            <a asp-controller="Math" asp-action="ProblemSolver" class="pill-button">
+                Problem Solver
+            </a>
+            <a asp-controller="Math" asp-action="GraphPlotter" class="pill-button">
+                Graph Plotter
+            </a>
         </div>
     </div>
 </div>

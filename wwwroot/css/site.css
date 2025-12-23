@@ -49,6 +49,7 @@
     /* Transitions */
     --transition-fast: 150ms ease;
     --transition-normal: 300ms ease;
+    --transition-slow: 450ms ease;
 
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -243,6 +244,18 @@
     .section-padding {
         @apply py-12 md:py-20;
     }
+
+    .motion-fast {
+        transition: all var(--transition-fast);
+    }
+
+    .motion-normal {
+        transition: all var(--transition-normal);
+    }
+
+    .motion-none {
+        transition: none !important;
+    }
 }
 
 /* Custom scrollbar */
@@ -289,6 +302,23 @@
 
 .fade-in {
     animation: fadeIn 0.6s ease-out;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .fade-in {
+        animation: none !important;
+    }
+
+    .card-hover,
+    .tool-card,
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-accent {
+        transition: none !important;
+        transform: none !important;
+    }
 }
 
 /* Print styles */

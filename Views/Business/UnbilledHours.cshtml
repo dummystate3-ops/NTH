@@ -6,17 +6,7 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section Head {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Unbilled Hours Estimator",
-        "applicationCategory": "BusinessApplication",
-        "description": "Track and estimate the value of unbilled hours for consulting and service businesses"
-    }
-    </script>
-}
+
 
 <!-- Page Header -->
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -207,6 +197,31 @@
                     <h4 class="font-semibold mb-2">💰 Invoice Promptly</h4>
                     <p class="text-sm text-[var(--color-text-medium)]">
                         Convert unbilled hours to invoices regularly (weekly/bi-weekly) to maintain healthy cash flow.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">Unbilled hours estimator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I track different clients or projects separately?</p>
+                    <p>
+                        Yes. Each entry includes a client or project name, and the summary section automatically groups totals by project so you can see where unbilled time is building up.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What happens if I clear my browser storage or switch devices?</p>
+                    <p>
+                        Entries are stored only in the current browser. Clearing site data or switching to another device will remove those records, so export to CSV regularly if you need a longer-term backup.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How should I use these estimates in my invoicing process?</p>
+                    <p>
+                        Treat the totals as a checklist of work that still needs to be billed. You can export a CSV, reconcile it with your time-tracking or accounting system, and then mark items as invoiced by removing or archiving them here.
                     </p>
                 </div>
             </div>

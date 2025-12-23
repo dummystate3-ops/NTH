@@ -4,14 +4,25 @@
     Position: Sidebar (300x600 or 300x250)
     
     SETUP INSTRUCTIONS:
-    1. Replace 'ca-pub-XXXXXXXXXXXXXXXX' with your AdSense publisher ID
-    2. Replace 'XXXXXXXXXX' with your ad slot ID
-    3. For Ezoic, replace the entire div with Ezoic placeholder ID
+    1. Configure AdSense IDs in appsettings.json:
+       "AdSense": {
+         "PublisherId": "ca-pub-XXXXXXXXXXXXXXXX",
+         "SidebarSlotId": "XXXXXXXXXX"
+       }
+    2. For Ezoic, replace the entire div with your Ezoic placeholder
 *@
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 
 @{
     var adEnabled = ViewBag.EnableAds ?? true;
     var adPosition = ViewBag.AdPosition ?? "sidebar";
+    var publisherId = Configuration["AdSense:PublisherId"];
+    var slotId = Configuration["AdSense:SidebarSlotId"];
+    var environmentName = Configuration["Environment"];
+    var isProduction = !string.IsNullOrEmpty(environmentName) && !string.Equals(environmentName, "Development", StringComparison.OrdinalIgnoreCase);
+    var canRenderAds = adEnabled && isProduction && !string.IsNullOrEmpty(publisherId) && !string.IsNullOrEmpty(slotId);
 }
 
 @if (adEnabled)
@@ -19,13 +30,16 @@
     <div class="ad-container mb-6">
         <div class="text-xs text-center text-[var(--color-text-light)] mb-1">Advertisement</div>
         
-        @* Google AdSense - Sidebar Ad *@
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-             data-ad-slot="XXXXXXXXXX"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
+        @* Google AdSense - Sidebar Ad (only when configured for production) *@
+        @if (canRenderAds)
+        {
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="@publisherId"
+                 data-ad-slot="@slotId"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        }
         
         @* Fallback for development/testing *@
         <div class="ad-placeholder" style="background: #f0f0f0; border: 2px dashed #ccc; padding: 2rem; text-align: center; min-height: 250px; display: flex; align-items: center; justify-content: center;">
@@ -36,8 +50,11 @@
         </div>
     </div>
     
-    <script>
-        // Initialize AdSense
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
+    @if (canRenderAds)
+    {
+        <script>
+            // Queue AdSense rendering (script is loaded conditionally in _AdSenseScript)
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    }
 }

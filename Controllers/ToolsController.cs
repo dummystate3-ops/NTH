@@ -29,12 +29,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult UnitConverter()
         {
             SetSeoData("Unit Converter", "Convert between different units of length, weight, temperature, volume, and more");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Unit Converter",
                 "Convert between different units of length, weight, temperature, volume, and more. Fast, accurate, and easy to use.",
                 $"{Request.Scheme}://{Request.Host}/Tools/UnitConverter",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What types of units can I convert with this unit converter?",
+                    "You can convert between length (millimeters, centimeters, meters, kilometers, inches, feet, yards, miles), weight (milligrams, grams, kilograms, metric tons, ounces, pounds), temperature (Celsius, Fahrenheit, Kelvin), volume (milliliters, liters, cubic meters, gallons, quarts, pints, cups, fluid ounces), area (square millimeters, square centimeters, square meters, square kilometers, square inches, square feet, square yards, acres, hectares), and speed (meters/second, kilometers/hour, miles/hour, knots)."
+                ),
+                (
+                    "How accurate are the unit conversions?",
+                    "Conversions are calculated using standard conversion constants and returned to several decimal places. For most everyday and educational use cases this level of precision is more than sufficient, but you should always consult official standards for critical engineering or scientific work."
+                ),
+                (
+                    "Do I need to sign up or upload any files to use the unit converter?",
+                    "No account or file upload is required. You simply enter a value, choose the source and target units, and the converter returns the result instantly in your browser."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -57,14 +78,29 @@ namespace NovaToolsHub.Controllers
         public IActionResult CurrencyConverter()
         {
             SetSeoData("Currency Converter", "Convert between major world currencies with live exchange rates");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Currency Converter",
                 "Convert between major world currencies with live exchange rates. Real-time currency conversion tool.",
                 $"{Request.Scheme}://{Request.Host}/Tools/CurrencyConverter",
                 "FinanceApplication"
             );
-            return View();
-        }
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How often are currency rates updated in this converter?",
+                    "Exchange rates are fetched from the CurrencyFreaks API and cached for a short period to keep the tool fast and reliable. This is suitable for general reference and quick comparisons, but intraday trading or large transfers should always use rates quoted directly by your bank or payment provider."
+                ),
+                (
+                    "Why does the amount I see here differ from my bank's conversion rate?",
+                    "Banks and payment providers typically add fees or markups on top of mid-market rates. Our currency converter uses API rates without additional fees, so the numbers may differ from what you are actually charged."
+                ),
+                (
+                    "Can I use this currency converter for financial or tax decisions?",
+                    "This converter is intended for informational purposes only. It is helpful for quick estimates, but you should always rely on official statements or your bank's quoted rates for binding financial, accounting, or tax decisions."
+                )
+ }
 
         [HttpPost]
         public async Task<IActionResult> ConvertCurrency([FromBody] CurrencyConversionRequest request)
@@ -135,12 +171,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult BmiCalculator()
         {
             SetSeoData("BMI Calculator", "Calculate your Body Mass Index (BMI) and understand your health status");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "BMI Calculator",
                 "Calculate your Body Mass Index (BMI) and understand your health status. Free BMI calculator with metric and imperial units.",
                 $"{Request.Scheme}://{Request.Host}/Tools/BmiCalculator",
                 "HealthApplication"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Is BMI a good indicator of my overall health?",
+                    "BMI is a quick screening tool based on height and weight, but it does not distinguish between muscle and fat or account for factors like age, sex, and body composition. Use it as a starting point, not a final diagnosis."
+                ),
+                (
+                    "Can I use this BMI calculator for children or athletes?",
+                    "For children and highly active or muscular individuals, BMI can be misleading and often underestimates or overestimates body fat. In these cases, growth charts, body composition tests, and professional medical advice are more appropriate."
+                ),
+                (
+                    "What should I do if my BMI is outside the \"normal\" range?",
+                    "Treat the result as a prompt to have a conversation with a qualified healthcare professional. Only a full medical assessment can take into account your overall health, lifestyle, and risk factors."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -175,12 +232,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult AgeCalculator()
         {
             SetSeoData("Age Calculator", "Calculate your exact age in years, months, days, and more");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Age Calculator",
                 "Calculate your exact age in years, months, days, hours, and minutes. Precise age calculation tool.",
                 $"{Request.Scheme}://{Request.Host}/Tools/AgeCalculator",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How is age calculated in this age calculator?",
+                    "The tool calculates age based on full calendar years, months, and days between your date of birth and the selected target date. It also shows total months, weeks, and days, so you can see a detailed breakdown."
+                ),
+                (
+                    "Can I calculate my age on a past or future date?",
+                    "Yes. Enter your birth date and a target date in the future or past. The calculator will show how old you were or will be on that specific date, along with a countdown to your next birthday."
+                ),
+                (
+                    "Does the age calculator account for leap years?",
+                    "Yes. The calculation uses actual calendar dates, so leap years and varying month lengths are handled automatically. Time zones are not considered because the tool works at the date level, not the hour level."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -213,6 +291,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult DateCalculator()
         {
             SetSeoData("Date Calculator", "Calculate date differences and add or subtract days from any date");
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Date Calculator",
+                "Calculate date differences, add or subtract days, and perform date arithmetic.",
+                $"{Request.Scheme}://{Request.Host}/Tools/DateCalculator",
+                "UtilitySoftware"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How does the date difference calculator work?",
+                    "The date difference mode compares two calendar dates and returns the elapsed time in years, months, days, total months, total weeks, and total days. If you enter the dates in reverse order, the tool automatically swaps them so the earlier date comes first."
+                ),
+                (
+                    "What does the add/subtract days feature do?",
+                    "The add/subtract mode lets you pick a starting date, choose whether to add or subtract, and specify a number of days. The calculator then returns the resulting date, which is useful for deadlines, delivery estimates, and event planning."
+                ),
+                (
+                    "Does the date calculator support business days or time zones?",
+                    "This tool currently works with calendar days only and does not exclude weekends or holidays. It also does not adjust for time zones because it operates on dates rather than specific times of day."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -300,10 +405,37 @@ namespace NovaToolsHub.Controllers
             }
         }
 
-        // Password Generator & Checker
+        // Password Generator
         public IActionResult PasswordGenerator()
         {
-            SetSeoData("Password Generator", "Generate secure passwords and check password strength");
+            SetSeoData("Password Generator", "Generate secure passwords and check password strength with our advanced security tool");
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Password Generator",
+                "Generate secure passwords and check password strength with our advanced security tool.",
+                $"{Request.Scheme}://{Request.Host}/Tools/PasswordGenerator",
+                "SecurityApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "How strong are the passwords generated by this tool?",
+                    "Generated passwords are created using a cryptographically secure random number generator and can include uppercase letters, lowercase letters, numbers, and symbols. You can also choose longer lengths (for example 16 characters or more) to significantly increase strength."
+                ),
+                (
+                    "Does NovaTools Hub store my generated passwords?",
+                    "The generator endpoint creates a password on the server and returns it over an encrypted HTTPS connection. The application does not intentionally persist the generated passwords, but you should still treat them as sensitive secrets and store them in a trusted password manager."
+                ),
+                (
+                    "Is it safe to check an existing password with the strength checker?",
+                    "The strength checker uses the zxcvbn library in your browser to analyse the password you type. As a best practice you should avoid pasting very sensitive or long-term production passwords into any website, and instead use this feature with sample or similar passwords when possible."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -332,26 +464,72 @@ namespace NovaToolsHub.Controllers
         // QR Code Generator
         public IActionResult QrCodeGenerator()
         {
-            SetSeoData("QR Code Generator", "Generate QR codes for URLs, text, contact info, and more");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+            var url = Url.Action("QrCodeGenerator", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/QrCodeGenerator";
+
+            SetSeoData("QR Code Generator", "Generate QR codes for URLs, text, contact info, and more.");
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "QR Code Generator",
-                "Generate QR codes for URLs, text, contact info, and more. Free online QR code creator.",
-                $"{Request.Scheme}://{Request.Host}/Tools/QrCodeGenerator",
+                "Generate QR codes for URLs, text, contact info, WiFi, and more. Free online QR code creator.",
+                url,
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I encode with this QR code generator?",
+                    "You can generate QR codes for website links, plain text, email addresses, phone numbers, SMS messages, WiFi network details, and vCard-style contact information."
+                ),
+                (
+                    "Are my QR code contents stored on NovaTools Hub?",
+                    "The QR image is rendered in your browser based on the text you enter. The content is not intended to be stored long term on NovaTools Hub servers, but you should still avoid encoding highly sensitive secrets or credentials."
+                ),
+                (
+                    "Will my QR codes keep working forever?",
+                    "The QR image itself does not expire, but any links or services it points to might change over time. Always test your QR codes after printing and periodically re-check important codes that link to external pages."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
         // Color Palette Generator
         public IActionResult ColorPaletteGenerator()
         {
+            var url = Url.Action("ColorPaletteGenerator", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/ColorPaletteGenerator";
+
             SetSeoData("Color Palette Generator", "Generate harmonious color schemes, gradients, and export-ready palettes for your next project.");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Color Palette Generator",
                 "Create designer-friendly color palettes with complementary, analogous, triadic, tetradic, monochromatic, and split-complementary modes.",
-                $"{Request.Scheme}://{Request.Host}/Tools/ColorPaletteGenerator",
+                url,
                 "DesignApplication"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I use these color palettes for?",
+                    "The generator is designed for UI themes, branding systems, charts, illustrations, and any project where you need cohesive colors with good contrast and role labels like primary, secondary, and accent."
+                ),
+                (
+                    "Does the tool help with accessibility and contrast?",
+                    "Yes. It calculates luminance and contrast ratios between the lightest and darkest colors and surfaces helpful text color suggestions, so you can quickly see whether your palette is likely to meet basic readability guidelines."
+                ),
+                (
+                    "Where are my saved palettes stored?",
+                    "Saved palettes are stored locally in your browser using localStorage so they are available on the same device. They are not synced to a server or shared with other users."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -359,12 +537,33 @@ namespace NovaToolsHub.Controllers
         public IActionResult JsonFormatter()
         {
             SetSeoData("JSON Formatter", "Format, validate, and compare JSON payloads with instant insights.");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "JSON Formatter",
                 "Enterprise-grade JSON formatter with validation, minify, and diff capabilities for payload inspections.",
                 $"{Request.Scheme}://{Request.Host}/Tools/JsonFormatter",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What can I do with the JSON formatter tool?",
+                    "You can validate JSON, pretty-print it with consistent indentation, minify it for transport, and compare two JSON documents side by side in diff mode using the built-in Monaco editor."
+                ),
+                (
+                    "Is my JSON data sent anywhere or stored?",
+                    "Your JSON is processed in your browser session for formatting and validation and is not intended to be stored long term on NovaTools Hub servers. Avoid pasting highly sensitive production secrets or credentials into any online tool whenever possible."
+                ),
+                (
+                    "Does the formatter change the actual data?",
+                    "Formatting and minifying only change whitespace and ordering in most cases—they do not change the semantic content of the JSON object itself. Always review the output before using it in production or committing it to source control."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -372,28 +571,72 @@ namespace NovaToolsHub.Controllers
         public IActionResult RegexTester()
         {
             SetSeoData("Regex Tester", "Test, debug, and visualize regular expressions with live matches and flags.");
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Regex Tester",
                 "Enterprise-grade regex tester with live highlighting, capture groups, replacement previews, and preset patterns.",
                 $"{Request.Scheme}://{Request.Host}/Tools/RegexTester",
                 "UtilitySoftware"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Which flavor of regular expressions does this tester use?",
+                    "The regex tester uses the JavaScript regular expression engine available in your browser. Most common tokens like character classes, quantifiers, groups, and basic lookahead work as in JavaScript, but some features from PCRE or other engines may not be supported."
+                ),
+                (
+                    "What are the global, case-insensitive, multiline, and single-line flags?",
+                    "The g flag finds all matches instead of just the first, i ignores case differences, m makes ^ and $ match the start and end of lines, and s lets the dot (.) match newlines as well. You can toggle these flags from the flags dropdown above the pattern input."
+                ),
+                (
+                    "Is it safe to test production data in the regex tester?",
+                    "The tool runs in your browser, but it is still best practice to avoid pasting highly sensitive personal or production data into any web-based tester. Use representative sample text whenever you can."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
         // Favicon Generator
         public IActionResult FaviconGenerator()
         {
+            var url = Url.Action("FaviconGenerator", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/FaviconGenerator";
+
             SetSeoData(
                 "Favicon Generator",
                 "Create crisp favicons and PWA icons from any logo with enterprise-grade presets."
             );
-            ViewBag.JsonLdSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
                 "Favicon Generator",
                 "Generate favicon.ico files and multi-size PWA icons with safe padding, rounded corners, and gradient backgrounds.",
-                $"{Request.Scheme}://{Request.Host}/Tools/FaviconGenerator",
+                url,
                 "DesignApplication"
             );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What icon sizes does the favicon generator support?",
+                    "You can generate a full favicon set including classic ICO sizes (16x16, 32x32, 48x48) and larger PNG icons for modern browsers and PWA manifests, such as 64, 128, 180, 256, and 512 pixels."
+                ),
+                (
+                    "Are my uploaded logos stored on your servers?",
+                    "Uploaded images are processed to generate the icon set and are not intended to be stored long term. As with any online tool, avoid uploading highly sensitive or confidential brand assets if your policies do not allow it."
+                ),
+                (
+                    "How do I use the generated icons in my site or app?",
+                    "After downloading the ZIP, place the icons in your web root (for example under /images/icons/), reference favicon.ico and touch icons in your HTML head, and update your web app manifest to point at the larger PNG sizes."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 
@@ -736,10 +979,39 @@ namespace NovaToolsHub.Controllers
 
         public IActionResult LoremIpsum()
         {
+            var url = Url.Action("LoremIpsum", "Tools", null, Request.Scheme) ?? $"{Request.Scheme}://{Request.Host}/Tools/LoremIpsum";
+
             SetSeoData(
                 "Lorem Ipsum Generator - Placeholder Text Generator",
                 "Generate Lorem Ipsum placeholder text for your designs and mockups. Customize paragraphs, words, or lists with classic or modern styles."
             );
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Lorem Ipsum Generator",
+                "Generate placeholder text for mockups, wireframes, and design prototypes with customizable length and format.",
+                url,
+                "UtilitySoftware"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "What is Lorem Ipsum text used for?",
+                    "Lorem Ipsum is filler text used in design, layout, and prototyping so you can focus on typography, spacing, and hierarchy without being distracted by real content."
+                ),
+                (
+                    "Does this generator create unique or translated Lorem Ipsum?",
+                    "The default mode uses the classic Latin-like Lorem Ipsum source text. You can also mix in modern or \"hipster\" style words for more playful placeholder copy when needed."
+                ),
+                (
+                    "Is any of the generated text stored or tracked?",
+                    "No. The text is generated in your browser session and displayed on the page. It is not stored on the server or tied to your identity."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
             return View();
         }
 

@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Pomodoro Timer",
-    "applicationCategory": "UtilityApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -178,6 +161,34 @@
             <p>
                 <strong>Tips:</strong> Eliminate distractions during work sessions, use breaks to step away from your workspace, and track completed sessions to measure productivity.
             </p>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">Pomodoro timer FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">What happens if I close the tab while the timer is running?</p>
+                <p>
+                    The timer runs entirely in your browser. If you close the tab or refresh the page, the active countdown
+                    stops, although completed sessions from today remain in the local history panel.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Do I need notifications for the timer to work?</p>
+                <p>
+                    Notifications are optional. They let you receive alerts when a work or break session ends, especially
+                    when the tab is in the background. The timer itself continues to work even if you decline notifications.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Can I change the default Pomodoro durations?</p>
+                <p>
+                    Yes. You can adjust work, short break, and long break durations in the settings, and enable automatic
+                    break start if you prefer to chain sessions with minimal manual clicks.
+                </p>
+            </div>
         </div>
     </div>
 </div>

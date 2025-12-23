@@ -5,6 +5,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Currency Converter", Url.Action("CurrencyConverter", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -108,6 +118,56 @@
             </p>
         </div>
 
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Currency converter FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How fresh are the exchange rates?</p>
+                    <p>
+                        Rates are retrieved from the CurrencyFreaks API and cached for a short period to keep the tool responsive.
+                        This is ideal for general reference and budgeting, but actual bank or card rates may include additional fees.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Why does this rate differ from what my bank shows?</p>
+                    <p>
+                        Banks, cards, and payment providers often apply their own markups and service fees on top of the mid-market rate.
+                        Our converter shows API-based reference rates only and does not factor in those extra charges.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I rely on this tool for official financial decisions?</p>
+                    <p>
+                        Use this converter for quick estimates and planning. For binding decisions such as invoices, cross-border
+                        transfers, or tax reporting, you should always rely on rates quoted directly by your bank, payment service,
+                        or official sources.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related finance tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="UnitConverter" class="pill-button">
+                    Unit Converter
+                </a>
+                <a asp-controller="Business" asp-action="LoanCalculator" class="pill-button">
+                    Business Loan &amp; EMI
+                </a>
+                <a asp-controller="Business" asp-action="CompoundInterest" class="pill-button">
+                    Compound Interest
+                </a>
+                <a asp-controller="Business" asp-action="PakistanTaxCalculator" class="pill-button">
+                    Pakistan Salary Tax 2025-26
+                </a>
+                <a asp-controller="Business" asp-action="PakistanZakatCalculator" class="pill-button">
+                    Pakistan Zakat Calculator
+                </a>
+            </div>
+        </div>
+
         <!-- In-Content Ad -->
         @await Html.PartialAsync("_AdInContent")
 
@@ -118,14 +178,7 @@
     </div>
 </div>
 
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-@Html.Raw(SeoHelper.GenerateFinancialServiceSchema(
-    "Currency Converter",
-    "Convert between major world currencies with live exchange rates",
-    Url.Action("CurrencyConverter", "Tools", null, Context.Request.Scheme) ?? ""
-))
-</script>
+
 
 @section Scripts {
 <script>

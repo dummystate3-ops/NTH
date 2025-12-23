@@ -7,23 +7,6 @@
     ViewBag.CanonicalUrl = Model.CanonicalUrl;
 }
 
-@section JsonLd {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Data Encryption & Privacy Tool",
-        "applicationCategory": "SecurityApplication",
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "description": "Encrypt and decrypt text securely in your browser using AES encryption."
-    }
-    </script>
-}
-
 <!-- Page Header -->
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
     <div class="container-custom">
@@ -153,6 +136,36 @@
             <p class="text-blue-800">
                 <strong>🔒 Privacy:</strong> All encryption and decryption is performed locally in your browser using the Web Crypto API. Your data never leaves your device.
             </p>
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Encryption tool FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Is my plaintext ever uploaded to the server?</p>
+                    <p>
+                        The design of this tool is to perform the cryptographic operations in your browser using the Web Crypto API.
+                        Your plaintext and password are not intended to be sent to NovaTools Hub servers; only the ciphertext you copy
+                        or download leaves your device.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What happens if I lose or forget my password?</p>
+                    <p>
+                        There is no backdoor or recovery mechanism. Without the exact password used to encrypt, the ciphertext
+                        cannot be decrypted. Always keep important passwords stored safely in a trusted password manager.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Should I rely on this tool for highly sensitive data?</p>
+                    <p>
+                        While the tool uses strong AES-256-GCM encryption, it is still a browser-based utility and is best suited
+                        for educational use and light protection. Production systems handling highly sensitive data should rely on
+                        dedicated, audited security infrastructure and key management solutions.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- In-Content Ad -->

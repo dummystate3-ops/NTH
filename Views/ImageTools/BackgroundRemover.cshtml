@@ -1,9 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Background Remover - AI Image Background Removal | NovaToolsHub";
-    ViewData["Description"] = "Free AI-powered background removal tool. Remove backgrounds from images instantly using machine learning. No signup required.";
-}
-
-@section Head {
+﻿@section Head {
     <style>
         .upload-zone {
             border: 3px dashed var(--color-border);
@@ -245,6 +240,16 @@
 }
 
 <div class="container mx-auto px-4 py-8 max-w-6xl">
+    @{
+        var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+        {
+            ("Home", Url.Action("Index", "Home") ?? "/"),
+            ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+            ("Background Remover", Url.Action("BackgroundRemover", "ImageTools") ?? "#")
+        };
+    }
+    <partial name="_Breadcrumb" model="breadcrumb" />
+
     <!-- Header -->
     <div class="text-center mb-8">
         <div
@@ -574,6 +579,58 @@
             <div class="spinner mb-4"></div>
             <p class="text-xl font-bold text-gray-800">Magic in progress...</p>
             <p class="text-gray-500 text-sm">Detecting subject &amp; removing background</p>
+        </div>
+    </div>
+</div>
+
+<div class="container-custom pb-10">
+    <div class="max-w-3xl mx-auto">
+        <div class="card">
+            <h3 class="text-xl font-semibold mb-4">Background remover FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What types of images work best with the background remover?</p>
+                    <p>
+                        High-contrast photos where the subject stands out clearly from the background work best. Portraits, product shots, and
+                        simple scenes are usually easier for the AI model than very busy or low-contrast images.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Are my uploaded images stored or reused?</p>
+                    <p>
+                        Images are processed for background removal and editing and may be cached briefly to support download and undo, but are not
+                        intended to be stored long term. Avoid uploading highly sensitive or regulated content.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I change the background after removing it?</p>
+                    <p>
+                        Yes. After removal you can place the subject on a transparent background, choose a solid color, or upload another image as
+                        the new background and export the final composition from the Magic Editor tab.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related image tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="ImageTools" asp-action="AdvancedResizer" class="pill-button">
+                    Advanced Image Tool
+                </a>
+                <a asp-controller="ImageTools" asp-action="Compressor" class="pill-button">
+                    Image Compressor
+                </a>
+                <a asp-controller="ImageTools" asp-action="BackgroundRemover" class="pill-button">
+                    Background Remover
+                </a>
+                <a asp-controller="Tools" asp-action="FaviconGenerator" class="pill-button">
+                    Favicon Generator
+                </a>
+                <a asp-controller="Tools" asp-action="ColorPaletteGenerator" class="pill-button">
+                    Color Palette Generator
+                </a>
+            </div>
         </div>
     </div>
 </div>

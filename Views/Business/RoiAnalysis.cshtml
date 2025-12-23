@@ -8,15 +8,6 @@
 
 @section Head {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "FinancialService",
-        "name": "ROI Analysis Calculator",
-        "serviceType": "Investment Analysis",
-        "description": "Calculate return on investment (ROI) for business projects and investments with visual trend analysis"
-    }
-    </script>
 }
 
 <!-- Page Header -->
@@ -224,6 +215,31 @@
                     <h4 class="font-semibold mb-2">🎯 Decision Making</h4>
                     <p class="text-sm text-[var(--color-text-medium)]">
                         Consider ROI alongside other factors: risk level, time commitment, opportunity cost, and alignment with business goals.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="card mt-8">
+            <h3 class="text-xl font-bold mb-4">ROI analysis calculator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Does the ROI calculation include inflation or discounting?</p>
+                    <p>
+                        No. The calculator works with simple cash flows and does not discount future returns or adjust for inflation. For detailed capital budgeting, you may want to use net present value (NPV) or internal rate of return (IRR) models in a spreadsheet.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What should I do if the payback period is longer than my planning horizon?</p>
+                    <p>
+                        A long or \"beyond analysis period\" payback often means the investment ties up capital for too long relative to its benefits. You can adjust assumptions, test smaller pilots, or compare with alternative projects that reach break-even sooner.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I compare multiple projects with this tool?</p>
+                    <p>
+                        Yes. Run the calculator separately for each project and compare ROI, payback period, and cumulative returns. For a portfolio view, you can export the text report and combine the numbers in a spreadsheet or planning document.
                     </p>
                 </div>
             </div>

@@ -5,6 +5,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Unit Converter", Url.Action("UnitConverter", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -76,6 +86,50 @@
             </div>
         </div>
 
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Unit converter FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What can I convert with this unit converter?</p>
+                    <p>
+                        You can convert between length, weight, temperature, volume, area, and speed units. Choose a category,
+                        select your source and target units, and the converter will calculate the result instantly.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">How precise are the conversion results?</p>
+                    <p>
+                        Results are calculated using standard conversion factors and shown with several decimal places. This is usually
+                        more than enough for everyday, classroom, and most professional use cases. For strict engineering tolerances,
+                        always confirm values against official standards.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Do I need to upload files or create an account?</p>
+                    <p>
+                        No. The unit converter works directly in your browser. You just enter the value and pick units—no sign-up,
+                        login, or file upload is required.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="CurrencyConverter" class="pill-button">
+                    Currency Converter
+                </a>
+                <a asp-controller="Tools" asp-action="DateCalculator" class="pill-button">
+                    Date Calculator
+                </a>
+                <a asp-controller="Tools" asp-action="AgeCalculator" class="pill-button">
+                    Age Calculator
+                </a>
+            </div>
+        </div>
+
         <!-- In-Content Ad -->
         @await Html.PartialAsync("_AdInContent")
 
@@ -86,15 +140,7 @@
     </div>
 </div>
 
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
-    "Unit Converter",
-    "Convert between different units of length, weight, temperature, volume, area, and speed",
-    Url.Action("UnitConverter", "Tools", null, Context.Request.Scheme) ?? "",
-    "Utility"
-))
-</script>
+
 
 @section Scripts {
 <script>

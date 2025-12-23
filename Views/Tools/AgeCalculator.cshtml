@@ -5,6 +5,16 @@
 
 <div class="container-custom section-padding">
     <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Age Calculator", Url.Action("AgeCalculator", "Tools") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
         <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -96,6 +106,54 @@
             </div>
         </div>
 
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Age calculator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I calculate age on a past or future date?</p>
+                    <p>
+                        Yes. Enter your date of birth and a target date in the future or past. The calculator will show how old
+                        you were or will be on that date and how long remains until your next birthday.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Why are there separate totals for years, months, weeks, and days?</p>
+                    <p>
+                        Many people need different views of the same time span. The detailed breakdown lets you see your age in
+                        complete years, months, and days, as well as total months, total weeks, and total days for planning,
+                        milestones, or just curiosity.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Does the tool take time zones into account?</p>
+                    <p>
+                        The calculator works with calendar dates only and does not consider time of day or time zones. For most
+                        everyday age calculations this is sufficient; if you need precise time‑zone–aware age down to the hour,
+                        you will need a more specialized tool.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Related date &amp; time tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Tools" asp-action="DateCalculator" class="pill-button">
+                    Date Calculator
+                </a>
+                <a asp-controller="Tools" asp-action="BmiCalculator" class="pill-button">
+                    BMI Calculator
+                </a>
+                <a asp-controller="Productivity" asp-action="WorldTime" class="pill-button">
+                    World Time Viewer
+                </a>
+                <a asp-controller="Productivity" asp-action="TimeZoneConverter" class="pill-button">
+                    Time Zone Converter
+                </a>
+            </div>
+        </div>
+
         <!-- In-Content Ad -->
         @await Html.PartialAsync("_AdInContent")
 
@@ -106,15 +164,7 @@
     </div>
 </div>
 
-<!-- JSON-LD Schema -->
-<script type="application/ld+json">
-@Html.Raw(SeoHelper.GenerateSoftwareApplicationSchema(
-    "Age Calculator",
-    "Calculate your exact age in years, months, days, weeks, and get countdown to your next birthday",
-    Url.Action("AgeCalculator", "Tools", null, Context.Request.Scheme) ?? "",
-    "Utility"
-))
-</script>
+
 
 @section Scripts {
 <script>

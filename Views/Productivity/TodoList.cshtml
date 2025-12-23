@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "To-Do List Manager",
-    "applicationCategory": "UtilityApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-5xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -102,8 +85,6 @@
         <p class="text-lg text-gray-500 dark:text-gray-400">No tasks found. Add your first task above!</p>
     </div>
 
-    @await Html.PartialAsync("_SocialSharing")
-
     <!-- Tips Section -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
@@ -128,6 +109,36 @@
             </div>
         </div>
     </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">To-do list FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">How does this to-do list store my tasks?</p>
+                <p>
+                    Tasks are stored in a workspace associated with your browser via NovaTools Hub&rsquo;s productivity API.
+                    This lets you come back from the same browser and continue managing your list without registering an account.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Will my tasks sync across different devices?</p>
+                <p>
+                    Workspaces are tied to your current browser environment. The tool is designed for convenient personal
+                    use on the same device, not as a full multi-device account system.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Is it safe to store sensitive information in tasks?</p>
+                <p>
+                    You should avoid putting passwords, highly sensitive personal data, or confidential project details
+                    directly into task titles. Treat this as a productivity helper rather than a secure secrets manager.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("_SocialSharing")
 </div>
 
 <!-- Edit Modal -->
