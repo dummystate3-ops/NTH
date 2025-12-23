@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "World Time Viewer",
-    "applicationCategory": "UtilityApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-6xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -84,6 +67,35 @@
             <p>
                 <strong>Time Zone Information:</strong> Each clock shows the UTC offset and time zone abbreviation for easy reference.
             </p>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">World time viewer FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">How accurate is the world time shown?</p>
+                <p>
+                    The clocks use your device time together with the browser&rsquo;s time zone database (IANA time zones)
+                    to calculate local times for each city. As long as your system clock and time zone are configured
+                    correctly, the displayed times are accurate enough for everyday coordination.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Will my custom cities be saved?</p>
+                <p>
+                    Yes. Custom cities are stored in your browser&rsquo;s local storage so they reappear when you return from
+                    the same device and browser. They are not synced between different devices or user accounts.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Does the tool handle daylight saving time?</p>
+                <p>
+                    Yes. Time calculations rely on the browser&rsquo;s time zone rules, which automatically adjust for daylight
+                    saving time where it applies.
+                </p>
+            </div>
         </div>
     </div>
 </div>

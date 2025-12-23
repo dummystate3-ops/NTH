@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Online Notepad",
-    "applicationCategory": "UtilityApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-6xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -110,6 +93,34 @@
                         <i class="fas fa-font mr-2"></i> lower
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">Online notepad FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Where are my notes stored?</p>
+                <p>
+                    Notes are stored in a workspace associated with your browser, using NovaTools Hub&rsquo;s productivity API.
+                    This lets you return from the same browser and continue working without creating a traditional account.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Is this notepad suitable for sensitive information?</p>
+                <p>
+                    No. Treat it as a convenient place for everyday notes, drafts, and ideas. Do not store passwords, highly
+                    sensitive personal data, or confidential business information here.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Can I back up or move my notes elsewhere?</p>
+                <p>
+                    Yes. You can download the current note as a plain text file or copy its contents to paste into another
+                    notes app, document editor, or backup system of your choice.
+                </p>
             </div>
         </div>
     </div>

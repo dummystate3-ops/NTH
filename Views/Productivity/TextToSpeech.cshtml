@@ -5,23 +5,6 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<!-- SEO & Schema -->
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "SoftwareApplication",
-    "name": "Text to Speech Converter",
-    "applicationCategory": "UtilityApplication",
-    "description": "@Model.MetaDescription",
-    "operatingSystem": "Any",
-    "offers": {
-        "@@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-    }
-}
-</script>
-
 <div class="container mx-auto px-4 py-8 max-w-4xl">
     <!-- Header -->
     <div class="text-center mb-8">
@@ -170,6 +153,35 @@
             <p>
                 <strong>Use Cases:</strong> Perfect for accessibility, language learning, proofreading, or listening to documents while multitasking.
             </p>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="mt-8 card">
+        <h3 class="text-xl font-semibold mb-4">Text-to-speech FAQs</h3>
+        <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Does my text get sent to your servers?</p>
+                <p>
+                    The tool relies on your browser&rsquo;s Speech Synthesis API to generate speech locally. NovaTools Hub
+                    does not send your text to its own servers for processing, although your browser or operating system
+                    may use underlying voice services depending on your platform.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Which browsers are best supported?</p>
+                <p>
+                    Modern versions of Chrome, Edge, and Safari generally provide the best support and widest voice
+                    selection. Firefox support can be more limited and may not expose all voices or features.
+                </p>
+            </div>
+            <div>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Can I download the spoken audio?</p>
+                <p>
+                    The Web Speech API does not expose a direct audio file for download. If you need a recording, you can
+                    use a system or screen recording tool while the text is being spoken.
+                </p>
+            </div>
         </div>
     </div>
 </div>
