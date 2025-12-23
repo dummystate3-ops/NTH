@@ -7,15 +7,6 @@
 }
 
 @section Head {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "LearningResource",
-        "name": "Digital Flashcard Generator",
-        "learningResourceType": "Study Tool",
-        "description": "Create and study with digital flashcards for effective learning"
-    }
-    </script>
 }
 
 <section class="section-padding bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] text-white">
@@ -30,6 +21,17 @@
 
 <section class="section-padding">
     <div class="container-custom max-w-6xl">
+        
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Academic & Teacher Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#academic"),
+                ("Flashcard Generator", Url.Action("Flashcards", "Academic") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         
         <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-8">
             <div class="flex items-start gap-3">
@@ -145,6 +147,53 @@
                         Next →
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Flashcard generator FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Where are my flashcard sets stored?</p>
+                    <p>
+                        Flashcard sets are saved in your browser’s local storage on this device. They remain available in this
+                        browser even after you close the tab, but they are not synced to other devices or accounts.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can I export or import flashcard sets?</p>
+                    <p>
+                        Yes. You can export a set as a JSON file and later import it again, or share the file with someone else who
+                        can load it into their own browser to study the same cards.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Is there a limit to how many cards a set can contain?</p>
+                    <p>
+                        There is no hard coded maximum, but very large sets may feel slower to scroll or review. In practice, using
+                        focused sets of a few dozen cards tends to work best for learning and revision.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related tools -->
+        <div class="mt-6 card">
+            <h3 class="text-xl font-semibold mb-4">Related academic tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Academic" asp-action="QuizBuilder" class="pill-button">
+                    Quiz Builder
+                </a>
+                <a asp-controller="Academic" asp-action="FormulaReference" class="pill-button">
+                    Formula &amp; Unit Reference
+                </a>
+                <a asp-controller="Academic" asp-action="MindMap" class="pill-button">
+                    Mind Map Creator
+                </a>
+                <a asp-controller="Productivity" asp-action="Notes" class="pill-button">
+                    Online Notepad
+                </a>
             </div>
         </div>
 

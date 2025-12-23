@@ -7,15 +7,6 @@
 }
 
 @section Head {
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "SoftwareApplication",
-        "name": "Grammar Helper",
-        "applicationCategory": "EducationalApplication",
-        "description": "AI-powered grammar, spelling, and writing quality checker"
-    }
-    </script>
     <style>
         .grammar-loading-overlay {
             display: none;
@@ -68,6 +59,17 @@
 
 <section class="section-padding">
     <div class="container-custom max-w-4xl">
+        
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Academic & Teacher Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#academic"),
+                ("Grammar Helper", Url.Action("GrammarHelper", "Academic") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         
         <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-8">
             <div class="flex items-start gap-3">
@@ -135,6 +137,56 @@
                 <div id="issuesList" class="space-y-3">
                     <!-- Issues will appear here -->
                 </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="mt-8 card">
+            <h3 class="text-xl font-semibold mb-4">Grammar helper FAQs</h3>
+            <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">What does the AI grammar helper check?</p>
+                    <p>
+                        The tool analyzes your text for grammar, spelling, punctuation, and basic style issues. It produces an
+                        overall summary, a corrected version of the text where possible, and a list of issues with explanations
+                        and suggested alternatives.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Is my text stored or used for model training?</p>
+                    <p>
+                        Your text is sent securely to the AI service to generate suggestions. NovaTools Hub does not intentionally
+                        store your text long-term, but as a best practice you should still avoid pasting highly sensitive or secret
+                        information such as passwords or production credentials.
+                    </p>
+                </div>
+                <div>
+                    <p class="font-semibold text-[var(--color-text)] mb-1">Can this replace a human editor?</p>
+                    <p>
+                        No. It is a helpful assistant for catching many common issues, but it does not fully understand context,
+                        nuance, tone, or domain-specific requirements. For important documents, you should still review suggestions
+                        critically or work with a human editor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related tools -->
+        <div class="mt-6 card">
+            <h3 class="text-xl font-semibold mb-4">Related writing tools</h3>
+            <div class="flex flex-wrap gap-3 text-sm">
+                <a asp-controller="Trending" asp-action="AIWritingAssistant" class="pill-button">
+                    AI Writing Assistant
+                </a>
+                <a asp-controller="Academic" asp-action="QuizBuilder" class="pill-button">
+                    Quiz Builder
+                </a>
+                <a asp-controller="Academic" asp-action="Flashcards" class="pill-button">
+                    Flashcard Generator
+                </a>
+                <a asp-controller="Productivity" asp-action="Notes" class="pill-button">
+                    Online Notepad
+                </a>
             </div>
         </div>
 
