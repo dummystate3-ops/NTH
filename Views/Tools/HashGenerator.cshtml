@@ -1,0 +1,294 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+
+@{
+    ViewData["PageTitle"] = "Hash Generator | NovaTools Hub";
+    ViewData["MetaDescription"] = "Generate SHA-based hash digests (SHA-1, SHA-256, SHA-384, SHA-512) for text directly in your browser.";
+}
+
+<div class="min-h-screen bg-[var(--color-bg)]">
+    <!-- Header -->
+    <div class="container-custom py-8 lg:py-12">
+        <div class="max-w-4xl mx-auto">
+            @{
+                var breadcrumb = new System.Collections.Generic.List<(string Name, string Url)>
+                {
+                    ("Home", Url.Action("Index", "Home") ?? "/"),
+                    ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                    ("Developer Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#developer"),
+                    ("Hash Generator", Url.Action("HashGenerator", "Tools") ?? "#")
+                };
+            }
+            <partial name="_Breadcrumb" model="breadcrumb" />
+
+            <div class="text-center space-y-4">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-sm font-medium">
+                    <span class="text-xs font-semibold tracking-wide uppercase">Security &amp; Integrity</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text-dark)]">
+                    Hash <span class="text-gradient">Generator</span>
+                </h1>
+                <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                    Compute SHA-based hash digests for text directly in your browser using the Web Crypto API. Helpful for
+                    quick integrity checks and debugging.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tool Body -->
+    <div class="container-custom pb-12">
+        <div class="max-w-5xl mx-auto space-y-8">
+            <!-- Privacy Notice -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none"
+                         stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <div class="text-sm text-blue-900 dark:text-blue-100">
+                        <strong>Privacy note:</strong> Hashes are computed locally in your browser via the Web Crypto API.
+                        Input text and digests are not intended to be sent to NovaTools Hub servers. As always, avoid pasting
+                        highly sensitive secrets or long-lived credentials into any online tool.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Card -->
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-4">Generate a hash</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="hashInput" class="block text-sm font-medium mb-2">Text to hash</label>
+                        <textarea id="hashInput" rows="4"
+                                  class="w-full p-3 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-900 font-mono text-sm"
+                                  placeholder="Enter the text you want to hash..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="algorithmSelect" class="block text-sm font-medium mb-2">Algorithm</label>
+                            <select id="algorithmSelect"
+                                    class="w-full p-2.5 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-900 text-sm">
+                                <option value="SHA-256">SHA-256 (recommended)</option>
+                                <option value="SHA-512">SHA-512</option>
+                                <option value="SHA-384">SHA-384</option>
+                                <option value="SHA-1">SHA-1 (legacy)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Output format</label>
+                            <div class="flex items-center gap-3 text-sm">
+                                <label class="inline-flex items-center gap-1">
+                                    <input type="radio" name="hashFormat" value="hex" checked
+                                           class="w-4 h-4 text-[var(--color-primary)] border-gray-300 focus:ring-[var(--color-primary)]" />
+                                    <span>Hex</span>
+                                </label>
+                                <label class="inline-flex items-center gap-1">
+                                    <input type="radio" name="hashFormat" value="base64"
+                                           class="w-4 h-4 text-[var(--color-primary)] border-gray-300 focus:ring-[var(--color-primary)]" />
+                                    <span>Base64</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" id="hashGenerateBtn" class="btn btn-primary w-full">
+                                Generate hash
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="hashError" class="text-sm text-red-600 dark:text-red-400 hidden"></div>
+                </div>
+            </div>
+
+            <!-- Output Card -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-3 gap-3 flex-wrap">
+                    <div>
+                        <h3 class="text-lg font-semibold">Result</h3>
+                        <p class="text-xs text-[var(--color-text-medium)]">
+                            The digest below is computed using the selected algorithm on the exact input text.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="copyHashBtn" class="btn btn-secondary">
+                            Copy
+                        </button>
+                        <button type="button" id="clearHashBtn" class="btn btn-outline">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+                <pre id="hashOutput"
+                     class="min-h-[80px] text-xs md:text-sm font-mono bg-[var(--color-bg)] rounded-lg p-3 overflow-x-auto text-[var(--color-text-medium)]">
+{/* hash output will appear here */}
+</pre>
+                <p id="hashMeta" class="mt-2 text-xs text-[var(--color-text-subtle)]">
+                    –
+                </p>
+            </div>
+
+            <!-- Algorithm notes -->
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">Algorithm overview</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left">
+                        <thead class="bg-[var(--color-bg)] text-[var(--color-text-medium)]">
+                            <tr>
+                                <th class="px-3 py-2 font-semibold">Algorithm</th>
+                                <th class="px-3 py-2 font-semibold">Digest length</th>
+                                <th class="px-3 py-2 font-semibold">Typical usage</th>
+                                <th class="px-3 py-2 font-semibold">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[var(--color-border)]">
+                            <tr>
+                                <td class="px-3 py-2 font-mono">SHA-256</td>
+                                <td class="px-3 py-2">256 bits / 64 hex chars</td>
+                                <td class="px-3 py-2">Checksums, content addressing, HMACs</td>
+                                <td class="px-3 py-2">Good general-purpose choice for integrity checks.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-mono">SHA-512</td>
+                                <td class="px-3 py-2">512 bits / 128 hex chars</td>
+                                <td class="px-3 py-2">High-assurance checksums, large datasets</td>
+                                <td class="px-3 py-2">Stronger but larger digest than SHA-256.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-mono">SHA-384</td>
+                                <td class="px-3 py-2">384 bits / 96 hex chars</td>
+                                <td class="px-3 py-2">Some TLS/PKI configurations</td>
+                                <td class="px-3 py-2">Less commonly used but supported in Web Crypto.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-mono">SHA-1</td>
+                                <td class="px-3 py-2">160 bits / 40 hex chars</td>
+                                <td class="px-3 py-2">Legacy systems only</td>
+                                <td class="px-3 py-2">Considered cryptographically weak; avoid for new designs.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-3 text-xs text-[var(--color-text-subtle)]">
+                    These hashes are not salted or stretched and are not suitable on their own for password storage.
+                    Production systems should use dedicated password hashing algorithms such as bcrypt, scrypt, PBKDF2,
+                    or Argon2 with appropriate configuration.
+                </p>
+            </div>
+
+            <!-- Related Tools -->
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">Related developer tools</h3>
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <a asp-controller="Tools" asp-action="PasswordGenerator" class="pill-button">
+                        Password Generator
+                    </a>
+                    <a asp-controller="Trending" asp-action="EncryptionTool" class="pill-button">
+                        Encryption Tool
+                    </a>
+                    <a asp-controller="Tools" asp-action="JsonFormatter" class="pill-button">
+                        JSON Formatter
+                    </a>
+                    <a asp-controller="Math" asp-action="Cryptography" class="pill-button">
+                        Cryptography Playground
+                    </a>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_AdInContent")
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function computeHash(algorithm, input, outputFormat) {
+            if (!window.crypto || !window.crypto.subtle) {
+                throw new Error("Web Crypto API is not available in this browser.");
+            }
+
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const buffer = await window.crypto.subtle.digest(algorithm, data);
+            const bytes = new Uint8Array(buffer);
+
+            if (outputFormat === "base64") {
+                let binary = "";
+                for (let i = 0; i < bytes.length; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                return btoa(binary);
+            }
+
+            // default hex
+            return Array.from(bytes)
+                .map(b => b.toString(16).padStart(2, "0"))
+                .join("");
+        }
+
+        function getSelectedFormat() {
+            const radios = document.querySelectorAll("input[name='hashFormat']");
+            for (const r of radios) {
+                if (r.checked) return r.value;
+            }
+            return "hex";
+        }
+
+        document.getElementById("hashGenerateBtn").addEventListener("click", async () => {
+            const inputEl = document.getElementById("hashInput");
+            const algoEl = document.getElementById("algorithmSelect");
+            const errorEl = document.getElementById("hashError");
+            const outputEl = document.getElementById("hashOutput");
+            const metaEl = document.getElementById("hashMeta");
+
+            errorEl.classList.add("hidden");
+            errorEl.textContent = "";
+            outputEl.textContent = "{/* hash output will appear here */}";
+            metaEl.textContent = "–";
+
+            const text = (inputEl.value || "").toString();
+            const algorithm = algoEl.value;
+            const format = getSelectedFormat();
+
+            if (!text) {
+                errorEl.textContent = "Please enter some text to hash.";
+                errorEl.classList.remove("hidden");
+                return;
+            }
+
+            try {
+                const digest = await computeHash(algorithm, text, format);
+                outputEl.textContent = digest;
+                metaEl.textContent = `${algorithm} digest in ${format.toUpperCase()} format for ${text.length} characters.`;
+            } catch (e) {
+                console.error(e);
+                errorEl.textContent = e.message || "Failed to compute hash. Your browser may not support the Web Crypto API.";
+                errorEl.classList.remove("hidden");
+            }
+        });
+
+        document.getElementById("copyHashBtn").addEventListener("click", () => {
+            const outputEl = document.getElementById("hashOutput");
+            const value = (outputEl.textContent || "").trim();
+            if (!value || value.startsWith("{/*")) {
+                return;
+            }
+            navigator.clipboard.writeText(value).then(() => {
+                if (window.toast && window.toast.success) {
+                    window.toast.success("Hash copied to clipboard.");
+                }
+            });
+        });
+
+        document.getElementById("clearHashBtn").addEventListener("click", () => {
+            document.getElementById("hashInput").value = "";
+            document.getElementById("hashError").classList.add("hidden");
+            document.getElementById("hashError").textContent = "";
+            document.getElementById("hashOutput").textContent = "{/* hash output will appear here */}";
+            document.getElementById("hashMeta").textContent = "–";
+        });
+    </script>
+}

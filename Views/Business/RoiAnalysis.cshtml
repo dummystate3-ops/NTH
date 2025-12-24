@@ -25,6 +25,17 @@
 <section class="section-padding">
     <div class="container-custom max-w-6xl">
         
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Business & Finance Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#business"),
+                ("ROI Analysis Calculator", Url.Action("RoiAnalysis", "Business") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
+        
         <!-- Privacy Notice -->
         <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-8">
             <div class="flex items-start gap-3">

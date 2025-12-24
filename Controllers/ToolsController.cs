@@ -575,6 +575,104 @@ namespace NovaToolsHub.Controllers
                 ),
                 (
                     "Is my JSON data sent anywhere or stored?",
+                    "Your JSON is processed in your browser session for formatting and validation and is not intended to be stored long term on NovaTools Hub servers. Avoid pasting highly sensitive production secrets or credentials into any online formatter."
+                ),
+                (
+                    "Does formatting change the meaning of my JSON?",
+                    "No. Formatting and minifying only affect whitespace and layout. The underlying key-value structure remains the same, but you should always review the result before using it in production."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
+            return View();
+        }
+
+        // JWT Decoder
+        public IActionResult JwtDecoder()
+        {
+            SetSeoData("JWT Decoder", "Decode JSON Web Tokens (JWT) header and payload safely in your browser.");
+
+            var url = $"{Request.Scheme}://{Request.Host}/Tools/JwtDecoder";
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "JWT Decoder",
+                "Decode JWT header and payload locally in your browser without sending tokens to a server.",
+                url,
+                "SecurityApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Does this JWT decoder verify the token signature?",
+                    "No. This tool only decodes the header and payload of a JWT for inspection. It does not verify signatures or validate whether the token is trusted. Always rely on your backend or auth provider to validate JWTs."
+                ),
+                (
+                    "Is it safe to paste production JWTs into this tool?",
+                    "Decoding happens in your browser, and tokens are not intended to be sent to NovaTools Hub servers. However, as a best practice you should avoid pasting extremely sensitive, long-lived, or high-privilege tokens into any online tool."
+                ),
+                (
+                    "What information can I see from a decoded JWT?",
+                    "You can view the header (algorithm, type) and payload claims such as subject, issuer, audience, and expiry timestamps in human-readable form. This is useful for debugging authentication flows and debugging roles or permissions."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
+            return View();
+        }
+
+        // Hash Generator
+        public IActionResult HashGenerator()
+        {
+            SetSeoData("Hash Generator", "Generate SHA-based hash digests for text directly in your browser.");
+
+            var url = $"{Request.Scheme}://{Request.Host}/Tools/HashGenerator";
+
+            var appSchema = SeoHelper.GenerateSoftwareApplicationSchema(
+                "Hash Generator",
+                "Generate SHA-1, SHA-256, SHA-384, and SHA-512 hashes for text locally in your browser.",
+                url,
+                "SecurityApplication"
+            );
+
+            var faqs = new List<(string Question, string Answer)>
+            {
+                (
+                    "Which hash algorithms does this tool support?",
+                    "The hash generator uses the browser's Web Crypto API to compute SHA-1, SHA-256, SHA-384, and SHA-512 digests for the text you enter. These algorithms are suitable for integrity checks, not for password storage."
+                ),
+                (
+                    "Is this hash generator suitable for storing passwords?",
+                    "No. Fast hashes like SHA-256 or SHA-512 alone are not recommended for password storage. Production systems should use dedicated password hashing algorithms such as bcrypt, scrypt, Argon2, or PBKDF2 with proper salting and iteration counts."
+                ),
+                (
+                    "Is my input text sent to the server when generating a hash?",
+                    "No. Hashes are computed using the Web Crypto API entirely in your browser. The text you enter and the resulting digest are not intended to be transmitted to NovaTools Hub servers."
+                )
+            };
+
+            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
+            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
+
+            return View();
+        }
+
+        // Unit conversion helpers
+        private double ConvertWeight(double value, string from, string to)
+        {
+            // Convert to kg first
+            double kg = from switch
+            {
+                (
+                    "What can I do with the JSON formatter tool?",
+                    "You can validate JSON, pretty-print it with consistent indentation, minify it for transport, and compare two JSON documents side by side in diff mode using the built-in Monaco editor."
+                ),
+                (
+                    "Is my JSON data sent anywhere or stored?",
                     "Your JSON is processed in your browser session for formatting and validation and is not intended to be stored long term on NovaTools Hub servers. Avoid pasting highly sensitive production secrets or credentials into any online tool whenever possible."
                 ),
                 (

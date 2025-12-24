@@ -5,16 +5,28 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Header -->
-    <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
-            <i class="fas fa-volume-up text-primary"></i> Text to Speech
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300">
-            Convert text to natural-sounding speech
-        </p>
-    </div>
+<div class="container-custom section-padding">
+    <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Productivity & Utility Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#productivity"),
+                ("Text to Speech", Url.Action("TextToSpeech", "Productivity") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text-dark)]">
+                <span class="text-gradient">Text to Speech</span>
+            </h1>
+            <p class="mt-3 text-[var(--color-text-medium)] text-base md:text-lg">
+                Convert text to natural-sounding speech.
+            </p>
+        </div>
 
     <!-- Browser Compatibility Warning -->
     <div id="compatibilityWarning" class="bg-yellow-100 dark:bg-yellow-900/30 border-l-4 border-yellow-500 p-4 mb-6 hidden">
@@ -158,32 +170,32 @@
 
     <!-- FAQs -->
     <div class="mt-8 card">
-        <h3 class="text-xl font-semibold mb-4">Text-to-speech FAQs</h3>
+        <h3 class="text-xl font-semibold mb-4">Text to speech FAQs</h3>
         <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
             <div>
-                <p class="font-semibold text-[var(--color-text)] mb-1">Does my text get sent to your servers?</p>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Is this text-to-speech tool free to use?</p>
                 <p>
-                    The tool relies on your browser&rsquo;s Speech Synthesis API to generate speech locally. NovaTools Hub
-                    does not send your text to its own servers for processing, although your browser or operating system
-                    may use underlying voice services depending on your platform.
+                    Yes. The web-based text-to-speech tool on this page is free to use directly from your browser.
+                    It relies on your device's built-in speech synthesis capabilities, so there are no server-side audio generation costs.
                 </p>
             </div>
             <div>
-                <p class="font-semibold text-[var(--color-text)] mb-1">Which browsers are best supported?</p>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Can I download the audio output as a file?</p>
                 <p>
-                    Modern versions of Chrome, Edge, and Safari generally provide the best support and widest voice
-                    selection. Firefox support can be more limited and may not expose all voices or features.
+                    This version focuses on in-browser playback and does not generate downloadable audio files.
+                    For downloadable audio or large-scale text-to-speech, a dedicated TTS service or app is recommended.
                 </p>
             </div>
             <div>
-                <p class="font-semibold text-[var(--color-text)] mb-1">Can I download the spoken audio?</p>
+                <p class="font-semibold text-[var(--color-text)] mb-1">Why are voice options different across devices?</p>
                 <p>
-                    The Web Speech API does not expose a direct audio file for download. If you need a recording, you can
-                    use a system or screen recording tool while the text is being spoken.
+                    The available voices and quality depend on your operating system and browser implementation. 
+                    Some platforms expose more natural or localized voices than others. The tool simply lists and uses whatever your browser provides.
                 </p>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script>

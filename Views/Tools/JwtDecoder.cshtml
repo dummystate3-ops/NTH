@@ -1,0 +1,349 @@
+@model NovaToolsHub.Models.ViewModels.BasePageViewModel
+
+@{
+    ViewData["PageTitle"] = "JWT Decoder | NovaTools Hub";
+    ViewData["MetaDescription"] = "Decode JSON Web Tokens (JWT) header and payload safely in your browser without uploading tokens.";
+}
+
+<div class="min-h-screen bg-[var(--color-bg)]">
+    <!-- Header -->
+    <div class="container-custom py-8 lg:py-12">
+        <div class="max-w-4xl mx-auto">
+            @{
+                var breadcrumb = new System.Collections.Generic.List<(string Name, string Url)>
+                {
+                    ("Home", Url.Action("Index", "Home") ?? "/"),
+                    ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                    ("Developer Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#developer"),
+                    ("JWT Decoder", Url.Action("JwtDecoder", "Tools") ?? "#")
+                };
+            }
+            <partial name="_Breadcrumb" model="breadcrumb" />
+
+            <div class="text-center space-y-4">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium">
+                    <span class="text-xs font-semibold tracking-wide uppercase">Security &amp; Tokens</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text-dark)]">
+                    JWT <span class="text-gradient">Decoder</span>
+                </h1>
+                <p class="text-lg text-[var(--color-text-medium)] max-w-2xl mx-auto">
+                    Decode JSON Web Tokens (JWT) locally in your browser. Inspect header and payload claims quickly without
+                    uploading tokens to a server.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tool Body -->
+    <div class="container-custom pb-12">
+        <div class="max-w-5xl mx-auto space-y-8">
+            <!-- Privacy Notice -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none"
+                         stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <div class="text-sm text-blue-900 dark:text-blue-100">
+                        <strong>Privacy note:</strong> Decoding happens entirely in your browser using JavaScript.
+                        Tokens are not intended to be sent to NovaTools Hub servers, but you should still avoid pasting
+                        extremely sensitive or long-lived production tokens into any online tool.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Card -->
+            <div class="card">
+                <h2 class="text-2xl font-bold mb-4">Paste your JWT</h2>
+                <p class="text-sm text-[var(--color-text-medium)] mb-4">
+                    Paste a JWT in the format <code class="font-mono bg-[var(--color-bg)] px-1 py-0.5 rounded text-xs">header.payload.signature</code>.
+                    This tool will decode and pretty-print the header and payload. Signature verification is <span class="font-semibold">not</span> performed.
+                </p>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="jwtInput" class="block text-sm font-medium mb-2">JWT</label>
+                        <textarea id="jwtInput" rows="4"
+                                  class="w-full p-3 border border-[var(--color-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent dark:bg-gray-900 font-mono text-sm"
+                                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.signature">
+                        </textarea>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 items-center">
+                        <button type="button" id="decodeBtn" class="btn btn-primary">
+                            Decode token
+                        </button>
+                        <button type="button" id="clearJwtBtn" class="btn btn-outline">
+                            Clear
+                        </button>
+                        <span id="jwtError" class="text-sm text-red-600 dark:text-red-400 hidden"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decoded Output -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-semibold">Header</h3>
+                        <span id="headerMeta"
+                              class="text-xs px-2 py-0.5 rounded-full bg-[var(--color-bg)] text-[var(--color-text-medium)]">
+                            alg: –, typ: –
+                        </span>
+                    </div>
+                    <pre id="headerJson"
+                         class="text-xs md:text-sm font-mono bg-[var(--color-bg)] rounded-lg p-3 overflow-x-auto text-[var(--color-text-medium)]">
+{/* header JSON will appear here */}
+</pre>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-semibold">Payload</h3>
+                        <span id="payloadMeta"
+                              class="text-xs px-2 py-0.5 rounded-full bg-[var(--color-bg)] text-[var(--color-text-medium)]">
+                            exp: –, iss: –
+                        </span>
+                    </div>
+                    <pre id="payloadJson"
+                         class="text-xs md:text-sm font-mono bg-[var(--color-bg)] rounded-lg p-3 overflow-x-auto text-[var(--color-text-medium)]">
+{/* payload JSON will appear here */}
+</pre>
+                </div>
+            </div>
+
+            <!-- Claims Summary -->
+            <div id="claimsCard" class="card hidden">
+                <h3 class="text-lg font-semibold mb-3">Token details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-[var(--color-text-medium)]">
+                    <div class="space-y-1">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Issuer (iss)</span>
+                            <span id="claimIss" class="font-mono text-right truncate max-w-[60%]">–</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Subject (sub)</span>
+                            <span id="claimSub" class="font-mono text-right truncate max-w-[60%]">–</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Audience (aud)</span>
+                            <span id="claimAud" class="font-mono text-right truncate max-w-[60%]">–</span>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Issued at (iat)</span>
+                            <span id="claimIat" class="font-mono text-right truncate max-w-[60%]">–</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Expires (exp)</span>
+                            <span id="claimExp" class="font-mono text-right truncate max-w-[60%]">–</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Is expired?</span>
+                            <span id="claimExpired" class="font-semibold text-right">–</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-3 text-xs text-[var(--color-text-subtle)]">
+                    Times are interpreted as UNIX timestamps (seconds) and shown in your local time, purely for inspection.
+                    Always rely on your backend or identity provider for authoritative validation.
+                </p>
+            </div>
+
+            <!-- FAQs -->
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">JWT decoder FAQs</h3>
+                <div class="space-y-4 text-sm text-[var(--color-text-medium)]">
+                    <div>
+                        <p class="font-semibold text-[var(--color-text-strong)] mb-1">Can this tool tell me if a JWT is valid or trusted?</p>
+                        <p>
+                            No. This decoder only base64url-decodes the header and payload so you can read the claims. It does
+                            not verify the signature, issuer, or audience. For security decisions, always validate tokens in
+                            your backend or via your authentication provider.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text-strong)] mb-1">Why do you recommend not pasting very sensitive tokens?</p>
+                        <p>
+                            Even though decoding happens in your browser, best practice is to treat high-value tokens (admin,
+                            long-lived refresh tokens, production API tokens) as secrets and inspect them only in controlled,
+                            internal tools or logs.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-[var(--color-text-strong)] mb-1">What if my JWT is encrypted (JWE) instead of signed (JWS)?</p>
+                        <p>
+                            This tool expects standard signed JWTs (JWS) with three dot-separated segments. Encrypted JWTs (JWE)
+                            cannot be fully decoded without keys and are not supported here.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Tools -->
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-3">Related developer tools</h3>
+                <div class="flex flex-wrap gap-3 text-sm">
+                    <a asp-controller="Tools" asp-action="JsonFormatter" class="pill-button">
+                        JSON Formatter
+                    </a>
+                    <a asp-controller="Tools" asp-action="RegexTester" class="pill-button">
+                        Regex Tester
+                    </a>
+                    <a asp-controller="Tools" asp-action="PasswordGenerator" class="pill-button">
+                        Password Generator
+                    </a>
+                    <a asp-controller="Trending" asp-action="EncryptionTool" class="pill-button">
+                        Encryption Tool
+                    </a>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("_AdInContent")
+            <partial name="_SocialSharing" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function decodeBase64Url(segment) {
+            let s = segment.replace(/-/g, "+").replace(/_/g, "/");
+            while (s.length % 4 !== 0) {
+                s += "=";
+            }
+            const decoded = atob(s);
+            return decoded;
+        }
+
+        function safeParseJson(text) {
+            try {
+                return JSON.parse(text);
+            } catch {
+                return null;
+            }
+        }
+
+        function formatJson(obj) {
+            if (!obj) {
+                return "";
+            }
+            return JSON.stringify(obj, null, 2);
+        }
+
+        function formatUnixTimestamp(value) {
+            if (typeof value !== "number" || !Number.isFinite(value)) {
+                return "–";
+            }
+            try {
+                const date = new Date(value * 1000);
+                return date.toISOString();
+            } catch {
+                return "–";
+            }
+        }
+
+        document.getElementById("decodeBtn").addEventListener("click", () => {
+            const inputEl = document.getElementById("jwtInput");
+            const errorEl = document.getElementById("jwtError");
+            const headerPre = document.getElementById("headerJson");
+            const payloadPre = document.getElementById("payloadJson");
+            const headerMeta = document.getElementById("headerMeta");
+            const payloadMeta = document.getElementById("payloadMeta");
+            const claimsCard = document.getElementById("claimsCard");
+
+            errorEl.classList.add("hidden");
+            errorEl.textContent = "";
+            headerPre.textContent = "{/* header JSON will appear here */}";
+            payloadPre.textContent = "{/* payload JSON will appear here */}";
+            headerMeta.textContent = "alg: –, typ: –";
+            payloadMeta.textContent = "exp: –, iss: –";
+            claimsCard.classList.add("hidden");
+
+            const token = (inputEl.value || "").trim();
+            if (!token) {
+                errorEl.textContent = "Please paste a JWT first.";
+                errorEl.classList.remove("hidden");
+                return;
+            }
+
+            const parts = token.split(".");
+            if (parts.length < 2) {
+                errorEl.textContent = "JWT must contain at least header and payload segments separated by dots.";
+                errorEl.classList.remove("hidden");
+                return;
+            }
+
+            let headerObj = null;
+            let payloadObj = null;
+
+            try {
+                const headerJson = decodeBase64Url(parts[0]);
+                const payloadJson = decodeBase64Url(parts[1]);
+
+                headerObj = safeParseJson(headerJson);
+                payloadObj = safeParseJson(payloadJson);
+
+                if (!headerObj || !payloadObj) {
+                    throw new Error("Unable to parse header or payload as JSON.");
+                }
+
+                headerPre.textContent = formatJson(headerObj);
+                payloadPre.textContent = formatJson(payloadObj);
+
+                const alg = headerObj.alg || "–";
+                const typ = headerObj.typ || "–";
+                headerMeta.textContent = `alg: ${alg}, typ: ${typ}`;
+
+                const iss = payloadObj.iss || "–";
+                const exp = payloadObj.exp;
+                const expFormatted = formatUnixTimestamp(exp);
+
+                payloadMeta.textContent = `exp: ${expFormatted !== "–" ? expFormatted : "–"}, iss: ${iss}`;
+
+                // Claims summary
+                document.getElementById("claimIss").textContent = iss;
+                document.getElementById("claimSub").textContent = payloadObj.sub || "–";
+                document.getElementById("claimAud").textContent =
+                    typeof payloadObj.aud === "string"
+                        ? payloadObj.aud
+                        : Array.isArray(payloadObj.aud) ? payloadObj.aud.join(", ") : "–";
+
+                document.getElementById("claimIat").textContent = formatUnixTimestamp(payloadObj.iat);
+                document.getElementById("claimExp").textContent = expFormatted;
+
+                if (typeof exp === "number" && Number.isFinite(exp)) {
+                    const nowSeconds = Date.now() / 1000;
+                    const expired = exp < nowSeconds;
+                    document.getElementById("claimExpired").textContent = expired ? "Yes" : "No";
+                    document.getElementById("claimExpired").classList.toggle("text-red-600", expired);
+                    document.getElementById("claimExpired").classList.toggle("text-emerald-600", !expired);
+                } else {
+                    document.getElementById("claimExpired").textContent = "Unknown";
+                    document.getElementById("claimExpired").classList.remove("text-red-600", "text-emerald-600");
+                }
+
+                claimsCard.classList.remove("hidden");
+            } catch (e) {
+                console.error(e);
+                errorEl.textContent = "Failed to decode token. Please check that it is a valid JWT.";
+                errorEl.classList.remove("hidden");
+            }
+        });
+
+        document.getElementById("clearJwtBtn").addEventListener("click", () => {
+            document.getElementById("jwtInput").value = "";
+            document.getElementById("jwtError").classList.add("hidden");
+            document.getElementById("jwtError").textContent = "";
+            document.getElementById("headerJson").textContent = "{/* header JSON will appear here */}";
+            document.getElementById("payloadJson").textContent = "{/* payload JSON will appear here */}";
+            document.getElementById("headerMeta").textContent = "alg: –, typ: –";
+            document.getElementById("payloadMeta").textContent = "exp: –, iss: –";
+            document.getElementById("claimsCard").classList.add("hidden");
+        });
+    </script>
+}

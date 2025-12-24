@@ -54,6 +54,32 @@ public static class ToolRegistry
         },
         new ToolDefinition
         {
+            Id = "jwt-decoder",
+            Name = "JWT Decoder",
+            Description = "Decode JSON Web Tokens (JWT) header and payload safely in your browser.",
+            Controller = "Tools",
+            Action = "JwtDecoder",
+            Category = "Security",
+            IconHtml = "🔑",
+            Section = "Developer",
+            Badges = new[] { "JWT" },
+            Tags = new[] { "jwt", "token", "security", "auth" }
+        },
+        new ToolDefinition
+        {
+            Id = "hash-generator",
+            Name = "Hash Generator",
+            Description = "Generate SHA-based hash digests for text directly in your browser.",
+            Controller = "Tools",
+            Action = "HashGenerator",
+            Category = "Security",
+            IconHtml = "#️⃣",
+            Section = "Developer",
+            Badges = new[] { "Hash" },
+            Tags = new[] { "hash", "sha256", "sha512", "digest" }
+        },
+        new ToolDefinition
+        {
             Id = "lorem-ipsum",
             Name = "Lorem Ipsum Generator",
             Description = "Generate placeholder text for designs, mockups, and wireframes.",

@@ -22,6 +22,16 @@
 
 <section class="section-padding">
     <div class="container-custom max-w-6xl">
+        @{
+            var breadcrumbs = new System.Collections.Generic.List<(string Name, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Trending & AI Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#trending"),
+                ("AI Writing Assistant", Url.Action("AIWritingAssistant", "Trending") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumbs" />
         <form id="aiForm">
             @Html.AntiForgeryToken()
         </form>

@@ -5,16 +5,28 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<div class="container mx-auto px-4 py-8 max-w-6xl">
-    <!-- Header -->
-    <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
-            <i class="fas fa-clock text-primary"></i> Time Tracker
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300">
-            Track time spent on tasks and projects
-        </p>
-    </div>
+<div class="container-custom section-padding">
+    <div class="max-w-6xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Productivity & Utility Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#productivity"),
+                ("Time Tracker", Url.Action("TimeTracker", "Productivity") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
+
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text-dark)]">
+                <span class="text-gradient">Time Tracker</span>
+            </h1>
+            <p class="mt-3 text-[var(--color-text-medium)] text-base md:text-lg">
+                Track time spent on tasks and projects.
+            </p>
+        </div>
 
     <!-- Active Timer -->
     <div class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg shadow-lg p-6 mb-6">
@@ -145,6 +157,7 @@
     </div>
 
     @await Html.PartialAsync("_SocialSharing")
+</div>
 </div>
 
 <script>

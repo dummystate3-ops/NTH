@@ -5,18 +5,30 @@
     ViewData["CanonicalUrl"] = Model.CanonicalUrl;
 }
 
-<div class="container mx-auto px-4 py-8 max-w-4xl">
-    <!-- Header -->
-    <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">
-            <i class="fas fa-clock text-primary"></i> Time Zone Converter
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300">
-            Convert time between different time zones instantly
-        </p>
-    </div>
+<div class="container-custom section-padding">
+    <div class="max-w-4xl mx-auto">
+        @{
+            var breadcrumb = new System.Collections.Generic.List<(string Label, string Url)>
+            {
+                ("Home", Url.Action("Index", "Home") ?? "/"),
+                ("All Tools", Url.Action("Index", "Tools") ?? "/Tools"),
+                ("Productivity & Utility Tools", (Url.Action("Index", "Tools") ?? "/Tools") + "#productivity"),
+                ("Time Zone Converter", Url.Action("TimeZoneConverter", "Productivity") ?? "#")
+            };
+        }
+        <partial name="_Breadcrumb" model="breadcrumb" />
 
-    <!-- Converter Tool -->
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-text-dark)]">
+                <span class="text-gradient">Time Zone Converter</span>
+            </h1>
+            <p class="mt-3 text-[var(--color-text-medium)] text-base md:text-lg">
+                Convert time between different time zones instantly.
+            </p>
+        </div>
+
+        <!-- Converter Tool -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
             Convert Time
@@ -168,6 +180,8 @@
             </div>
         </div>
     </div>
+</div>
+
 </div>
 
 <script>
