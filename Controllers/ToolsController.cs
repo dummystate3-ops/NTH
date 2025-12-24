@@ -661,32 +661,6 @@ namespace NovaToolsHub.Controllers
             return View();
         }
 
-        // Unit conversion helpers
-        private double ConvertWeight(double value, string from, string to)
-        {
-            // Convert to kg first
-            double kg = from switch
-            {
-                (
-                    "What can I do with the JSON formatter tool?",
-                    "You can validate JSON, pretty-print it with consistent indentation, minify it for transport, and compare two JSON documents side by side in diff mode using the built-in Monaco editor."
-                ),
-                (
-                    "Is my JSON data sent anywhere or stored?",
-                    "Your JSON is processed in your browser session for formatting and validation and is not intended to be stored long term on NovaTools Hub servers. Avoid pasting highly sensitive production secrets or credentials into any online tool whenever possible."
-                ),
-                (
-                    "Does the formatter change the actual data?",
-                    "Formatting and minifying only change whitespace and ordering in most cases—they do not change the semantic content of the JSON object itself. Always review the output before using it in production or committing it to source control."
-                )
-            };
-
-            var faqSchema = SeoHelper.GenerateFaqPageSchema(faqs);
-            ViewBag.JsonLdSchema = $"[{appSchema},{faqSchema}]";
-
-            return View();
-        }
-
         // Regex Tester
         public IActionResult RegexTester()
         {
