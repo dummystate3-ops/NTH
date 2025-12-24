@@ -66,11 +66,12 @@
                 </button>
 
                 <button type="button"
+                        id="social-copy-button"
                         class="pill-button is-active text-xs md:text-sm flex items-center gap-1.5"
                         onclick="window.novaCopyShareLink && window.novaCopyShareLink()"
                         aria-label="Copy link to this tool">
-                    <span class="text-base">🔗</span>
-                    <span>Copy link</span>
+                    <span id="social-copy-icon" class="text-base">🔗</span>
+                    <span id="social-copy-label">Copy link</span>
                 </button>
             </div>
         </div>
@@ -79,6 +80,8 @@
 
 <script>
     (function () {
+        let copyTimeoutId;
+
         function getMeta() {
             const panel = document.getElementById('social-sharing-panel');
             if (!panel) {
@@ -103,6 +106,27 @@
                 '_blank',
                 `width=${width},height=${height},left=${left},top=${top},noopener`
             );
+        }
+
+        function setCopiedVisualState() {
+            const btn = document.getElementById('social-copy-button');
+            const icon = document.getElementById('social-copy-icon');
+            const label = document.getElementById('social-copy-label');
+            if (!btn || !icon || !label) return;
+
+            if (copyTimeoutId) {
+                clearTimeout(copyTimeoutId);
+            }
+
+            btn.classList.add('bg-emerald-500', 'border-emerald-500', 'text-white', 'shadow-md');
+            icon.textContent = '✓';
+            label.textContent = 'Copied';
+
+            copyTimeoutId = window.setTimeout(function () {
+                btn.classList.remove('bg-emerald-500', 'border-emerald-500', 'text-white', 'shadow-md');
+                icon.textContent = '🔗';
+                label.textContent = 'Copy link';
+            }, 2000);
         }
 
         window.novaShareTool = function (platform) {
@@ -150,6 +174,9 @@
                     temp.select();
                     document.execCommand('copy');
                     document.body.removeChild(temp);
+
+                    setCopiedVisualState();
+
                     if (window.toast && window.toast.success) {
                         window.toast.success('Link copied to clipboard.');
                     }
@@ -164,6 +191,8 @@
 
             navigator.clipboard.writeText(rawUrl)
                 .then(function () {
+                    setCopiedVisualState();
+
                     if (window.toast && window.toast.success) {
                         window.toast.success('Link copied to clipboard.');
                     }
