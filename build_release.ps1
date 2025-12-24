@@ -40,6 +40,11 @@ if (-not $Full) {
 }
 else {
     Write-Host "Including App_Data (Full Update)..." -ForegroundColor Magenta
+    # Copy App_Data from source to publish directory if it exists
+    if (Test-Path ".\App_Data") {
+        Write-Host "Copying App_Data folder to publish directory..." -ForegroundColor Yellow
+        Copy-Item -Path ".\App_Data" -Destination "$publishDir\App_Data" -Recurse -Force
+    }
 }
 
 # 4. Create Zip
